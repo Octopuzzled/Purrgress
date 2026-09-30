@@ -1,2 +1,34 @@
-node_modules
-.env.deploy
+# Abhängigkeiten
+node_modules/
+
+# Build-Ausgaben
+dist/
+dev-dist/
+
+# Android-Build (der Ordner android/ selbst gehört ins Repo)
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+*.apk
+*.aab
+*.keystore
+*.jks
+
+# Logs & Systemdateien
+*.log
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+
+# Umgebungsvariablen
+.env
+.env.*
+!.env.example
+!*.example
+!.env.android

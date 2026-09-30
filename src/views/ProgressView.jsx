@@ -1,19 +1,19 @@
-import { useState } from 'react';
 import { CATS, CAT_ORDER, DAILY_GOAL_BONUS } from '../constants/game.js';
 import { CHIME_CHOICES } from '../constants/timebox.js';
 import { DICTIONARIES, LANGUAGES } from '../i18n/index.js';
 import { useI18n } from '../i18n/useI18n.js';
 import { dayKey, lastDays, streakFrom } from '../lib/date.js';
 import { statLevel } from '../lib/progress.js';
+import { DataSection } from '../components/settings/DataSection.jsx';
+import { AccountSection } from '../components/sync/AccountSection.jsx';
 import { Icon } from '../components/ui/Icon.jsx';
 import { SegmentedControl } from '../components/ui/SegmentedControl.jsx';
 import { SettingRow } from '../components/ui/SettingRow.jsx';
 import { Toggle } from '../components/ui/Toggle.jsx';
-import { btnSoft, focusRing, sheet } from '../components/ui/styles.js';
+import { btnSoft, sheet } from '../components/ui/styles.js';
 
-export function ProgressView({ data, onSettings, onReset }) {
+export function ProgressView({ data, sync, onSettings, onRestore, onReset }) {
   const { t, duration } = useI18n();
-  const [confirmReset, setConfirmReset] = useState(false);
 
   const weekdays = t('weekdays');
   const days = lastDays(7).map((d) => ({ ...d, label: weekdays[d.weekday] }));
@@ -104,6 +104,8 @@ export function ProgressView({ data, onSettings, onReset }) {
         </p>
       </section>
 
+      <AccountSection sync={sync} />
+
       <section className={`${sheet} divide-y divide-slate-100 px-4 dark:divide-white/5 sm:px-5`} aria-labelledby="settings-title">
         <h3 id="settings-title" className="py-4 font-display text-lg font-semibold text-slate-800 dark:text-slate-100">{t('settings.heading')}</h3>
 
@@ -138,23 +140,7 @@ export function ProgressView({ data, onSettings, onReset }) {
           </div>
         </SettingRow>
 
-        <div className="py-4">
-          <p className="font-bold text-slate-800 dark:text-slate-100">{t('settings.data')}</p>
-          <p className="text-sm text-slate-500 dark:text-slate-400">{t('settings.dataHint')}</p>
-          {!confirmReset ? (
-            <button type="button" onClick={() => setConfirmReset(true)} className={`mt-3 rounded-2xl px-3 py-2 text-sm font-bold text-rose-700 ring-1 ring-rose-200 hover:bg-rose-50 dark:text-rose-200 dark:ring-rose-300/30 dark:hover:bg-rose-400/10 ${focusRing}`}>
-              {t('settings.reset')}
-            </button>
-          ) : (
-            <div className="anim-fade mt-3 rounded-2xl bg-rose-50 p-3 dark:bg-rose-400/10">
-              <p className="text-sm font-semibold text-rose-900 dark:text-rose-100">{t('settings.resetWarning')}</p>
-              <div className="mt-2 flex gap-2">
-                <button type="button" onClick={() => { onReset(); setConfirmReset(false); }} className={`rounded-xl bg-rose-200 px-3 py-1.5 text-sm font-bold text-rose-900 hover:bg-rose-300 ${focusRing}`}>{t('settings.resetConfirm')}</button>
-                <button type="button" onClick={() => setConfirmReset(false)} className={`rounded-xl px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-white dark:text-slate-300 dark:hover:bg-slate-700 ${focusRing}`}>{t('common.cancel')}</button>
-              </div>
-            </div>
-          )}
-        </div>
+        <DataSection state={data} signedIn={!!sync.session} onRestore={onRestore} onReset={onReset} />
       </section>
     </div>
   );

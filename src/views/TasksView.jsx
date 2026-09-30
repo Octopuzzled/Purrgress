@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { CATS, CAT_ORDER } from '../constants/game.js';
 import { useNow } from '../hooks/useNow.js';
+import { useCollapsed } from '../hooks/useCollapsed.js';
+import { groupByDaypart, usesDayparts } from '../lib/dayparts.js';
 import { timerLeft } from '../lib/timebox.js';
+import { DaypartSection } from '../components/tasks/DaypartSection.jsx';
 import { TaskRow } from '../components/tasks/TaskRow.jsx';
 import { Icon } from '../components/ui/Icon.jsx';
 import { btnPrimary, btnSoft, focusRing, iconBtn, inputCls, pill, sheet } from '../components/ui/styles.js';
@@ -14,6 +17,7 @@ export function TasksView({ tasks, timer, onToggle, onToggleStep, onEdit, onDele
   const [cat, setCat] = useState('alle');
   const [showDone, setShowDone] = useState(false);
   const [confirmClear, setConfirmClear] = useState(false);
+  const sections = useCollapsed();
 
   const q = query.trim().toLowerCase();
   const matches = (t) => (cat === 'alle' || t.category === cat)
@@ -23,6 +27,9 @@ export function TasksView({ tasks, timer, onToggle, onToggleStep, onEdit, onDele
   const totalOpen = tasks.filter((t) => !t.done).length;
   const filtering = q || cat !== 'alle';
   const clearable = tasks.filter((t) => t.done && t.repeat !== 'daily').length;
+
+  // Abschnitte nach Tageszeit nur, wenn wirklich eine Aufgabe eine feste Tageszeit hat
+  const grouped = usesDayparts(tasks);
 
   const rowProps = { onToggle, onToggleStep, onEdit, onDelete, onStart, onOpenTimer, activeId: timer ? timer.taskId : null };
 
@@ -72,7 +79,15 @@ export function TasksView({ tasks, timer, onToggle, onToggleStep, onEdit, onDele
         </div>
       </div>
 
-      {openTasks.length > 0 ? (
+      {openTasks.length > 0 && grouped ? (
+        <div className="space-y-3">
+          {groupByDaypart(openTasks).map((g) => (
+            <DaypartSection key={g.id} group={g} collapsed={sections.isCollapsed(g.id)} onToggle={() => sections.toggle(g.id)}>
+              {g.tasks.map((t) => <TaskRow key={t.id} task={t} {...rowProps} />)}
+            </DaypartSection>
+          ))}
+        </div>
+      ) : openTasks.length > 0 ? (
         <ul className={`${sheet} divide-y divide-slate-100 dark:divide-white/5`}>
           {openTasks.map((t) => <TaskRow key={t.id} task={t} {...rowProps} />)}
         </ul>

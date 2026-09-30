@@ -6,6 +6,7 @@ import { useI18n } from '../i18n/useI18n.js';
 import { Coin } from '../components/ui/Coin.jsx';
 import { Icon } from '../components/ui/Icon.jsx';
 import { btnPrimary, btnSoft, focusRing, iconBtn, pill, sheet } from '../components/ui/styles.js';
+import { DAYPARTS, DEFAULT_DAYPART } from '../constants/dayparts.js';
 
 const GROUPS = [...LIBRARY, CUSTOM_GROUP];
 
@@ -94,6 +95,11 @@ function TemplateRow({ item, removable, inList, added, onAdd, onRemove }) {
           <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs font-bold">
             <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 ${cat.chip}`}><Icon name={cat.icon} size={12} />{t(`category.${item.category}.label`)}</span>
             <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300">{t('common.reward', { label: t(`difficulty.${item.difficulty}`), xp: diff.xp })} <Coin size={12} />{diff.coins}</span>
+            {item.when && item.when !== DEFAULT_DAYPART && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                <Icon name={DAYPARTS.find((d) => d.id === item.when).icon} size={12} />{t(`daypart.${item.when}.short`)}
+              </span>
+            )}
             {item.repeat === 'daily' && <span className="inline-flex items-center gap-1 rounded-full bg-sky-100 px-2 py-0.5 text-sky-800 dark:bg-sky-400/15 dark:text-sky-200"><Icon name="repeat" size={12} />{t('task.daily')}</span>}
             {item.minutes && <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2 py-0.5 text-violet-800 dark:bg-violet-400/10 dark:text-violet-200"><Icon name="timer" size={12} />{duration(item.minutes)}</span>}
             {item.steps && item.steps.length > 0 && <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-amber-900 dark:bg-amber-400/15 dark:text-amber-100"><Icon name="steps" size={12} />{t('libraryView.steps', { count: item.steps.length })}</span>}
