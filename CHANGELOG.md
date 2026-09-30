@@ -2,6 +2,12 @@
 
 Alle nennenswerten Änderungen an diesem Projekt. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die Versionen an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.6.1] – 2026-09-30
+
+### Geändert
+
+- Aufgaben aus Vorlagen, die vor Version 1.6 angelegt wurden, übernehmen beim Laden einmalig die Tageszeit ihrer Vorlage. Selbst gewählte Tageszeiten bleiben unverändert.
+
 ## [1.6.0] – 2026-09-30
 
 ### Hinzugefügt

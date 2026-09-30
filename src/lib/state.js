@@ -5,10 +5,25 @@
 import { CATS, DIFF, STORAGE_KEY } from '../constants/game.js';
 import { DEFAULT_EQUIP, FREE_ITEMS } from '../constants/shop.js';
 import { DAYPART_IDS, DEFAULT_DAYPART } from '../constants/dayparts.js';
+import { LIBRARY } from '../constants/library.js';
 import { DICTIONARIES, resolveLanguage } from '../i18n/index.js';
 import { uid } from './id.js';
 import { prefersReducedMotion } from './media.js';
 import { normalizeCustomTemplate } from './templates.js';
+
+/** Tageszeit je Vorlage – für Aufgaben aus der Zeit, bevor es Tageszeiten gab. */
+const TEMPLATE_DAYPART = Object.fromEntries(
+  LIBRARY.flatMap((g) => g.items).filter((i) => i.when).map((i) => [i.id, i.when]),
+);
+
+/**
+ * Tageszeit einer Aufgabe. Hat sie noch keine (ältere Spielstände), übernimmt sie
+ * die ihrer Vorlage. Eine selbst gewählte Tageszeit wird nie überschrieben.
+ */
+function daypartFor(t) {
+  if (DAYPART_IDS.includes(t.when)) return t.when;
+  return TEMPLATE_DAYPART[t.templateId] || DEFAULT_DAYPART;
+}
 
 export function normalizeTask(t) {
   return {
@@ -27,7 +42,7 @@ export function normalizeTask(t) {
         : { id: s.id || uid(), text: String(s.text || ''), done: !!s.done, xp: s.xp || 0, coins: s.coins || 0 }))
       : [],
     minutes: Number(t.minutes) > 0 ? Math.min(240, Math.round(Number(t.minutes))) : null,
-    when: DAYPART_IDS.includes(t.when) ? t.when : DEFAULT_DAYPART,
+    when: daypartFor(t),
     templateId: t.templateId || null,
     createdAt: t.createdAt || Date.now(),
   };

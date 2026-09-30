@@ -41,6 +41,17 @@ describe('Tageszeiten', () => {
     expect(migrate({ tasks: [{ id: 'x', title: 'X' }] }).tasks[0].when).toBe('jederzeit');
   });
 
+  it('gibt Aufgaben aus Vorlagen nachträglich die Tageszeit ihrer Vorlage', () => {
+    const old = migrate({ tasks: [
+      { id: 'a', title: 'Morgen-Anker', templateId: 't-anker' },
+      { id: 'b', title: 'Startrampe', templateId: 't-startrampe' },
+      { id: 'c', title: 'Ohne Vorlage' },
+      { id: 'd', title: 'Selbst gewählt', templateId: 't-anker', when: 'jederzeit' },
+      { id: 'e', title: 'Vorlage ohne Tageszeit', templateId: 't-5min' },
+    ] });
+    expect(old.tasks.map((t) => t.when)).toEqual(['morgens', 'abends', 'jederzeit', 'jederzeit', 'jederzeit']);
+  });
+
   it('bevorzugt bei „Was jetzt?“ Aufgaben der aktuellen Tageszeit', () => {
     const pool = [task('morgen', 'morgens'), task('egal'), task('abend', 'abends')];
     const counts = { morgen: 0, egal: 0, abend: 0 };

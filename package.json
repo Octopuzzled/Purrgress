@@ -1,7 +1,7 @@
 {
   "name": "purrgress",
   "private": true,
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Neurodivergenz-freundliche Aufgaben-App mit Gamification und Zeitbox.",
   "type": "module",
   "engines": {
