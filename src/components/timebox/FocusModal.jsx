@@ -8,16 +8,17 @@ import { Icon } from '../ui/Icon.jsx';
 import { Modal } from '../ui/Modal.jsx';
 import { btnPrimary, btnSoft, focusRing, iconBtn, sheet } from '../ui/styles.js';
 import { useI18n } from '../../i18n/useI18n.js';
+import { currentDaypart } from '../../lib/dayparts.js';
 
 export function FocusModal({ tasks, onClose, onComplete, onToggleStep, onGoLibrary, onStart }) {
   const { t, duration } = useI18n();
   const openTasks = tasks.filter((t) => !t.done);
-  const [currentId, setCurrentId] = useState(() => { const p = pickTask(openTasks, null); return p ? p.id : null; });
+  const [currentId, setCurrentId] = useState(() => { const p = pickTask(openTasks, null, currentDaypart()); return p ? p.id : null; });
   const current = openTasks.find((t) => t.id === currentId) || null;
 
   const [picking, setPicking] = useState(false);
   const other = () => {
-    const p = pickTask(openTasks, currentId);
+    const p = pickTask(openTasks, currentId, currentDaypart());
     if (p) { setCurrentId(p.id); setPicking(false); }
   };
 

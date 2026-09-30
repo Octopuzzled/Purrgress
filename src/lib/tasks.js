@@ -7,15 +7,19 @@ import { dayKey } from './date.js';
 import { levelInfo } from './progress.js';
 import { withoutTimer } from './timebox.js';
 
-/** Wählt eine offene Aufgabe zufällig aus. Leichte Aufgaben kommen öfter dran. */
-export function pickTask(openTasks, excludeId) {
+/**
+ * Wählt eine offene Aufgabe zufällig aus. Leichte Aufgaben kommen öfter dran,
+ * Aufgaben der aktuellen Tageszeit (daypart) deutlich öfter.
+ */
+export function pickTask(openTasks, excludeId, daypart = null) {
   const pool = openTasks.length > 1 ? openTasks.filter((t) => t.id !== excludeId) : openTasks;
   if (pool.length === 0) return null;
-  const weight = { leicht: 3, mittel: 2, schwer: 1 };
-  const total = pool.reduce((s, t) => s + (weight[t.difficulty] || 1), 0);
+  const byDifficulty = { leicht: 3, mittel: 2, schwer: 1 };
+  const weight = (t) => (byDifficulty[t.difficulty] || 1) * (daypart && t.when === daypart ? 4 : 1);
+  const total = pool.reduce((s, t) => s + weight(t), 0);
   let r = Math.random() * total;
   for (const t of pool) {
-    r -= weight[t.difficulty] || 1;
+    r -= weight(t);
     if (r <= 0) return t;
   }
   return pool[pool.length - 1];

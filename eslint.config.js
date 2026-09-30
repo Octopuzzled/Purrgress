@@ -5,7 +5,7 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 
 export default defineConfig([
-  globalIgnores(['dist', 'dev-dist', 'android']),
+  globalIgnores(['dist', 'dev-dist', 'android', 'server']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [js.configs.recommended, reactHooks.configs['recommended-latest'], reactRefresh.configs.vite],

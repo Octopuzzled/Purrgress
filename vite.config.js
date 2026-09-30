@@ -39,6 +39,8 @@ export default defineConfig(({ mode }) => ({
         workbox: {
           // Alles für den Offline-Betrieb vorab speichern, inklusive Schriften
           globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+          // Sync-API und PocketBase-Admin nie durch die App-Seite ersetzen
+          navigateFallbackDenylist: [/^\/api\//, /^\/_\//],
         },
       }),
   ].filter(Boolean),

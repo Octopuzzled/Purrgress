@@ -2,6 +2,41 @@
 
 Alle nennenswerten Änderungen an diesem Projekt. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die Versionen an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.6.0] – 2026-09-30
+
+### Hinzugefügt
+
+- Tageszeiten für Aufgaben: Start in den Tag, Jederzeit, Zum Tagesausklang
+- Abschnitte in der Aufgabenliste, einklappbar (pro Gerät gemerkt) – nur sichtbar, wenn eine offene Aufgabe eine feste Tageszeit hat
+- „Was jetzt?“ bevorzugt Aufgaben der aktuellen Tageszeit (morgens bis 12 Uhr, abends ab 17 Uhr)
+- Vorlagen mit passender Tageszeit (z. B. Morgen- und Abend-Anker, Startrampe, Planungs-Check)
+
+## [1.5.0] – 2026-09-30
+
+### Hinzugefügt
+
+- Sicherung exportieren: als Datei herunterladen oder als Text kopieren
+- Sicherung einspielen: per Datei oder eingefügtem Text, mit Vorschau und Rückfrage
+- Beim Einspielen bleiben Sprache, Farbschema, Töne und Animationen des Geräts erhalten
+- Tests für Sicherungen (fremde Dateien, neuere Versionen, ältere Formate)
+
+## [1.4.0] – 2026-09-30
+
+### Hinzugefügt
+
+- Konto & Sync: Fortschritt auf allen Geräten gleich, auch offline nutzbar
+- Registrierung nur mit Einladungscode (einmalig gültig, per Link `?invite=CODE`)
+- Drei-Wege-Abgleich: Zähler werden addiert, Aufgaben einzeln abgeglichen, Bearbeiten schlägt Löschen
+- Auswahl beim ersten Anmelden, wenn Gerät und Konto schon Fortschritt haben
+- Konto in der App löschen
+- Sync-Server mit PocketBase in `server/` (Docker, Migration, Einladungs-Hook), `npm run deploy:server`
+- Anleitung `docs/SYNC.md`
+
+### Geändert
+
+- Starter-Aufgaben haben feste IDs, damit sie auf mehreren Geräten nicht doppelt auftauchen
+- Service Worker leitet `/api/` und `/_/` nicht mehr auf die App um
+
 ## [1.3.0] – 2026-09-29
 
 ### Hinzugefügt

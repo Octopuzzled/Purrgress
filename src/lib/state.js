@@ -4,6 +4,7 @@
  */
 import { CATS, DIFF, STORAGE_KEY } from '../constants/game.js';
 import { DEFAULT_EQUIP, FREE_ITEMS } from '../constants/shop.js';
+import { DAYPART_IDS, DEFAULT_DAYPART } from '../constants/dayparts.js';
 import { DICTIONARIES, resolveLanguage } from '../i18n/index.js';
 import { uid } from './id.js';
 import { prefersReducedMotion } from './media.js';
@@ -26,6 +27,7 @@ export function normalizeTask(t) {
         : { id: s.id || uid(), text: String(s.text || ''), done: !!s.done, xp: s.xp || 0, coins: s.coins || 0 }))
       : [],
     minutes: Number(t.minutes) > 0 ? Math.min(240, Math.round(Number(t.minutes))) : null,
+    when: DAYPART_IDS.includes(t.when) ? t.when : DEFAULT_DAYPART,
     templateId: t.templateId || null,
     createdAt: t.createdAt || Date.now(),
   };
@@ -36,10 +38,10 @@ export function starterTasks(lang = resolveLanguage('system')) {
   const text = (DICTIONARIES[lang] || DICTIONARIES.de).starter;
   const now = Date.now();
   return [
-    normalizeTask({ ...text[0], category: 'pflege', difficulty: 'leicht', createdAt: now }),
-    normalizeTask({ ...text[1], category: 'pflege', difficulty: 'leicht', repeat: 'daily', templateId: 't-wasser', createdAt: now - 1 }),
-    normalizeTask({ ...text[2], category: 'fokus', difficulty: 'leicht', minutes: 5, createdAt: now - 2 }),
-    normalizeTask({ ...text[3], category: 'sozial', difficulty: 'leicht', createdAt: now - 3 }),
+    normalizeTask({ id: 'starter-1', ...text[0], category: 'pflege', difficulty: 'leicht', createdAt: now }),
+    normalizeTask({ id: 'starter-2', ...text[1], category: 'pflege', difficulty: 'leicht', repeat: 'daily', templateId: 't-wasser', createdAt: now - 1 }),
+    normalizeTask({ id: 'starter-3', ...text[2], category: 'fokus', difficulty: 'leicht', minutes: 5, createdAt: now - 2 }),
+    normalizeTask({ id: 'starter-4', ...text[3], category: 'sozial', difficulty: 'leicht', createdAt: now - 3 }),
   ];
 }
 

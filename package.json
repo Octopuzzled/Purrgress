@@ -1,7 +1,7 @@
 {
   "name": "purrgress",
   "private": true,
-  "version": "1.3.0",
+  "version": "1.6.0",
   "description": "Neurodivergenz-freundliche Aufgaben-App mit Gamification und Zeitbox.",
   "type": "module",
   "engines": {
@@ -22,7 +22,8 @@
     "android:icons": "capacitor-assets generate --android",
     "android:sync": "vite build --mode android && cap sync android",
     "android:open": "cap open android",
-    "android:apk": "npm run android:sync && cd android && ./gradlew assembleDebug"
+    "android:apk": "npm run android:sync && cd android && ./gradlew assembleDebug",
+    "deploy:server": "sh scripts/deploy-server.sh"
   },
   "dependencies": {
     "@capacitor/android": "^7.0.0",

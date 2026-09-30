@@ -2,6 +2,7 @@
  * Eigene Vorlagen: aus einer Aufgabe eine wiederverwendbare Vorlage machen.
  * Eigene Vorlagen werden nicht übersetzt – sie gehören der Person, die sie geschrieben hat.
  */
+import { DAYPART_IDS, DEFAULT_DAYPART } from '../constants/dayparts.js';
 import { CATS, DIFF } from '../constants/game.js';
 import { uid } from './id.js';
 
@@ -18,6 +19,7 @@ export function normalizeCustomTemplate(tpl = {}) {
     category: CATS[tpl.category] ? tpl.category : 'routine',
     difficulty: DIFF[tpl.difficulty] ? tpl.difficulty : 'leicht',
     repeat: tpl.repeat === 'daily' ? 'daily' : 'none',
+    when: DAYPART_IDS.includes(tpl.when) ? tpl.when : DEFAULT_DAYPART,
     minutes: minutes > 0 ? Math.min(240, Math.round(minutes)) : null,
     // Schritte als reiner Text – Häkchen und Belohnungen gehören zur Aufgabe, nicht zur Vorlage
     steps: Array.isArray(tpl.steps)

@@ -8,6 +8,7 @@ import { Modal } from '../ui/Modal.jsx';
 import { Toggle } from '../ui/Toggle.jsx';
 import { btnPrimary, btnSoft, focusRing, iconBtn, inputCls } from '../ui/styles.js';
 import { useI18n } from '../../i18n/useI18n.js';
+import { DAYPARTS, DEFAULT_DAYPART } from '../../constants/dayparts.js';
 
 export function TaskFormModal({ initial, onClose, onSave }) {
   const { t, duration } = useI18n();
@@ -19,6 +20,7 @@ export function TaskFormModal({ initial, onClose, onSave }) {
   const [repeat, setRepeat] = useState(initial ? initial.repeat === 'daily' : false);
   const [asTemplate, setAsTemplate] = useState(false);
   const [minutes, setMinutes] = useState(initial ? initial.minutes : null);
+  const [when, setWhen] = useState(initial ? initial.when || DEFAULT_DAYPART : DEFAULT_DAYPART);
   const boxChoices = Array.from(new Set([...BOX_CHOICES, ...(initial && initial.minutes ? [initial.minutes] : [])])).sort((a, b) => a - b);
   const [steps, setSteps] = useState(initial ? initial.steps.map((s) => ({ ...s })) : []);
   const [newStep, setNewStep] = useState('');
@@ -39,7 +41,7 @@ export function TaskFormModal({ initial, onClose, onSave }) {
     const finalSteps = [...steps, ...(pending ? [{ id: uid(), text: pending, done: false, xp: 0, coins: 0 }] : [])]
       .map((s) => ({ ...s, text: s.text.trim() }))
       .filter((s) => s.text);
-    onSave({ title: name, desc: desc.trim(), category, difficulty, repeat: repeat ? 'daily' : 'none', minutes, steps: finalSteps }, { asTemplate });
+    onSave({ title: name, desc: desc.trim(), category, difficulty, repeat: repeat ? 'daily' : 'none', minutes, when, steps: finalSteps }, { asTemplate });
   };
 
   return (
@@ -102,6 +104,21 @@ export function TaskFormModal({ initial, onClose, onSave }) {
             ))}
           </div>
           <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">{t('form.timeboxHint')}</p>
+        </fieldset>
+
+        <fieldset>
+          <legend className="mb-1.5 text-sm font-bold text-slate-700 dark:text-slate-200">{t('form.daypart')}</legend>
+          <div className="grid grid-cols-3 gap-2">
+            {DAYPARTS.map((d) => (
+              <button key={d.id} type="button" aria-pressed={when === d.id} onClick={() => setWhen(d.id)}
+                className={`flex items-center justify-center gap-1.5 rounded-2xl px-2 py-2.5 text-sm font-bold transition ${focusRing} ${when === d.id
+                  ? 'bg-violet-100 text-violet-900 ring-2 ring-violet-300 dark:bg-violet-400/15 dark:text-violet-100'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700/70 dark:text-slate-300 dark:hover:bg-slate-700'}`}>
+                <Icon name={d.icon} size={16} className={when === d.id ? '' : d.tone} />{t(`daypart.${d.id}.short`)}
+              </button>
+            ))}
+          </div>
+          <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">{t('form.daypartHint')}</p>
         </fieldset>
 
         <div className="divide-y divide-slate-200/70 rounded-2xl bg-slate-100/70 px-4 dark:divide-white/10 dark:bg-slate-700/40">

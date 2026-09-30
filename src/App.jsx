@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppearance } from './hooks/useAppearance.js';
 import { useCelebration } from './hooks/useCelebration.js';
 import { useDailyReset } from './hooks/useDailyReset.js';
 import { useGameState } from './hooks/useGameState.js';
 import { useLanguage } from './hooks/useLanguage.js';
+import { useSync } from './hooks/useSync.js';
 import { useTimebox } from './hooks/useTimebox.js';
 import { playSound } from './lib/audio.js';
 import { dayKey } from './lib/date.js';
 import { pointFrom } from './lib/dom.js';
 import { levelInfo } from './lib/progress.js';
+import { restoreBackup } from './lib/backup.js';
 import { clearState, initialState, normalizeTask } from './lib/state.js';
 import { isUnlocked } from './constants/shop.js';
 import { removeCustomTemplate, saveCustomTemplate } from './lib/templates.js';
@@ -17,6 +19,7 @@ import {
 } from './lib/tasks.js';
 import { HeroCard } from './components/hero/HeroCard.jsx';
 import { LevelUpModal } from './components/hero/LevelUpModal.jsx';
+import { SyncChoiceDialog } from './components/sync/SyncChoiceDialog.jsx';
 import { AppHeader } from './components/layout/AppHeader.jsx';
 import { TabBar } from './components/layout/TabBar.jsx';
 import { TaskFormModal } from './components/tasks/TaskFormModal.jsx';
@@ -49,6 +52,21 @@ export function App() {
   const { t } = i18n;
 
   useDailyReset(setState);
+  const sync = useSync({ state, setState });
+
+  /* Einladungslink (?invite=CODE): Registrierung öffnen und den Code vorausfüllen */
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('invite');
+    if (!code) return;
+    sync.setInvite(code.trim().toUpperCase());
+    setTab('fortschritt');
+    params.delete('invite');
+    const rest = params.toString();
+    window.history.replaceState(null, '', window.location.pathname + (rest ? `?${rest}` : '') + window.location.hash);
+    // nur beim Start
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const isDark = useAppearance(settings);
   const celebrate = useCelebration(settings);
   const timebox = useTimebox({
@@ -151,7 +169,7 @@ export function App() {
   const addTemplate = (tpl) => {
     setState((s) => addTask(s, normalizeTask({
       title: tpl.title, desc: tpl.desc, category: tpl.category, difficulty: tpl.difficulty,
-      repeat: tpl.repeat || 'none', steps: tpl.steps || [], minutes: tpl.minutes || null,
+      repeat: tpl.repeat || 'none', steps: tpl.steps || [], minutes: tpl.minutes || null, when: tpl.when,
       templateId: tpl.id, createdAt: Date.now(),
     })));
   };
@@ -226,6 +244,13 @@ export function App() {
     setTab('aufgaben');
   };
 
+  const importBackup = (imported) => {
+    setState((s) => restoreBackup(s, imported));
+    setToast(null);
+    setTimerOpen(false);
+    setAfterDone(null);
+  };
+
   const goLibrary = () => {
     setFocusOpen(false);
     setTab('vorlagen');
@@ -265,7 +290,7 @@ export function App() {
             {tab === 'umkleide' && (
               <ShopView data={state} level={lvl.level} cheering={celebrate.cheering} cheerTick={celebrate.cheerTick} onEquip={equipItem} onBuy={buyItem} />
             )}
-            {tab === 'fortschritt' && <ProgressView data={state} onSettings={updateSettings} onReset={resetAll} />}
+            {tab === 'fortschritt' && <ProgressView data={state} sync={sync} onSettings={updateSettings} onRestore={importBackup} onReset={resetAll} />}
           </div>
         </main>
       </div>
@@ -293,6 +318,7 @@ export function App() {
           onComplete={completeTimebox} onStop={stopTimebox} onLater={postponeTimebox}
           onToggleStep={toggleStep} onStartNext={(id) => startTimebox(id)} />
       )}
+      {sync.needsChoice && <SyncChoiceDialog onChoose={sync.resolveChoice} onClose={sync.signOut} />}
       {levelUp && <LevelUpModal info={levelUp} equip={state.hero.equip} onClose={() => setLevelUp(null)} />}
     </div>
     </I18nContext.Provider>

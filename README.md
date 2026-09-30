@@ -5,6 +5,7 @@ Eine neurodivergenz-freundliche Aufgaben-App mit sanfter Gamification: kleine Au
 ## Funktionen
 
 - **Aufgaben** mit Kategorie, Schwierigkeit, Mikro-Schritten, täglicher Wiederholung, Suche und Filter
+- **Tageszeiten:** Start in den Tag, Jederzeit, Zum Tagesausklang – als einklappbare Abschnitte, nur wenn sie genutzt werden
 - **Vorlagen** für ADHS, Autismus, Alltag und Wohlbefinden – ein Tipp, und die Aufgabe steht in der Liste
 - **Eigene Vorlagen:** jede Aufgabe lässt sich als Vorlage speichern und wiederverwenden
 - **Held Mochi** mit Level, Werten und einer Umkleide (kostenlos anprobieren, mit Münzen kaufen)
@@ -14,6 +15,8 @@ Eine neurodivergenz-freundliche Aufgaben-App mit sanfter Gamification: kleine Au
 - **Deutsch und Englisch:** automatisch nach Gerätesprache oder fest in den Einstellungen
 - **Ruhig und zugänglich:** heller und dunkler Modus, „Ruhige Animationen“, Tastaturbedienung, Screenreader-Labels
 - **Offline-fähig** als installierbare PWA
+- **Konto & Sync** über den eigenen Server (PocketBase), Registrierung nur mit Einladung
+- **Sicherung** als Datei oder Text exportieren und wieder einspielen
 
 ## Spielbalance
 
@@ -38,6 +41,7 @@ Alle Werte stehen in `src/constants/game.js` und `src/constants/shop.js`.
 | Schriften | Fredoka und Nunito, lokal über Fontsource |
 | Tests | Vitest |
 | Android-App | Capacitor |
+| Konto & Sync | PocketBase (selbst gehostet, Docker) |
 | Codequalität | ESLint 9, Prettier |
 
 ## Voraussetzungen
@@ -67,6 +71,7 @@ Die App läuft dann unter <http://localhost:5173>. Änderungen im Code erscheine
 | `npm run format` | Code mit Prettier formatieren |
 | `npm run dev:phone` | Entwicklungsserver im WLAN erreichbar machen |
 | `npm run deploy` | Bauen und auf den eigenen Server hochladen |
+| `npm run deploy:server` | Sync-Server (PocketBase) hochladen und neu starten |
 | `npm run android:add` | Android-Projekt einmalig anlegen |
 | `npm run android:icons` | App-Icon und Startbildschirm für Android erzeugen |
 | `npm run android:apk` | Android-APK bauen |
@@ -81,7 +86,10 @@ purrgress/
 ├── public/                    Favicon und App-Icons (Web)
 ├── assets/                    Quellbilder für Android-Icon und Startbildschirm
 ├── docs/DEPLOYMENT.md         Anleitung: lokal, Server, Handy, APK
+├── docs/SYNC.md               Anleitung: Sync-Server, Einladungen, Wartung
 ├── scripts/deploy.sh          Bauen und per rsync hochladen
+├── scripts/deploy-server.sh   Sync-Server hochladen und neu starten
+├── server/                    PocketBase: Dockerfile, Compose, Migration, Einladungs-Hook
 ├── capacitor.config.json      Einstellungen für die Android-App
 ├── src/
 │   ├── main.jsx               Einstiegspunkt: Schriften, CSS, React
@@ -89,6 +97,7 @@ purrgress/
 │   ├── styles/index.css       Tailwind-Import, Theme-Tokens, Animationen
 │   ├── constants/             Feste Daten ohne Texte: Spielregeln, Shop, Vorlagen, Navigation, Zeitbox
 │   ├── i18n/                  Übersetzungen: Wörterbücher (locales/), t(), Sprachwahl
+│   ├── sync/                  Abgleich: API-Client, Drei-Wege-Merge, Ablauf, Speicher
 │   ├── lib/                   Reine Funktionen ohne React (Logik, Formatierung, Audio, Speicher)
 │   ├── hooks/                 Eigene React-Hooks (Spielstand, Zeitbox, Farbschema, Belohnungen)
 │   ├── components/
@@ -96,6 +105,8 @@ purrgress/
 │   │   ├── layout/            Kopfzeile und Tab-Leiste
 │   │   ├── avatar/            Mochi als SVG, aufgeteilt in Einzelteile
 │   │   ├── hero/              Heldenkarte und Level-Up
+│   │   ├── settings/          Daten-Bereich: Sicherung, Einspielen, Zurücksetzen
+│   │   ├── sync/              Konto-Bereich und Auswahl beim ersten Abgleich
 │   │   ├── tasks/             Aufgabenzeile und Aufgaben-Formular
 │   │   └── timebox/           Zeitauswahl, Timer-Ring, Mini-Leiste, Timer- und „Was jetzt?“-Dialog
 │   └── views/                 Die vier Bereiche: Aufgaben, Vorlagen, Umkleide, Fortschritt
@@ -108,6 +119,7 @@ purrgress/
 - **Logik ohne React:** Alles, was den Zustand verändert (Abhaken, Belohnungen, Zeitbox), steckt als reine Funktion in `src/lib/`. Diese Funktionen bekommen einen Zustand und geben einen neuen zurück. Dadurch sind sie leicht zu testen und unabhängig von der Oberfläche.
 - **Zeitbox mit Zeitstempeln:** Der Timer speichert Endzeitpunkt bzw. Restzeit statt eines laufenden Zählers. So bleibt die Zeit auch nach einem Neuladen oder im Hintergrund korrekt.
 - **Texte getrennt vom Code:** Komponenten enthalten keine Anzeigetexte, sondern Schlüssel wie `t('tasks.heading')`. Die Texte stehen in `src/i18n/locales/`.
+- **Sync ohne Datenverlust:** Jedes Gerät merkt sich den Stand beim letzten Abgleich. Beim nächsten Abgleich wird verglichen, was sich auf welcher Seite geändert hat (Drei-Wege-Merge in `src/sync/merge.js`). Zähler wie XP und Münzen werden addiert, sodass Fortschritt von allen Geräten zählt.
 - **Hooks für Nebenwirkungen:** Tab-Titel, Töne, Farbschema und der tägliche Reset leben in eigenen Hooks unter `src/hooks/`.
 
 ## Übersetzungen
@@ -151,4 +163,4 @@ npm run android:apk  # Android-APK bauen (vorher einmalig android:add und androi
 
 ## Daten und Datenschutz
 
-Alle Daten bleiben im Browser bzw. auf dem Gerät. Es gibt keinen Server-Speicher und kein Tracking. Beim Löschen der Browserdaten oder beim Deinstallieren der App gehen die Daten verloren.
+Ohne Konto bleiben alle Daten im Browser bzw. auf dem Gerät – kein Server, kein Tracking. Unter Fortschritt → Einstellungen → Deine Daten lässt sich jederzeit eine Sicherung als Datei herunterladen. Mit Konto liegt zusätzlich ein Spielstand pro Person auf dem eigenen PocketBase-Server (siehe [docs/SYNC.md](docs/SYNC.md)). Jede Person kann ihr Konto samt Daten in der App selbst löschen.
