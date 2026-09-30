@@ -1,0 +1,8 @@
+{
+  "appId": "de.octopuzzled.purrgress",
+  "appName": "Purrgress",
+  "webDir": "dist",
+  "android": {
+    "backgroundColor": "#fff9f5"
+  }
+}
