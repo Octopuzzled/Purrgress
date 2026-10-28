@@ -2,39 +2,57 @@ import { useState } from 'react';
 import { CATS, CAT_ORDER } from '../constants/game.js';
 import { useNow } from '../hooks/useNow.js';
 import { useCollapsed } from '../hooks/useCollapsed.js';
+import { dayKey } from '../lib/date.js';
 import { groupByDaypart, usesDayparts } from '../lib/dayparts.js';
+import { groupByDay, isCurrent, isDueToday, sortByDue } from '../lib/due.js';
 import { timerLeft } from '../lib/timebox.js';
 import { DaypartSection } from '../components/tasks/DaypartSection.jsx';
 import { TaskRow } from '../components/tasks/TaskRow.jsx';
 import { Icon } from '../components/ui/Icon.jsx';
+import { SegmentedControl } from '../components/ui/SegmentedControl.jsx';
 import { btnPrimary, btnSoft, focusRing, iconBtn, inputCls, pill, sheet } from '../components/ui/styles.js';
 import { useI18n } from '../i18n/useI18n.js';
 
 export function TasksView({ tasks, timer, onToggle, onToggleStep, onEdit, onDelete, onNew, onFocus, onClearDone, onGoLibrary, onStart, onOpenTimer }) {
-  const { t, duration, clock } = useI18n();
+  const { t, duration, clock, day } = useI18n();
   const now = useNow(timer && timer.running ? 15000 : 30000);
   const [query, setQuery] = useState('');
   const [cat, setCat] = useState('alle');
   const [showDone, setShowDone] = useState(false);
   const [confirmClear, setConfirmClear] = useState(false);
+  // 'now': ohne Datum + heute/überfällig · 'today': nur Fälliges · 'all': dazu alles Geplante
+  // Bewusst nicht gespeichert: Beim Öffnen startet die Liste immer ruhig bei „Jetzt“.
+  const [view, setView] = useState('now');
   const sections = useCollapsed();
+  const [collapsedDays, setCollapsedDays] = useState(() => new Set());
+  const today = dayKey(new Date(now));
 
   const q = query.trim().toLowerCase();
   const matches = (t) => (cat === 'alle' || t.category === cat)
     && (!q || t.title.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q));
-  const openTasks = tasks.filter((t) => !t.done && matches(t));
+  const open = sortByDue(tasks.filter((t) => !t.done && matches(t)));
+  const openTasks = open.filter((t) => (view === 'today' ? isDueToday(t, today) : isCurrent(t, today)));
+  const laterTasks = open.filter((t) => !isCurrent(t, today));
   const doneTasks = tasks.filter((t) => t.done && matches(t));
-  const totalOpen = tasks.filter((t) => !t.done).length;
+  const currentTasks = tasks.filter((t) => isCurrent(t, today));
+  const totalOpen = currentTasks.filter((t) => !t.done).length;
   const filtering = q || cat !== 'alle';
   const clearable = tasks.filter((t) => t.done && t.repeat !== 'daily').length;
 
   // Abschnitte nach Tageszeit nur, wenn wirklich eine Aufgabe eine feste Tageszeit hat
-  const grouped = usesDayparts(tasks);
+  const grouped = usesDayparts(currentTasks);
 
-  const rowProps = { onToggle, onToggleStep, onEdit, onDelete, onStart, onOpenTimer, activeId: timer ? timer.taskId : null };
+  const rowProps = { onToggle, onToggleStep, onEdit, onDelete, onStart, onOpenTimer, activeId: timer ? timer.taskId : null, today };
 
-  /* Listenzeit: Summe aller Zeitboxen der offenen Aufgaben + voraussichtliches Ende */
-  const planMs = tasks.reduce((sum, t) => {
+  const toggleDay = (key) => setCollapsedDays((prev) => {
+    const next = new Set(prev);
+    if (next.has(key)) next.delete(key);
+    else next.add(key);
+    return next;
+  });
+
+  /* Listenzeit: Summe aller Zeitboxen der heute offenen Aufgaben + voraussichtliches Ende */
+  const planMs = currentTasks.reduce((sum, t) => {
     if (t.done) return sum;
     if (timer && timer.taskId === t.id) return sum + Math.max(0, timerLeft(timer, now));
     return sum + (t.minutes || 0) * 60000;
@@ -62,6 +80,8 @@ export function TasksView({ tasks, timer, onToggle, onToggleStep, onEdit, onDele
       </div>
 
       <div className="space-y-2.5">
+        <SegmentedControl label={t('tasks.view.label')} value={view} onChange={setView}
+          options={['now', 'today', 'all'].map((v) => ({ value: v, label: t(`tasks.view.${v}`) }))} />
         <div className="relative">
           <Icon name="search" size={18} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('tasks.search')} aria-label={t('tasks.search')} className={`${inputCls} pl-10 pr-10`} />
@@ -93,7 +113,13 @@ export function TasksView({ tasks, timer, onToggle, onToggleStep, onEdit, onDele
         </ul>
       ) : (
         <div className={`${sheet} px-5 py-8 text-center`}>
-          {filtering ? (
+          {view === 'today' && !filtering ? (
+            <>
+              <p className="font-display text-lg font-semibold text-slate-800 dark:text-slate-100">{t('tasks.todayEmptyTitle')}</p>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t('tasks.todayEmptyText')}</p>
+              <button type="button" className={`${btnSoft} mt-4`} onClick={() => setView('now')}>{t('tasks.view.now')}</button>
+            </>
+          ) : filtering ? (
             <>
               <p className="font-display text-lg font-semibold text-slate-800 dark:text-slate-100">{t('tasks.noMatchTitle')}</p>
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t('tasks.noMatchText')}</p>
@@ -110,6 +136,29 @@ export function TasksView({ tasks, timer, onToggle, onToggleStep, onEdit, onDele
             </>
           )}
         </div>
+      )}
+
+      {view === 'all' && laterTasks.length > 0 && (
+        <div className="space-y-3">
+          {groupByDay(laterTasks).map((g) => {
+            const name = day(g.day, today);
+            return (
+              <DaypartSection key={g.day} title={name} group={{ id: `due-${g.day}`, icon: 'calendar', tone: 'text-slate-400', tasks: g.tasks }}
+                collapsed={collapsedDays.has(g.day)} onToggle={() => toggleDay(g.day)}>
+                {g.tasks.map((t) => <TaskRow key={t.id} task={t} {...rowProps} hideDue />)}
+              </DaypartSection>
+            );
+          })}
+        </div>
+      )}
+
+      {view === 'now' && laterTasks.length > 0 && (
+        <button type="button" onClick={() => setView('all')}
+          className={`flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 text-left text-sm font-semibold text-slate-500 border-2 border-dashed border-slate-200 hover:bg-white hover:text-slate-800 dark:text-slate-400 dark:border-white/10 dark:hover:bg-nightcard dark:hover:text-slate-100 ${focusRing}`}>
+          <Icon name="calendar" size={16} className="shrink-0 text-slate-400" />
+          <span className="flex-1">{t('tasks.later', { count: laterTasks.length })}</span>
+          <span className="font-bold text-violet-700 dark:text-violet-300">{t('tasks.showLater')}</span>
+        </button>
       )}
 
       {doneTasks.length > 0 && (

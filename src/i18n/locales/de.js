@@ -97,6 +97,14 @@ export const de = {
     undo: 'Rückgängig',
   },
 
+  due: {
+    today: 'Heute',
+    tomorrow: 'Morgen',
+    yesterday: 'Gestern',
+    since: 'seit {day}',
+    sinceYesterday: 'seit gestern',
+  },
+
   tasks: {
     heading: 'Deine Aufgaben',
     sectionToggle: '{name}: {count} offen',
@@ -117,6 +125,16 @@ export const de = {
     doneCount: 'Erledigt ({count})',
     clearDone: 'Erledigte aufräumen',
     clearConfirm: '{count} entfernen? Tägliche bleiben.',
+    view: {
+      label: 'Was möchtest du sehen?',
+      now: 'Jetzt',
+      today: 'Nur heute',
+      all: 'Mit Geplantem',
+    },
+    later: { one: 'Eine Aufgabe ist für später geplant', other: '{count} Aufgaben sind für später geplant' },
+    showLater: 'Zeigen',
+    todayEmptyTitle: 'Heute ist nichts fällig.',
+    todayEmptyText: 'Aufgaben ohne Datum findest du unter „Jetzt“.',
   },
 
   task: {
@@ -134,6 +152,7 @@ export const de = {
     startTimer: 'Zeitbox für „{title}“ starten',
     edit: '„{title}“ bearbeiten',
     remove: '„{title}“ löschen',
+    due: 'fällig {day}',
   },
 
   form: {
@@ -164,6 +183,13 @@ export const de = {
     save: 'Änderungen speichern',
     saveAsTemplate: 'Als eigene Vorlage speichern',
     saveAsTemplateHint: 'Du findest sie danach unter Vorlagen → Eigene.',
+    due: 'Bis wann?',
+    noDue: 'Kein Datum',
+    dueToday: 'Heute',
+    dueTomorrow: 'Morgen',
+    duePick: 'Anderes Datum',
+    dueHint: 'Aufgaben mit späterem Datum tauchen erst an diesem Tag in deiner Liste auf.',
+    dueDaily: 'Tägliche Aufgaben sind jeden Tag fällig. Klappt es mal nicht, rutschen sie einfach auf den nächsten Tag.',
   },
 
   focus: {

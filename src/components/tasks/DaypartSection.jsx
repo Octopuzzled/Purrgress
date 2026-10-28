@@ -2,10 +2,13 @@ import { useI18n } from '../../i18n/useI18n.js';
 import { Icon } from '../ui/Icon.jsx';
 import { focusRing, sheet } from '../ui/styles.js';
 
-/** Ein einklappbarer Abschnitt der Aufgabenliste (Start in den Tag, Jederzeit, Tagesausklang). */
-export function DaypartSection({ group, collapsed, onToggle, children }) {
+/**
+ * Ein einklappbarer Abschnitt der Aufgabenliste (Start in den Tag, Jederzeit, Tagesausklang).
+ * Mit `title` auch für andere Gruppen nutzbar, z. B. einen geplanten Tag.
+ */
+export function DaypartSection({ group, title, collapsed, onToggle, children }) {
   const { t } = useI18n();
-  const name = t(`daypart.${group.id}.heading`);
+  const name = title || t(`daypart.${group.id}.heading`);
   const listId = `daypart-${group.id}`;
 
   return (

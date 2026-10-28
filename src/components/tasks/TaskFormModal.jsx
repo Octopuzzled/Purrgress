@@ -9,9 +9,10 @@ import { Toggle } from '../ui/Toggle.jsx';
 import { btnPrimary, btnSoft, focusRing, iconBtn, inputCls } from '../ui/styles.js';
 import { useI18n } from '../../i18n/useI18n.js';
 import { DAYPARTS, DEFAULT_DAYPART } from '../../constants/dayparts.js';
+import { addDays, dayKey } from '../../lib/date.js';
 
 export function TaskFormModal({ initial, onClose, onSave }) {
-  const { t, duration } = useI18n();
+  const { t, duration, day } = useI18n();
   const isEdit = !!initial;
   const [title, setTitle] = useState(initial ? initial.title : '');
   const [desc, setDesc] = useState(initial ? initial.desc : '');
@@ -21,6 +22,10 @@ export function TaskFormModal({ initial, onClose, onSave }) {
   const [asTemplate, setAsTemplate] = useState(false);
   const [minutes, setMinutes] = useState(initial ? initial.minutes : null);
   const [when, setWhen] = useState(initial ? initial.when || DEFAULT_DAYPART : DEFAULT_DAYPART);
+  const today = dayKey();
+  const tomorrow = addDays(today, 1);
+  const [due, setDue] = useState(initial && initial.repeat !== 'daily' ? initial.due : null);
+  const customDue = !!due && due !== today && due !== tomorrow;
   const boxChoices = Array.from(new Set([...BOX_CHOICES, ...(initial && initial.minutes ? [initial.minutes] : [])])).sort((a, b) => a - b);
   const [steps, setSteps] = useState(initial ? initial.steps.map((s) => ({ ...s })) : []);
   const [newStep, setNewStep] = useState('');
@@ -41,7 +46,7 @@ export function TaskFormModal({ initial, onClose, onSave }) {
     const finalSteps = [...steps, ...(pending ? [{ id: uid(), text: pending, done: false, xp: 0, coins: 0 }] : [])]
       .map((s) => ({ ...s, text: s.text.trim() }))
       .filter((s) => s.text);
-    onSave({ title: name, desc: desc.trim(), category, difficulty, repeat: repeat ? 'daily' : 'none', minutes, when, steps: finalSteps }, { asTemplate });
+    onSave({ title: name, desc: desc.trim(), category, difficulty, repeat: repeat ? 'daily' : 'none', due: repeat ? today : due, minutes, when, steps: finalSteps }, { asTemplate });
   };
 
   return (
@@ -119,6 +124,38 @@ export function TaskFormModal({ initial, onClose, onSave }) {
             ))}
           </div>
           <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">{t('form.daypartHint')}</p>
+        </fieldset>
+
+        <fieldset>
+          <legend className="mb-1.5 text-sm font-bold text-slate-700 dark:text-slate-200">{t('form.due')} <span className="font-semibold text-slate-400">{t('common.optional')}</span></legend>
+          {repeat ? (
+            <p className="flex items-start gap-2 rounded-2xl bg-sky-50 p-3 text-sm text-sky-900 dark:bg-sky-400/10 dark:text-sky-100">
+              <Icon name="repeat" size={16} className="mt-0.5 shrink-0" />{t('form.dueDaily')}
+            </p>
+          ) : (
+            <>
+              <div className="flex flex-wrap gap-1.5">
+                {[[null, t('form.noDue')], [today, t('form.dueToday')], [tomorrow, t('form.dueTomorrow')]].map(([value, label]) => (
+                  <button key={label} type="button" aria-pressed={due === value} onClick={() => setDue(value)}
+                    className={`rounded-full px-3 py-1.5 text-sm font-bold transition ${focusRing} ${due === value
+                      ? 'bg-violet-100 text-violet-900 ring-2 ring-violet-300 dark:bg-violet-400/15 dark:text-violet-100'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700/70 dark:text-slate-300 dark:hover:bg-slate-700'}`}>
+                    {label}
+                  </button>
+                ))}
+                <label className={`relative inline-flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-bold transition focus-within:ring-4 focus-within:ring-violet-200 dark:focus-within:ring-violet-400/40 ${customDue
+                  ? 'bg-violet-100 text-violet-900 ring-2 ring-violet-300 dark:bg-violet-400/15 dark:text-violet-100'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700/70 dark:text-slate-300 dark:hover:bg-slate-700'}`}>
+                  <Icon name="calendar" size={14} />
+                  <span>{customDue ? day(due, today) : t('form.duePick')}</span>
+                  <input type="date" value={due || ''} min={today} onChange={(e) => setDue(e.target.value || null)}
+                    onClick={(e) => { try { e.currentTarget.showPicker(); } catch { /* Browser öffnet selbst */ } }}
+                    aria-label={t('form.duePick')} className="absolute inset-0 cursor-pointer opacity-0" />
+                </label>
+              </div>
+              <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">{t('form.dueHint')}</p>
+            </>
+          )}
         </fieldset>
 
         <div className="divide-y divide-slate-200/70 rounded-2xl bg-slate-100/70 px-4 dark:divide-white/10 dark:bg-slate-700/40">

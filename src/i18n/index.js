@@ -8,6 +8,7 @@
  */
 import { de } from './locales/de.js';
 import { en } from './locales/en.js';
+import { dayKey, daysBetween, parseDayKey } from '../lib/date.js';
 
 export const DICTIONARIES = { de, en };
 export const LANGUAGES = ['de', 'en'];
@@ -74,7 +75,19 @@ export function createI18n(lang) {
     return new Date(timestamp).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
   }
 
-  return { lang: language, locale, t, duration, clock };
+  /** Tag als kurzes Wort: „Heute“, „Morgen“, „Freitag“ – weiter weg „Mo., 3. Nov.“ */
+  function day(key, today = dayKey()) {
+    const diff = daysBetween(today, key);
+    if (diff === 0) return t('due.today');
+    if (diff === 1) return t('due.tomorrow');
+    if (diff === -1) return t('due.yesterday');
+    const date = parseDayKey(key);
+    if (Math.abs(diff) < 7) return date.toLocaleDateString(locale, { weekday: 'long' });
+    const sameYear = key.slice(0, 4) === today.slice(0, 4);
+    return date.toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short', ...(sameYear ? {} : { year: 'numeric' }) });
+  }
+
+  return { lang: language, locale, t, duration, clock, day };
 }
 
 /** Übersetzt eine Vorlage aus der Bibliothek (Texte kommen aus dem Wörterbuch). */

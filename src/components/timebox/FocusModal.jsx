@@ -9,10 +9,12 @@ import { Modal } from '../ui/Modal.jsx';
 import { btnPrimary, btnSoft, focusRing, iconBtn, sheet } from '../ui/styles.js';
 import { useI18n } from '../../i18n/useI18n.js';
 import { currentDaypart } from '../../lib/dayparts.js';
+import { isCurrent } from '../../lib/due.js';
 
 export function FocusModal({ tasks, onClose, onComplete, onToggleStep, onGoLibrary, onStart }) {
   const { t, duration } = useI18n();
-  const openTasks = tasks.filter((t) => !t.done);
+  // Erst später fällige Aufgaben bleiben hier außen vor
+  const openTasks = tasks.filter((t) => !t.done && isCurrent(t));
   const [currentId, setCurrentId] = useState(() => { const p = pickTask(openTasks, null, currentDaypart()); return p ? p.id : null; });
   const current = openTasks.find((t) => t.id === currentId) || null;
 

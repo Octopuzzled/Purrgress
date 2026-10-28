@@ -5,9 +5,18 @@ import { Coin } from '../ui/Coin.jsx';
 import { Icon } from '../ui/Icon.jsx';
 import { btnPrimary, focusRing, iconBtn } from '../ui/styles.js';
 import { useI18n } from '../../i18n/useI18n.js';
+import { addDays, dayKey } from '../../lib/date.js';
+import { dueStatus } from '../../lib/due.js';
 
-export function TaskRow({ task, onToggle, onToggleStep, onEdit, onDelete, onStart, onOpenTimer, activeId }) {
-  const { t, duration } = useI18n();
+/** Farben für das Fälligkeits-Kärtchen – Überfälliges sanft orange, nicht alarmrot. */
+const DUE_TONE = {
+  overdue: 'bg-orange-100 text-orange-900 dark:bg-orange-400/15 dark:text-orange-100',
+  today: 'bg-teal-100 text-teal-900 dark:bg-teal-400/15 dark:text-teal-100',
+  future: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300',
+};
+
+export function TaskRow({ task, onToggle, onToggleStep, onEdit, onDelete, onStart, onOpenTimer, activeId, today = dayKey(), hideDue = false }) {
+  const { t, duration, day } = useI18n();
   const isActive = activeId === task.id;
   const [picking, setPicking] = useState(false);
   const [open, setOpen] = useState(false);
@@ -17,6 +26,12 @@ export function TaskRow({ task, onToggle, onToggleStep, onEdit, onDelete, onStar
   const stepsDone = task.steps.filter((s) => s.done).length;
   const hasMore = !!task.desc || task.steps.length > 0;
   const allSteps = task.steps.length > 0 && stepsDone === task.steps.length;
+  // Tägliche Aufgaben sind immer heute fällig – dafür reicht das „täglich“-Kärtchen.
+  // hideDue: Die Aufgabe steht schon unter einer Datums-Überschrift.
+  const due = hideDue || task.repeat === 'daily' || task.done ? 'none' : dueStatus(task, today);
+  const dueText = due === 'overdue'
+    ? (task.due === addDays(today, -1) ? t('due.sinceYesterday') : t('due.since', { day: day(task.due, today) }))
+    : due !== 'none' ? day(task.due, today) : '';
 
   return (
     <li className="p-3 sm:p-4">
@@ -41,6 +56,11 @@ export function TaskRow({ task, onToggle, onToggleStep, onEdit, onDelete, onStar
             <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
               {t('common.reward', { label: t(`difficulty.${task.difficulty}`), xp: diff.xp })} <Coin size={12} />{diff.coins}
             </span>
+            {due !== 'none' && (
+              <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 ${DUE_TONE[due]}`} title={t('task.due', { day: day(task.due, today) })}>
+                <Icon name="calendar" size={12} strokeWidth={2.5} />{dueText}
+              </span>
+            )}
             {task.repeat === 'daily' && (
               <span className="inline-flex items-center gap-1 rounded-full bg-sky-100 px-2 py-0.5 text-sky-800 dark:bg-sky-400/15 dark:text-sky-200"><Icon name="repeat" size={12} strokeWidth={2.5} />{t('task.daily')}</span>
             )}

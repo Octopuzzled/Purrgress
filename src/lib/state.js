@@ -7,6 +7,7 @@ import { DEFAULT_EQUIP, FREE_ITEMS } from '../constants/shop.js';
 import { DAYPART_IDS, DEFAULT_DAYPART } from '../constants/dayparts.js';
 import { LIBRARY } from '../constants/library.js';
 import { DICTIONARIES, resolveLanguage } from '../i18n/index.js';
+import { dayKey, isDayKey } from './date.js';
 import { uid } from './id.js';
 import { prefersReducedMotion } from './media.js';
 import { normalizeCustomTemplate } from './templates.js';
@@ -26,6 +27,8 @@ function daypartFor(t) {
 }
 
 export function normalizeTask(t) {
+  const repeat = t.repeat === 'daily' ? 'daily' : 'none';
+  const due = isDayKey(t.due) ? t.due : null;
   return {
     id: t.id || uid(),
     title: String(t.title || 'Ohne Titel'),
@@ -35,7 +38,9 @@ export function normalizeTask(t) {
     done: !!t.done,
     doneDay: t.doneDay || null,
     awarded: t.awarded || null,
-    repeat: t.repeat === 'daily' ? 'daily' : 'none',
+    repeat,
+    // Fälligkeit als Tagesschlüssel (oder null). Tägliche Aufgaben sind immer heute fällig.
+    due: repeat === 'daily' ? due || dayKey() : due,
     steps: Array.isArray(t.steps)
       ? t.steps.map((s) => (typeof s === 'string'
         ? { id: uid(), text: s, done: false, xp: 0, coins: 0 }

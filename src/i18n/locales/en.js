@@ -97,6 +97,14 @@ export const en = {
     undo: 'Undo',
   },
 
+  due: {
+    today: 'Today',
+    tomorrow: 'Tomorrow',
+    yesterday: 'Yesterday',
+    since: 'since {day}',
+    sinceYesterday: 'since yesterday',
+  },
+
   tasks: {
     heading: 'Your tasks',
     sectionToggle: '{name}: {count} open',
@@ -117,6 +125,16 @@ export const en = {
     doneCount: 'Done ({count})',
     clearDone: 'Clear completed',
     clearConfirm: 'Remove {count}? Daily tasks stay.',
+    view: {
+      label: 'What would you like to see?',
+      now: 'Now',
+      today: 'Today only',
+      all: 'With planned',
+    },
+    later: { one: 'One task is planned for later', other: '{count} tasks are planned for later' },
+    showLater: 'Show',
+    todayEmptyTitle: 'Nothing is due today.',
+    todayEmptyText: 'Tasks without a date are under “Now”.',
   },
 
   task: {
@@ -134,6 +152,7 @@ export const en = {
     startTimer: 'Start timebox for “{title}”',
     edit: 'Edit “{title}”',
     remove: 'Delete “{title}”',
+    due: 'due {day}',
   },
 
   form: {
@@ -164,6 +183,13 @@ export const en = {
     save: 'Save changes',
     saveAsTemplate: 'Save as my own template',
     saveAsTemplateHint: 'You’ll find it under Templates → Mine.',
+    due: 'When is it due?',
+    noDue: 'No date',
+    dueToday: 'Today',
+    dueTomorrow: 'Tomorrow',
+    duePick: 'Other date',
+    dueHint: 'Tasks with a later date only show up in your list on that day.',
+    dueDaily: 'Daily tasks are due every day. If one doesn’t happen, it simply moves on to the next day.',
   },
 
   focus: {

@@ -2,6 +2,21 @@
 
 Alle nennenswerten Änderungen an diesem Projekt. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die Versionen an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [Unveröffentlicht]
+
+### Hinzugefügt
+
+- Fälligkeitsdatum für Aufgaben: „Kein Datum“, „Heute“, „Morgen“ oder ein anderes Datum
+- Ansichten in der Aufgabenliste: „Jetzt“ (ohne Datum, heute und überfällig), „Nur heute“ und „Mit Geplantem“ (dazu alles Spätere, nach Tagen gruppiert)
+- Hinweis unter der Liste, wie viele Aufgaben für später geplant sind – ein Tipp zeigt sie an
+- Kärtchen an der Aufgabe: „Heute“, „Morgen“, Wochentag oder Datum; Überfälliges sanft orange mit „seit …“
+
+### Geändert
+
+- Die Liste ist nach Datum sortiert: Überfälliges zuerst, dann Heutiges, dann Aufgaben ohne Datum
+- Tägliche Aufgaben sind immer heute fällig. Bleibt eine liegen, rutscht nur ihr Datum weiter – es entsteht keine Kopie
+- „Was jetzt?“, „Weiter mit …“, die Anzahl offener Aufgaben und die Listenzeit beachten nur, was heute dran ist; heute Fälliges wird bei „Was jetzt?“ etwas öfter vorgeschlagen
+
 ## [1.6.1] – 2026-09-30
 
 ### Geändert

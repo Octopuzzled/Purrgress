@@ -4,18 +4,23 @@
  */
 import { DAILY_GOAL_BONUS, DIFF, LEVEL_BONUS_COINS, STEP_XP } from '../constants/game.js';
 import { dayKey } from './date.js';
+import { isCurrent, isDueToday } from './due.js';
 import { levelInfo } from './progress.js';
 import { withoutTimer } from './timebox.js';
 
 /**
  * Wählt eine offene Aufgabe zufällig aus. Leichte Aufgaben kommen öfter dran,
- * Aufgaben der aktuellen Tageszeit (daypart) deutlich öfter.
+ * Aufgaben der aktuellen Tageszeit (daypart) deutlich öfter, heute fällige etwas öfter.
+ * Erst später fällige Aufgaben kommen nicht in Frage.
  */
-export function pickTask(openTasks, excludeId, daypart = null) {
-  const pool = openTasks.length > 1 ? openTasks.filter((t) => t.id !== excludeId) : openTasks;
+export function pickTask(openTasks, excludeId, daypart = null, today = dayKey()) {
+  const current = openTasks.filter((t) => isCurrent(t, today));
+  const pool = current.length > 1 ? current.filter((t) => t.id !== excludeId) : current;
   if (pool.length === 0) return null;
   const byDifficulty = { leicht: 3, mittel: 2, schwer: 1 };
-  const weight = (t) => (byDifficulty[t.difficulty] || 1) * (daypart && t.when === daypart ? 4 : 1);
+  const weight = (t) => (byDifficulty[t.difficulty] || 1)
+    * (daypart && t.when === daypart ? 4 : 1)
+    * (isDueToday(t, today) ? 2 : 1);
   const total = pool.reduce((s, t) => s + weight(t), 0);
   let r = Math.random() * total;
   for (const t of pool) {
@@ -105,15 +110,19 @@ export function reopenStep(state, taskId, stepId) {
   return { ...next, xp: Math.max(0, state.xp - (step.xp || 0)), coins: Math.max(0, state.coins - (step.coins || 0)) };
 }
 
-/** Öffnet tägliche Aufgaben, die an einem früheren Tag erledigt wurden. */
+/**
+ * Neuer Tag für tägliche Aufgaben: Erledigte öffnen sich wieder, und alle sind heute fällig.
+ * Wurde eine gestern nicht geschafft, rutscht nur ihr Datum weiter – es entsteht keine Kopie.
+ */
 export function reopenDailyTasks(state, today = dayKey()) {
   let changed = false;
   const tasks = state.tasks.map((t) => {
-    if (t.repeat === 'daily' && t.done && t.doneDay !== today) {
-      changed = true;
-      return { ...t, done: false, doneDay: null, awarded: null, steps: t.steps.map((s) => ({ ...s, done: false, xp: 0, coins: 0 })) };
-    }
-    return t;
+    if (t.repeat !== 'daily') return t;
+    const reopen = t.done && t.doneDay !== today;
+    if (!reopen && t.due === today) return t;
+    changed = true;
+    if (!reopen) return { ...t, due: today };
+    return { ...t, due: today, done: false, doneDay: null, awarded: null, steps: t.steps.map((s) => ({ ...s, done: false, xp: 0, coins: 0 })) };
   });
   return changed ? { ...state, tasks } : state;
 }
@@ -125,10 +134,11 @@ export function moveToEnd(state, id) {
   return { ...state, tasks: [...state.tasks.filter((t) => t.id !== id), task] };
 }
 
-/** Nächste offene Aufgabe nach der angegebenen (für „Weiter mit …“). */
-export function nextOpenTask(tasks, afterId) {
+/** Nächste offene, heute sichtbare Aufgabe nach der angegebenen (für „Weiter mit …“). */
+export function nextOpenTask(tasks, afterId, today = dayKey()) {
   const idx = tasks.findIndex((t) => t.id === afterId);
-  return tasks.slice(idx + 1).find((t) => !t.done) || tasks.find((t) => !t.done && t.id !== afterId) || null;
+  const open = (t) => !t.done && isCurrent(t, today);
+  return tasks.slice(idx + 1).find(open) || tasks.find((t) => open(t) && t.id !== afterId) || null;
 }
 
 export function addTask(state, task) {

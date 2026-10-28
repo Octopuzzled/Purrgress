@@ -24,3 +24,25 @@ export function streakFrom(history) {
   while (history[dayKey(d)] > 0) { count += 1; d.setDate(d.getDate() - 1); }
   return count;
 }
+
+/** Ist das ein Tagesschlüssel wie „2026-10-28“? */
+export function isDayKey(value) {
+  return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(parseDayKey(value).getTime());
+}
+
+/** Tagesschlüssel → Datum (12 Uhr mittags, damit Zeitumstellungen nicht stören). */
+export function parseDayKey(key) {
+  const [y, m, d] = key.split('-').map(Number);
+  return new Date(y, m - 1, d, 12);
+}
+
+export function addDays(key, n) {
+  const d = parseDayKey(key);
+  d.setDate(d.getDate() + n);
+  return dayKey(d);
+}
+
+/** Wie viele Tage liegt `to` nach `from`? (negativ, wenn davor) */
+export function daysBetween(from, to) {
+  return Math.round((parseDayKey(to) - parseDayKey(from)) / 86400000);
+}
