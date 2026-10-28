@@ -7,7 +7,7 @@ Alle nennenswerten Änderungen an diesem Projekt. Das Format orientiert sich an 
 ### Hinzugefügt
 
 - Fälligkeitsdatum für Aufgaben: „Kein Datum“, „Heute“, „Morgen“ oder ein anderes Datum
-- Ansichten in der Aufgabenliste: „Jetzt“ (ohne Datum, heute und überfällig), „Nur heute“ und „Mit Geplantem“ (dazu alles Spätere, nach Tagen gruppiert)
+- Ansichten in der Aufgabenliste: „Jetzt“ (ohne Datum, heute und überfällig), „Nur heute“ und „Ausblick“ (dazu alles Spätere, nach Tagen gruppiert)
 - Hinweis unter der Liste, wie viele Aufgaben für später geplant sind – ein Tipp zeigt sie an
 - Kärtchen an der Aufgabe: „Heute“, „Morgen“, Wochentag oder Datum; Überfälliges sanft orange mit „seit …“
 - „Nicht heute“ an jeder Aufgabe: legt sie mit einem Tipp auf morgen (auch tägliche), mit Rückgängig

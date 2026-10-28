@@ -180,7 +180,7 @@ export const de = {
       label: 'Was möchtest du sehen?',
       now: 'Jetzt',
       today: 'Nur heute',
-      all: 'Mit Geplantem',
+      all: 'Ausblick',
     },
     later: { one: 'Eine Aufgabe ist für später geplant', other: '{count} Aufgaben sind für später geplant' },
     showLater: 'Zeigen',
