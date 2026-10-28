@@ -16,15 +16,6 @@ export function lastDays(n) {
   return out;
 }
 
-export function streakFrom(history) {
-  let count = 0;
-  const d = new Date();
-  d.setHours(12, 0, 0, 0);
-  if (!(history[dayKey(d)] > 0)) d.setDate(d.getDate() - 1);
-  while (history[dayKey(d)] > 0) { count += 1; d.setDate(d.getDate() - 1); }
-  return count;
-}
-
 /** Ist das ein Tagesschlüssel wie „2026-10-28“? */
 export function isDayKey(value) {
   return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(parseDayKey(value).getTime());

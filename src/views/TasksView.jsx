@@ -17,7 +17,7 @@ import { SegmentedControl } from '../components/ui/SegmentedControl.jsx';
 import { btnPrimary, btnSoft, focusRing, iconBtn, inputCls, pill, sheet } from '../components/ui/styles.js';
 import { useI18n } from '../i18n/useI18n.js';
 
-export function TasksView({ tasks, timer, todayCount, energy, onEnergy, onToggle, onToggleStep, onEdit, onNew, onFocus, onClearDone, onGoLibrary, onStart, onOpenTimer, onSnooze, onMoveToTomorrow, onAddFirstStep }) {
+export function TasksView({ tasks, timer, todayCount, energy, onEnergy, restToday, onRest, onToggle, onToggleStep, onEdit, onNew, onFocus, onClearDone, onGoLibrary, onStart, onOpenTimer, onSnooze, onMoveToTomorrow, onAddFirstStep }) {
   const { t, duration, clock, day } = useI18n();
   const now = useNow(timer && timer.running ? 15000 : 30000);
   const [query, setQuery] = useState('');
@@ -32,7 +32,7 @@ export function TasksView({ tasks, timer, todayCount, energy, onEnergy, onToggle
   const today = dayKey(new Date(now));
   // Tagesform: nur heute gültig; abends wird nicht mehr gefragt
   const energyToday = energy && energy.day === today ? energy : null;
-  const askEnergy = !energyToday && new Date(now).getHours() < WRAP_UP_FROM;
+  const askEnergy = !energyToday && !restToday && new Date(now).getHours() < WRAP_UP_FROM;
 
   const q = query.trim().toLowerCase();
   const matches = (t) => (cat === 'alle' || t.category === cat)
@@ -73,6 +73,12 @@ export function TasksView({ tasks, timer, todayCount, energy, onEnergy, onToggle
           <p className="text-sm text-slate-500 dark:text-slate-400">
             {t('tasks.open', { count: totalOpen })}
           </p>
+          {restToday && (
+            <button type="button" onClick={() => onRest(false)} aria-label={t('rest.chipLabel')} title={t('rest.chipLabel')}
+              className={`mt-1 mr-1.5 inline-flex items-center gap-1.5 rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-bold text-indigo-800 hover:bg-indigo-200 dark:bg-indigo-400/15 dark:text-indigo-200 dark:hover:bg-indigo-400/25 ${focusRing}`}>
+              <Icon name="moon" size={14} />{t('rest.chip')}
+            </button>
+          )}
           {energyToday && energyToday.level && (
             <button type="button" onClick={() => onEnergy(undefined)} aria-label={t('energy.change')} title={t('energy.change')}
               className={`mt-1 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 ${focusRing}`}>
@@ -92,9 +98,9 @@ export function TasksView({ tasks, timer, todayCount, energy, onEnergy, onToggle
         </div>
       </div>
 
-      {askEnergy && <EnergyCheckIn onChoose={onEnergy} />}
+      {askEnergy && <EnergyCheckIn onChoose={onEnergy} onRest={onRest} />}
 
-      <DayWrapUp tasks={tasks} today={today} now={now} doneCount={todayCount} onMoveToTomorrow={onMoveToTomorrow} />
+      <DayWrapUp tasks={tasks} today={today} now={now} doneCount={todayCount} restToday={restToday} onRest={onRest} onMoveToTomorrow={onMoveToTomorrow} />
 
       <div className="space-y-2.5">
         <SegmentedControl label={t('tasks.view.label')} value={view} onChange={setView}

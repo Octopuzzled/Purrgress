@@ -122,6 +122,7 @@ export const en = {
     move: { one: 'Move the open one to tomorrow', other: 'Move {count} open to tomorrow' },
     moveHint: 'What was due today may be tomorrow’s.',
     hide: 'Hide for today',
+    rest: 'Make today a rest day',
   },
 
   energy: {
@@ -146,6 +147,24 @@ export const en = {
     placeholder: 'e.g. Just open the document',
     add: 'That’s my step',
     line: 'Perfect. Just this one step – nothing more.',
+  },
+
+  rest: {
+    button: 'Today is a rest day',
+    chip: 'Rest day',
+    chipLabel: 'End rest day – today is a regular day after all',
+    line: 'Rest day. You don’t have to do anything today – your streak stays.',
+    day: 'Rest day',
+  },
+
+  shield: {
+    name: 'Cozy blanket',
+    text: 'Forgetting is human. A cozy blanket automatically covers a day without ticks – your streak stays.',
+    have: 'In stock: {count} of {max}',
+    buy: 'Buy',
+    full: 'Stock full',
+    usedOn: 'Last used: {day}',
+    bought: 'Thank you! Your streak is all tucked in now.',
   },
 
   due: {
@@ -355,6 +374,7 @@ export const en = {
     focusNone: 'No timebox yet this week. The ▶ button next to a task starts one.',
     focusToday: 'Today {today} in timeboxes · this week {week}',
     focusWeek: 'This week {week} in timeboxes.',
+    restHint: 'Rest days and cozy blankets don’t break your streak.',
   },
 
   settings: {

@@ -10,7 +10,7 @@ const TONES = {
 };
 
 /** Einmal am Tag: Wie viel Kraft ist da? level null = übersprungen. */
-export function EnergyCheckIn({ onChoose }) {
+export function EnergyCheckIn({ onChoose, onRest }) {
   const { t } = useI18n();
   return (
     <section aria-labelledby="energy-title" className="anim-fade rounded-3xl bg-white p-4 ring-1 ring-slate-900/5 dark:bg-nightcard dark:ring-white/5">
@@ -24,10 +24,16 @@ export function EnergyCheckIn({ onChoose }) {
           </button>
         ))}
       </div>
-      <button type="button" onClick={() => onChoose(null)}
-        className={`mt-2 rounded-xl px-2 py-1 text-sm font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 ${focusRing}`}>
-        {t('energy.skip')}
-      </button>
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+        <button type="button" onClick={() => onChoose(null)}
+          className={`rounded-xl px-2 py-1 text-sm font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 ${focusRing}`}>
+          {t('energy.skip')}
+        </button>
+        <button type="button" onClick={() => onRest(true)}
+          className={`inline-flex items-center gap-1.5 rounded-xl px-2 py-1 text-sm font-bold text-indigo-700 hover:bg-indigo-50 dark:text-indigo-300 dark:hover:bg-indigo-400/10 ${focusRing}`}>
+          <Icon name="moon" size={16} />{t('rest.button')}
+        </button>
+      </div>
     </section>
   );
 }

@@ -5,9 +5,10 @@ import { Coin, CoinBadge } from '../components/ui/Coin.jsx';
 import { Icon } from '../components/ui/Icon.jsx';
 import { btnPrimary, btnSoft, focusRing, pill, sheet } from '../components/ui/styles.js';
 import { useI18n } from '../i18n/useI18n.js';
+import { MAX_SHIELDS, SHIELD_PRICE } from '../lib/rest.js';
 
-export function ShopView({ data, level, cheering, cheerTick, onEquip, onBuy }) {
-  const { t } = useI18n();
+export function ShopView({ data, level, cheering, cheerTick, onEquip, onBuy, onBuyShield }) {
+  const { t, day } = useI18n();
   const [slot, setSlot] = useState('fell');
   const [preview, setPreview] = useState(null);
   const equip = data.hero.equip;
@@ -98,6 +99,29 @@ export function ShopView({ data, level, cheering, cheerTick, onEquip, onBuy }) {
           );
         })}
       </div>
+
+      <ShieldCard shields={data.shields || 0} coins={data.coins} usedOn={data.shieldUsedOn} onBuy={onBuyShield} t={t} day={day} />
     </div>
+  );
+}
+
+/** Kuscheldecke: schützt die Serie an einem vergessenen Tag. Kein Kleidungsstück, darum ein eigener Bereich. */
+function ShieldCard({ shields, coins, usedOn, onBuy, t, day }) {
+  const full = shields >= MAX_SHIELDS;
+  return (
+    <section aria-labelledby="shield-title" className={`${sheet} flex flex-wrap items-center gap-4 p-4 sm:p-5`}>
+      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-indigo-100 text-indigo-700 dark:bg-indigo-400/15 dark:text-indigo-200"><Icon name="shield" size={24} /></span>
+      <div className="min-w-0 flex-1 basis-56">
+        <h3 id="shield-title" className="font-display text-lg font-semibold text-slate-800 dark:text-slate-100">{t('shield.name')}</h3>
+        <p className="text-sm text-slate-600 dark:text-slate-300">{t('shield.text')}</p>
+        <p className="mt-1 text-xs font-bold text-slate-500 dark:text-slate-400">
+          {t('shield.have', { count: shields, max: MAX_SHIELDS })}
+          {usedOn && <> · {t('shield.usedOn', { day: day(usedOn) })}</>}
+        </p>
+      </div>
+      <button type="button" className={btnPrimary} onClick={onBuy} disabled={full || coins < SHIELD_PRICE}>
+        {full ? t('shield.full') : <>{t('shield.buy')} · {SHIELD_PRICE} <Coin size={14} /></>}
+      </button>
+    </section>
   );
 }

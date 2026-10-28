@@ -13,6 +13,7 @@ import { prefersReducedMotion } from './media.js';
 import { normalizeCustomTemplate } from './templates.js';
 import { normalizeEnergy } from './energy.js';
 import { nextOccurrence, normalizeRepeat } from './repeat.js';
+import { normalizeRest } from './rest.js';
 
 /** Tageszeit je Vorlage – für Aufgaben aus der Zeit, bevor es Tageszeiten gab. */
 const TEMPLATE_DAYPART = Object.fromEntries(
@@ -83,6 +84,9 @@ export function initialState(language = 'system') {
     history: {},
     goalBonusDay: null,
     focusLog: {},
+    restDays: [], // Ruhetage (auch von Kuscheldecken geschützte)
+    shields: 0, // Kuscheldecken auf Vorrat
+    shieldUsedOn: null,
     timer: null,
     energy: null, // Tagesform: { day, level }
     settings: { language, theme: 'system', sound: true, reduceMotion: prefersReducedMotion(), dailyGoal: 3, chimeEvery: 0 },
@@ -117,6 +121,7 @@ export function migrate(p) {
       : [],
     timer: validTimer(p.timer, p.tasks),
     energy: normalizeEnergy(p.energy),
+    ...normalizeRest(p),
     settings: { ...base.settings, ...(p.settings || {}) },
   };
 }

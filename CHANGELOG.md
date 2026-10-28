@@ -16,6 +16,8 @@ Alle nennenswerten Änderungen an diesem Projekt. Das Format orientiert sich an 
 - Tagesform: Einmal am Tag fragt die App „Wie viel Kraft hast du heute?“ (Wenig, Mittel, Viel – oder überspringen). Bei wenig Kraft schlägt „Was jetzt?“ nur Leichtes vor und das Tagesziel halbiert sich (aufgerundet); bei viel Kraft kommen größere Aufgaben öfter dran. Wird zwischen Geräten abgeglichen
 - „Zu groß?“: Aufgaben, die seit drei Tagen warten oder überfällig sind und keinen offenen Mikro-Schritt haben, fragen nach dem allerkleinsten ersten Schritt. Auch in „Was jetzt?“ jederzeit möglich
 - Wiederholen an Wochentagen (z. B. „Mo, Do“ für den Müll): Wiederholen ist jetzt „Nie / Täglich / An Wochentagen“. Erledigte kommen am nächsten Termin wieder, früher Erledigtes zählt für den anstehenden Termin. Verpasste bleiben sichtbar, bis ihr nächster Tag da ist – ohne Kopien
+- Ruhetage: „Heute ist Ruhetag“ in der Tagesform-Frage oder im Tagesabschluss. Ruhetage unterbrechen die Serie nicht, Mochi nimmt den Druck raus, im Wochenverlauf zeigt ein Mond den Tag. Ein Tipp auf das Ruhetag-Kärtchen nimmt ihn zurück
+- Kuscheldecke in der Umkleide (60 Münzen, bis zu 2 auf Vorrat): schützt die Serie automatisch an vergessenen Tagen – nur wenn der Vorrat für die ganze Lücke reicht
 
 ### Geändert
 

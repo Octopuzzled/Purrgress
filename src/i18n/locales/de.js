@@ -122,6 +122,7 @@ export const de = {
     move: { one: 'Die offene auf morgen legen', other: '{count} offene auf morgen legen' },
     moveHint: 'Was heute fällig war, darf morgen dran sein.',
     hide: 'Für heute ausblenden',
+    rest: 'Heute zum Ruhetag machen',
   },
 
   energy: {
@@ -146,6 +147,24 @@ export const de = {
     placeholder: 'z. B. Nur das Dokument öffnen',
     add: 'Das ist mein Schritt',
     line: 'Perfekt. Nur dieser eine Schritt – mehr nicht.',
+  },
+
+  rest: {
+    button: 'Heute ist Ruhetag',
+    chip: 'Ruhetag',
+    chipLabel: 'Ruhetag beenden – heute ist doch ein normaler Tag',
+    line: 'Ruhetag. Heute musst du gar nichts – deine Serie bleibt.',
+    day: 'Ruhetag',
+  },
+
+  shield: {
+    name: 'Kuscheldecke',
+    text: 'Vergessen ist menschlich. Eine Kuscheldecke legt sich automatisch über einen Tag ohne Häkchen – deine Serie bleibt.',
+    have: 'Auf Vorrat: {count} von {max}',
+    buy: 'Kaufen',
+    full: 'Vorrat voll',
+    usedOn: 'Zuletzt geschützt: {day}',
+    bought: 'Danke! Mit der Decke ist deine Serie gut eingepackt.',
   },
 
   due: {
@@ -355,6 +374,7 @@ export const de = {
     focusNone: 'Noch keine Zeitbox diese Woche. Der ▶-Knopf neben einer Aufgabe startet eine.',
     focusToday: 'Heute {today} in Zeitboxen · diese Woche {week}',
     focusWeek: 'Diese Woche {week} in Zeitboxen.',
+    restHint: 'Ruhetage und Kuscheldecken unterbrechen deine Serie nicht.',
   },
 
   settings: {

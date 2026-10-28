@@ -21,14 +21,15 @@ function hiddenDay() {
  * Liegengebliebenes mit Datum lässt sich mit einem Tipp auf morgen legen.
  * Ausblenden gilt bis morgen und nur für dieses Gerät.
  */
-export function DayWrapUp({ tasks, today, now, doneCount, onMoveToTomorrow }) {
+export function DayWrapUp({ tasks, today, now, doneCount, restToday, onRest, onMoveToTomorrow }) {
   const { t } = useI18n();
   const [hidden, setHidden] = useState(hiddenDay);
   const leftover = leftoverTasks(tasks, today);
   const doneTitles = tasks.filter((x) => x.done && x.doneDay === today).map((x) => x.title);
 
   if (new Date(now).getHours() < WRAP_UP_FROM || hidden === today) return null;
-  if (doneCount === 0 && leftover.length === 0) return null;
+  // Ein ruhiger Tag ohne Offenes braucht keinen Abschluss mehr
+  if (doneCount === 0 && leftover.length === 0 && restToday) return null;
 
   const hide = () => {
     setHidden(today);
@@ -47,7 +48,7 @@ export function DayWrapUp({ tasks, today, now, doneCount, onMoveToTomorrow }) {
         <div className="min-w-0 flex-1">
           <h3 id="wrapup-title" className="font-display text-lg font-semibold text-indigo-950 dark:text-indigo-50">{t('wrapUp.title')}</h3>
           <p className="text-sm text-indigo-900/80 dark:text-indigo-100/80">
-            {doneCount > 0 ? t('wrapUp.done', { count: doneCount }) : t('wrapUp.nothing')}
+            {doneCount > 0 ? t('wrapUp.done', { count: doneCount }) : restToday ? t('rest.line') : t('wrapUp.nothing')}
           </p>
           {doneTitles.length > 0 && (
             <ul className="mt-2 flex flex-wrap gap-1.5 text-xs font-bold">
@@ -58,6 +59,11 @@ export function DayWrapUp({ tasks, today, now, doneCount, onMoveToTomorrow }) {
               ))}
               {more > 0 && <li className="px-1 py-0.5 text-indigo-900/60 dark:text-indigo-100/60">{t('wrapUp.more', { count: more })}</li>}
             </ul>
+          )}
+          {doneCount === 0 && !restToday && (
+            <button type="button" className={`${btnSoft} mt-3 py-2 text-sm`} onClick={() => onRest(true)}>
+              <Icon name="moon" size={16} />{t('wrapUp.rest')}
+            </button>
           )}
           {leftover.length > 0 && (
             <div className="mt-3">

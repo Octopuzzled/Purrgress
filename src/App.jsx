@@ -10,7 +10,8 @@ import { playSound } from './lib/audio.js';
 import { addDays, dayKey } from './lib/date.js';
 import { pointFrom } from './lib/dom.js';
 import { levelInfo } from './lib/progress.js';
-import { dailyGoalFor, setEnergy, todayEnergy } from './lib/energy.js';
+import { dailyGoalFor, energyAsked, setEnergy, todayEnergy } from './lib/energy.js';
+import { buyShield, isRestDay, setRestDay } from './lib/rest.js';
 import { restoreBackup } from './lib/backup.js';
 import { clearState, initialState, normalizeTask } from './lib/state.js';
 import { isUnlocked } from './constants/shop.js';
@@ -80,7 +81,10 @@ export function App() {
   const lvl = levelInfo(state.xp);
   const todayCount = state.history[dayKey()] || 0;
   const goal = dailyGoalFor(state);
-  const defaultLine = todayCount === 0
+  const restToday = isRestDay(state);
+  const defaultLine = restToday && todayCount === 0
+    ? t('rest.line')
+    : todayCount === 0
     ? t('hero.lineStart')
     : todayCount >= goal
       ? t('hero.lineGoal')
@@ -232,6 +236,22 @@ export function App() {
     else if (level === 'viel') celebrate.say(t('energy.lineViel'));
   };
 
+  /* Ruhetag: zählt nicht als Lücke in der Serie. Wer ihn nimmt, wird heute nicht mehr nach der Tagesform gefragt. */
+  const chooseRest = (on) => {
+    setState((s) => setRestDay(on && !energyAsked(s) ? setEnergy(s, null) : s, on));
+    celebrate.say(on ? t('rest.line') : t('energy.lineMittel'));
+  };
+
+  const buyBlanket = (evt) => {
+    const next = buyShield(state);
+    if (next === state) return;
+    setState(buyShield);
+    celebrate.burst(pointFrom(evt), [{ text: t('shield.name'), tone: 'coin' }]);
+    sfx('buy');
+    celebrate.cheer();
+    celebrate.say(t('shield.bought'));
+  };
+
   /* ---------- Zeitbox ---------- */
   const startTimebox = (taskId, minutes) => {
     if (!timebox.start(taskId, minutes)) return;
@@ -334,7 +354,7 @@ export function App() {
           <div className="mt-3" key={tab}>
             {tab === 'aufgaben' && (
               <TasksView tasks={state.tasks} timer={timebox.timer} todayCount={todayCount}
-                energy={state.energy} onEnergy={chooseEnergy}
+                energy={state.energy} onEnergy={chooseEnergy} restToday={restToday} onRest={chooseRest}
                 onSnooze={snoozeTask} onMoveToTomorrow={moveToTomorrow} onAddFirstStep={shrinkTask}
                 onStart={startTimebox} onOpenTimer={() => setTimerOpen(true)}
                 onToggle={toggleTask} onToggleStep={toggleStep}
@@ -346,7 +366,7 @@ export function App() {
                 onAdd={addTemplate} onRemoveCustom={deleteCustomTemplate} />
             )}
             {tab === 'umkleide' && (
-              <ShopView data={state} level={lvl.level} cheering={celebrate.cheering} cheerTick={celebrate.cheerTick} onEquip={equipItem} onBuy={buyItem} />
+              <ShopView data={state} level={lvl.level} cheering={celebrate.cheering} cheerTick={celebrate.cheerTick} onEquip={equipItem} onBuy={buyItem} onBuyShield={buyBlanket} />
             )}
             {tab === 'fortschritt' && <ProgressView data={state} sync={sync} onSettings={updateSettings} onRestore={importBackup} onReset={resetAll} />}
           </div>

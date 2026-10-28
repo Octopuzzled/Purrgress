@@ -2,7 +2,8 @@ import { CATS, CAT_ORDER, DAILY_GOAL_BONUS } from '../constants/game.js';
 import { CHIME_CHOICES } from '../constants/timebox.js';
 import { DICTIONARIES, LANGUAGES } from '../i18n/index.js';
 import { useI18n } from '../i18n/useI18n.js';
-import { dayKey, lastDays, streakFrom } from '../lib/date.js';
+import { dayKey, lastDays } from '../lib/date.js';
+import { streakFrom } from '../lib/rest.js';
 import { statLevel } from '../lib/progress.js';
 import { DataSection } from '../components/settings/DataSection.jsx';
 import { AccountSection } from '../components/sync/AccountSection.jsx';
@@ -19,7 +20,8 @@ export function ProgressView({ data, sync, onSettings, onRestore, onReset }) {
   const days = lastDays(7).map((d) => ({ ...d, label: weekdays[d.weekday] }));
   const counts = days.map((d) => data.history[d.key] || 0);
   const max = Math.max(1, ...counts);
-  const streak = streakFrom(data.history);
+  const restDays = new Set(data.restDays || []);
+  const streak = streakFrom(data.history, data.restDays);
   const total = Object.values(data.history).reduce((a, b) => a + (Number(b) || 0), 0);
 
   const s = data.settings;
@@ -81,13 +83,15 @@ export function ProgressView({ data, sync, onSettings, onRestore, onReset }) {
           <p className="text-sm text-slate-500 dark:text-slate-400">{t('progress.total', { count: total })}</p>
         </div>
         <div className="mt-4 flex h-[136px] items-end gap-2" role="img"
-          aria-label={t('progress.chartLabel', { list: days.map((d, i) => `${d.label} ${counts[i]}`).join(', ') })}>
+          aria-label={t('progress.chartLabel', { list: days.map((d, i) => `${d.label} ${restDays.has(d.key) && !counts[i] ? t('rest.day') : counts[i]}`).join(', ') })}>
           {days.map((d, i) => {
             const n = counts[i];
             const h = n === 0 ? 6 : 14 + (n / max) * 86;
             return (
               <div key={d.key} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
-                <span className="text-xs font-bold tabular-nums text-slate-500 dark:text-slate-400">{n > 0 ? n : ''}</span>
+                {n === 0 && restDays.has(d.key)
+                  ? <Icon name="moon" size={14} className="text-indigo-400" />
+                  : <span className="text-xs font-bold tabular-nums text-slate-500 dark:text-slate-400">{n > 0 ? n : ''}</span>}
                 <div className={`w-full max-w-[36px] rounded-xl transition-[height] duration-700 ${d.isToday ? 'bg-violet-300' : 'bg-violet-100 dark:bg-violet-400/25'}`} style={{ height: h }} />
                 <span className={`text-xs font-bold ${d.isToday ? 'text-slate-800 dark:text-slate-100' : 'text-slate-400'}`}>{d.label}</span>
               </div>
@@ -96,7 +100,10 @@ export function ProgressView({ data, sync, onSettings, onRestore, onReset }) {
         </div>
         <p className="mt-4 flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
           <Icon name="flame" size={18} className="text-orange-300" />
-          {t('progress.streak', { count: streak })}
+          <span>
+            {t('progress.streak', { count: streak })}
+            {restDays.size > 0 && <span className="block text-xs text-slate-500 dark:text-slate-400">{t('progress.restHint')}</span>}
+          </span>
         </p>
         <p className="mt-2 flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
           <Icon name="timer" size={18} className="text-violet-400" />
