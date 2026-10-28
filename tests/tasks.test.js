@@ -3,7 +3,7 @@ import { DAILY_GOAL_BONUS, DIFF, LEVEL_BONUS_COINS, STEP_XP } from '../src/const
 import { dayKey } from '../src/lib/date.js';
 import { initialState, normalizeTask } from '../src/lib/state.js';
 import {
-  clearDoneTasks, completeStep, completeTask, moveToEnd, nextOpenTask, removeTask, reopenDailyTasks, reopenStep, reopenTask,
+  clearDoneTasks, completeStep, completeTask, moveToEnd, nextOpenTask, removeTask, rollRepeatingTasks, reopenStep, reopenTask,
 } from '../src/lib/tasks.js';
 import { createTimer } from '../src/lib/timebox.js';
 
@@ -51,10 +51,10 @@ describe('Aufgaben', () => {
   it('öffnet tägliche Aufgaben am nächsten Tag wieder', () => {
     const start = stateWith([{ id: 'a', title: 'A', repeat: 'daily', done: true, doneDay: '2000-01-01', steps: ['x'] }]);
     start.tasks[0].steps[0].done = true;
-    const next = reopenDailyTasks(start, '2000-01-02');
+    const next = rollRepeatingTasks(start, '2000-01-02');
     expect(next.tasks[0].done).toBe(false);
     expect(next.tasks[0].steps[0].done).toBe(false);
-    expect(reopenDailyTasks(next, '2000-01-02')).toBe(next);
+    expect(rollRepeatingTasks(next, '2000-01-02')).toBe(next);
   });
 
   it('legt Aufgaben ans Ende und findet die nächste offene', () => {

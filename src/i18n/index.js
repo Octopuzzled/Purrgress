@@ -9,6 +9,7 @@
 import { de } from './locales/de.js';
 import { en } from './locales/en.js';
 import { dayKey, daysBetween, parseDayKey } from '../lib/date.js';
+import { WEEK_ORDER } from '../lib/repeat.js';
 
 export const DICTIONARIES = { de, en };
 export const LANGUAGES = ['de', 'en'];
@@ -87,7 +88,18 @@ export function createI18n(lang) {
     return date.toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short', ...(sameYear ? {} : { year: 'numeric' }) });
   }
 
-  return { lang: language, locale, t, duration, clock, day };
+  /** Wochentag kurz, z. B. „Di.“ / „Tue“ (0 = Sonntag). Der 4. Januar 2026 ist ein Sonntag. */
+  function weekday(n, style = 'short') {
+    return new Date(2026, 0, 4 + n, 12).toLocaleDateString(locale, { weekday: style });
+  }
+
+  /** Wiederholung als kurzer Text: „täglich“ oder „Di., Fr.“ */
+  function repeatLabel(task) {
+    if (task.repeat === 'daily') return t('task.daily');
+    return WEEK_ORDER.filter((d) => task.repeatDays.includes(d)).map((d) => weekday(d)).join(', ');
+  }
+
+  return { lang: language, locale, t, duration, clock, day, weekday, repeatLabel };
 }
 
 /** Übersetzt eine Vorlage aus der Bibliothek (Texte kommen aus dem Wörterbuch). */

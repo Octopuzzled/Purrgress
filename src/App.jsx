@@ -217,7 +217,7 @@ export function App() {
   const addTemplate = (tpl) => {
     setState((s) => addTask(s, normalizeTask({
       title: tpl.title, desc: tpl.desc, category: tpl.category, difficulty: tpl.difficulty,
-      repeat: tpl.repeat || 'none', steps: tpl.steps || [], minutes: tpl.minutes || null, when: tpl.when,
+      repeat: tpl.repeat || 'none', repeatDays: tpl.repeatDays, steps: tpl.steps || [], minutes: tpl.minutes || null, when: tpl.when,
       templateId: tpl.id, createdAt: Date.now(),
     })));
   };

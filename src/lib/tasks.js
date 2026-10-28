@@ -6,6 +6,7 @@ import { DAILY_GOAL_BONUS, DIFF, LEVEL_BONUS_COINS, STEP_XP } from '../constants
 import { addDays, dayKey } from './date.js';
 import { isCurrent, isDueToday } from './due.js';
 import { dailyGoalFor, energyWeight } from './energy.js';
+import { latestOccurrence, nextOccurrence } from './repeat.js';
 import { levelInfo } from './progress.js';
 import { uid } from './id.js';
 import { withoutTimer } from './timebox.js';
@@ -118,19 +119,32 @@ export function reopenStep(state, taskId, stepId) {
 }
 
 /**
- * Neuer Tag für tägliche Aufgaben: Erledigte öffnen sich wieder, und alle sind heute fällig.
- * Wurde eine gestern nicht geschafft, rutscht nur ihr Datum weiter – es entsteht keine Kopie.
+ * Neuer Tag für wiederkehrende Aufgaben (täglich oder an Wochentagen):
+ * - Erledigte öffnen sich am nächsten Tag wieder, fällig am nächsten Termin.
+ *   Wer früher dran war (Müll schon am Montag raus), hat den anstehenden Termin damit erledigt.
+ * - Nicht geschaffte bleiben überfällig, bis ihr nächster Termin da ist – dann rutscht nur
+ *   das Datum weiter. Es entsteht nie eine Kopie. Bei täglichen ist das jeden Tag.
+ * - Mit „Nicht heute“ auf später gelegte warten bis zu ihrem Tag.
  */
-export function reopenDailyTasks(state, today = dayKey()) {
+export function rollRepeatingTasks(state, today = dayKey()) {
   let changed = false;
   const tasks = state.tasks.map((t) => {
-    if (t.repeat !== 'daily') return t;
-    const reopen = t.done && t.doneDay !== today;
-    // Mit „Nicht heute“ auf später gelegte tägliche Aufgaben warten bis zu ihrem Tag
-    if (!reopen && t.due >= today) return t;
+    if (t.repeat === 'none') return t;
+    if (t.done) {
+      if (t.doneDay === today) return t;
+      const after = t.repeat === 'daily' || !t.due || t.due < today ? today : addDays(t.due, 1);
+      changed = true;
+      return {
+        ...t, due: nextOccurrence(t, after), done: false, doneDay: null, awarded: null,
+        steps: t.steps.map((s) => ({ ...s, done: false, xp: 0, coins: 0 })),
+      };
+    }
+    if (t.due && t.due >= today) return t;
+    const latest = latestOccurrence(t, today);
+    const due = !t.due ? nextOccurrence(t, today) : latest > t.due ? latest : t.due;
+    if (due === t.due) return t;
     changed = true;
-    if (!reopen) return { ...t, due: today };
-    return { ...t, due: today, done: false, doneDay: null, awarded: null, steps: t.steps.map((s) => ({ ...s, done: false, xp: 0, coins: 0 })) };
+    return { ...t, due };
   });
   return changed ? { ...state, tasks } : state;
 }
@@ -158,7 +172,8 @@ export function leftoverTasks(tasks, today = dayKey()) {
  * und hat keinen offenen Mikro-Schritt, an dem man einfach anfangen könnte.
  */
 export function isStuck(task, today = dayKey(), now = Date.now()) {
-  if (task.done || task.repeat === 'daily' || task.steps.some((s) => !s.done)) return false;
+  // Wiederkehrende sind Routine – da stört die Frage nur
+  if (task.done || task.repeat !== 'none' || task.steps.some((s) => !s.done)) return false;
   return (!!task.due && task.due < today) || now - (task.createdAt || now) >= STUCK_DAYS * 86400000;
 }
 
@@ -197,7 +212,7 @@ export function removeTask(state, id, now = Date.now()) {
   return { ...base, tasks: base.tasks.filter((t) => t.id !== id) };
 }
 
-/** Entfernt erledigte Aufgaben. Tägliche bleiben, weil sie morgen wiederkommen. */
+/** Entfernt erledigte Aufgaben. Wiederkehrende bleiben, weil sie wiederkommen. */
 export function clearDoneTasks(state) {
-  return { ...state, tasks: state.tasks.filter((t) => !(t.done && t.repeat !== 'daily')) };
+  return { ...state, tasks: state.tasks.filter((t) => !(t.done && t.repeat === 'none')) };
 }

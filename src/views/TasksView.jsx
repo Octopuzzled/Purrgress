@@ -44,7 +44,7 @@ export function TasksView({ tasks, timer, todayCount, energy, onEnergy, onToggle
   const currentTasks = tasks.filter((t) => isCurrent(t, today));
   const totalOpen = currentTasks.filter((t) => !t.done).length;
   const filtering = q || cat !== 'alle';
-  const clearable = tasks.filter((t) => t.done && t.repeat !== 'daily').length;
+  const clearable = tasks.filter((t) => t.done && t.repeat === 'none').length;
 
   // Abschnitte nach Tageszeit nur, wenn wirklich eine Aufgabe eine feste Tageszeit hat
   const grouped = usesDayparts(currentTasks);

@@ -9,22 +9,24 @@ import { Toggle } from '../ui/Toggle.jsx';
 import { btnPrimary, btnSoft, focusRing, iconBtn, inputCls } from '../ui/styles.js';
 import { useI18n } from '../../i18n/useI18n.js';
 import { DAYPARTS, DEFAULT_DAYPART } from '../../constants/dayparts.js';
-import { addDays, dayKey } from '../../lib/date.js';
+import { addDays, dayKey, parseDayKey } from '../../lib/date.js';
+import { nextOccurrence, normalizeRepeat, WEEK_ORDER } from '../../lib/repeat.js';
 
 export function TaskFormModal({ initial, onClose, onSave, onDelete }) {
-  const { t, duration, day } = useI18n();
+  const { t, duration, day, weekday } = useI18n();
   const isEdit = !!initial;
   const [title, setTitle] = useState(initial ? initial.title : '');
   const [desc, setDesc] = useState(initial ? initial.desc : '');
   const [category, setCategory] = useState(initial ? initial.category : 'routine');
   const [difficulty, setDifficulty] = useState(initial ? initial.difficulty : 'leicht');
-  const [repeat, setRepeat] = useState(initial ? initial.repeat === 'daily' : false);
   const [asTemplate, setAsTemplate] = useState(false);
   const [minutes, setMinutes] = useState(initial ? initial.minutes : null);
   const [when, setWhen] = useState(initial ? initial.when || DEFAULT_DAYPART : DEFAULT_DAYPART);
   const today = dayKey();
   const tomorrow = addDays(today, 1);
-  const [due, setDue] = useState(initial && initial.repeat !== 'daily' ? initial.due : null);
+  const [repeat, setRepeat] = useState(initial ? initial.repeat : 'none');
+  const [repeatDays, setRepeatDays] = useState(initial && initial.repeatDays.length ? initial.repeatDays : [parseDayKey(today).getDay()]);
+  const [due, setDue] = useState(initial && initial.repeat === 'none' ? initial.due : null);
   const customDue = !!due && due !== today && due !== tomorrow;
   const boxChoices = Array.from(new Set([...BOX_CHOICES, ...(initial && initial.minutes ? [initial.minutes] : [])])).sort((a, b) => a - b);
   const [steps, setSteps] = useState(initial ? initial.steps.map((s) => ({ ...s })) : []);
@@ -47,7 +49,11 @@ export function TaskFormModal({ initial, onClose, onSave, onDelete }) {
     const finalSteps = [...steps, ...(pending ? [{ id: uid(), text: pending, done: false, xp: 0, coins: 0 }] : [])]
       .map((s) => ({ ...s, text: s.text.trim() }))
       .filter((s) => s.text);
-    onSave({ title: name, desc: desc.trim(), category, difficulty, repeat: repeat ? 'daily' : 'none', due: repeat ? today : due, minutes, when, steps: finalSteps }, { asTemplate });
+    const rep = normalizeRepeat({ repeat, repeatDays });
+    // Wiederholung unverändert: anstehenden Termin behalten (auch wenn er überfällig ist)
+    const unchanged = initial && initial.repeat === rep.repeat && initial.repeatDays.join() === rep.repeatDays.join();
+    const finalDue = rep.repeat === 'none' ? due : unchanged && initial.due ? initial.due : nextOccurrence(rep, today);
+    onSave({ title: name, desc: desc.trim(), category, difficulty, ...rep, due: finalDue, minutes, when, steps: finalSteps }, { asTemplate });
   };
 
   return (
@@ -128,10 +134,44 @@ export function TaskFormModal({ initial, onClose, onSave, onDelete }) {
         </fieldset>
 
         <fieldset>
+          <legend className="mb-1.5 text-sm font-bold text-slate-700 dark:text-slate-200">{t('form.repeat')}</legend>
+          <div className="grid grid-cols-3 gap-2">
+            {[['none', 'form.repeatNone'], ['daily', 'form.repeatDaily'], ['weekly', 'form.repeatWeekly']].map(([value, key]) => (
+              <button key={value} type="button" aria-pressed={repeat === value} onClick={() => setRepeat(value)}
+                className={`rounded-2xl px-2 py-2.5 text-sm font-bold transition ${focusRing} ${repeat === value
+                  ? 'bg-violet-100 text-violet-900 ring-2 ring-violet-300 dark:bg-violet-400/15 dark:text-violet-100'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700/70 dark:text-slate-300 dark:hover:bg-slate-700'}`}>
+                {t(key)}
+              </button>
+            ))}
+          </div>
+          {repeat === 'weekly' && (
+            <div className="anim-fade mt-2.5" role="group" aria-label={t('form.repeatDays')}>
+              <p className="mb-1.5 text-xs font-bold text-slate-500 dark:text-slate-400">{t('form.repeatDays')}</p>
+              <div className="flex flex-wrap gap-1.5">
+                {WEEK_ORDER.map((d) => {
+                  const on = repeatDays.includes(d);
+                  return (
+                    <button key={d} type="button" aria-pressed={on} aria-label={weekday(d, 'long')}
+                      // Mindestens ein Tag bleibt gewählt
+                      onClick={() => setRepeatDays((all) => (on ? (all.length > 1 ? all.filter((x) => x !== d) : all) : [...all, d]))}
+                      className={`grid h-10 w-10 place-items-center rounded-full text-xs font-bold transition ${focusRing} ${on
+                        ? 'bg-violet-100 text-violet-900 ring-2 ring-violet-300 dark:bg-violet-400/15 dark:text-violet-100'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700/70 dark:text-slate-300 dark:hover:bg-slate-700'}`}>
+                      {weekday(d)}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </fieldset>
+
+        <fieldset>
           <legend className="mb-1.5 text-sm font-bold text-slate-700 dark:text-slate-200">{t('form.due')} <span className="font-semibold text-slate-400">{t('common.optional')}</span></legend>
-          {repeat ? (
+          {repeat !== 'none' ? (
             <p className="flex items-start gap-2 rounded-2xl bg-sky-50 p-3 text-sm text-sky-900 dark:bg-sky-400/10 dark:text-sky-100">
-              <Icon name="repeat" size={16} className="mt-0.5 shrink-0" />{t('form.dueDaily')}
+              <Icon name="repeat" size={16} className="mt-0.5 shrink-0" />{t(repeat === 'daily' ? 'form.dueDaily' : 'form.dueWeekly')}
             </p>
           ) : (
             <>
@@ -160,7 +200,6 @@ export function TaskFormModal({ initial, onClose, onSave, onDelete }) {
         </fieldset>
 
         <div className="divide-y divide-slate-200/70 rounded-2xl bg-slate-100/70 px-4 dark:divide-white/10 dark:bg-slate-700/40">
-          <Toggle checked={repeat} onChange={setRepeat} label={t('form.repeat')} hint={t('form.repeatHint')} />
           <Toggle checked={asTemplate} onChange={setAsTemplate} label={t('form.saveAsTemplate')} hint={t('form.saveAsTemplateHint')} />
         </div>
 

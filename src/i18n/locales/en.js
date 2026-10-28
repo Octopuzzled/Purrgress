@@ -175,7 +175,7 @@ export const en = {
     browseTemplates: 'Browse templates',
     doneCount: 'Done ({count})',
     clearDone: 'Clear completed',
-    clearConfirm: 'Remove {count}? Daily tasks stay.',
+    clearConfirm: 'Remove {count}? Repeating tasks stay.',
     view: {
       label: 'What would you like to see?',
       now: 'Now',
@@ -206,6 +206,7 @@ export const en = {
     due: 'due {day}',
     snooze: 'Not today: “{title}”',
     tada: 'Ta-da',
+    repeats: 'Repeats: {days}',
   },
 
   form: {
@@ -223,8 +224,11 @@ export const en = {
     timeboxHint: 'This is how long you may take. Going over is allowed.',
     daypart: 'When does it fit best?',
     daypartHint: 'Tasks with a time of day get their own section in the list.',
-    repeat: 'Repeat daily',
-    repeatHint: 'The task opens again every morning.',
+    repeat: 'Repeat',
+    repeatNone: 'Never',
+    repeatDaily: 'Daily',
+    repeatWeekly: 'On weekdays',
+    repeatDays: 'On which days?',
     steps: 'Micro-steps',
     stepsHint: '(optional, +{xp} XP each)',
     step: 'Step {n}',
@@ -243,6 +247,7 @@ export const en = {
     duePick: 'Other date',
     dueHint: 'Tasks with a later date only show up in your list on that day.',
     dueDaily: 'Daily tasks are due every day. If one doesn’t happen, it simply moves on to the next day.',
+    dueWeekly: 'Repeating tasks are due on their days. Missed one? It waits for you – until its next day comes around.',
     delete: 'Delete task',
   },
 

@@ -175,7 +175,7 @@ export const de = {
     browseTemplates: 'Vorlagen ansehen',
     doneCount: 'Erledigt ({count})',
     clearDone: 'Erledigte aufräumen',
-    clearConfirm: '{count} entfernen? Tägliche bleiben.',
+    clearConfirm: '{count} entfernen? Wiederkehrende bleiben.',
     view: {
       label: 'Was möchtest du sehen?',
       now: 'Jetzt',
@@ -206,6 +206,7 @@ export const de = {
     due: 'fällig {day}',
     snooze: 'Nicht heute: „{title}“',
     tada: 'Ta-da',
+    repeats: 'Wiederholt sich: {days}',
   },
 
   form: {
@@ -223,8 +224,11 @@ export const de = {
     timeboxHint: 'So lange darfst du dir Zeit nehmen. Überziehen ist erlaubt.',
     daypart: 'Wann passt es am besten?',
     daypartHint: 'Aufgaben mit Tageszeit bekommen in der Liste einen eigenen Abschnitt.',
-    repeat: 'Täglich wiederholen',
-    repeatHint: 'Die Aufgabe ist jeden Morgen wieder offen.',
+    repeat: 'Wiederholen',
+    repeatNone: 'Nie',
+    repeatDaily: 'Täglich',
+    repeatWeekly: 'An Wochentagen',
+    repeatDays: 'An welchen Tagen?',
     steps: 'Mikro-Schritte',
     stepsHint: '(optional, je +{xp} XP)',
     step: 'Schritt {n}',
@@ -243,6 +247,7 @@ export const de = {
     duePick: 'Anderes Datum',
     dueHint: 'Aufgaben mit späterem Datum tauchen erst an diesem Tag in deiner Liste auf.',
     dueDaily: 'Tägliche Aufgaben sind jeden Tag fällig. Klappt es mal nicht, rutschen sie einfach auf den nächsten Tag.',
+    dueWeekly: 'Wiederkehrende Aufgaben sind an ihren Tagen fällig. Verpasst? Sie warten auf dich – bis zu ihrem nächsten Termin.',
     delete: 'Aufgabe löschen',
   },
 

@@ -12,6 +12,7 @@ import { uid } from './id.js';
 import { prefersReducedMotion } from './media.js';
 import { normalizeCustomTemplate } from './templates.js';
 import { normalizeEnergy } from './energy.js';
+import { nextOccurrence, normalizeRepeat } from './repeat.js';
 
 /** Tageszeit je Vorlage – für Aufgaben aus der Zeit, bevor es Tageszeiten gab. */
 const TEMPLATE_DAYPART = Object.fromEntries(
@@ -28,7 +29,7 @@ function daypartFor(t) {
 }
 
 export function normalizeTask(t) {
-  const repeat = t.repeat === 'daily' ? 'daily' : 'none';
+  const { repeat, repeatDays } = normalizeRepeat(t);
   const due = isDayKey(t.due) ? t.due : null;
   return {
     id: t.id || uid(),
@@ -40,8 +41,9 @@ export function normalizeTask(t) {
     doneDay: t.doneDay || null,
     awarded: t.awarded || null,
     repeat,
-    // Fälligkeit als Tagesschlüssel (oder null). Tägliche Aufgaben sind immer heute fällig.
-    due: repeat === 'daily' ? due || dayKey() : due,
+    repeatDays,
+    // Fälligkeit als Tagesschlüssel (oder null). Wiederkehrende haben immer einen Termin.
+    due: repeat === 'none' ? due : due || nextOccurrence({ repeat, repeatDays }, dayKey()),
     steps: Array.isArray(t.steps)
       ? t.steps.map((s) => (typeof s === 'string'
         ? { id: uid(), text: s, done: false, xp: 0, coins: 0 }

@@ -29,7 +29,7 @@ function EnergyDots({ difficulty, label }) {
 }
 
 export function TaskRow({ task, onToggle, onToggleStep, onEdit, onStart, onOpenTimer, onSnooze, onAddFirstStep, activeId, today = dayKey(), hideDue = false }) {
-  const { t, duration, day } = useI18n();
+  const { t, duration, day, repeatLabel } = useI18n();
   const isActive = activeId === task.id;
   const [picking, setPicking] = useState(false);
   const [open, setOpen] = useState(false);
@@ -75,8 +75,9 @@ export function TaskRow({ task, onToggle, onToggleStep, onEdit, onStart, onOpenT
             {task.tada && (
               <span className="inline-flex items-center gap-1 rounded-full bg-pink-100 px-2 py-0.5 text-pink-900 dark:bg-pink-400/15 dark:text-pink-100"><Icon name="sparkles" size={12} strokeWidth={2.5} />{t('task.tada')}</span>
             )}
-            {task.repeat === 'daily' && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-sky-100 px-2 py-0.5 text-sky-800 dark:bg-sky-400/15 dark:text-sky-200"><Icon name="repeat" size={12} strokeWidth={2.5} />{t('task.daily')}</span>
+            {task.repeat !== 'none' && (
+              <span title={t('task.repeats', { days: repeatLabel(task) })}
+                className="inline-flex items-center gap-1 rounded-full bg-sky-100 px-2 py-0.5 text-sky-800 dark:bg-sky-400/15 dark:text-sky-200"><Icon name="repeat" size={12} strokeWidth={2.5} />{repeatLabel(task)}</span>
             )}
             {isActive ? (
               <button type="button" onClick={onOpenTimer}

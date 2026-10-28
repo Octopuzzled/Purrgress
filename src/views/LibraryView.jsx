@@ -81,7 +81,7 @@ export function LibraryView({ tasks, customTemplates = [], onAdd, onRemoveCustom
 }
 
 function TemplateRow({ item, removable, inList, added, onAdd, onRemove }) {
-  const { t, duration } = useI18n();
+  const { t, duration, repeatLabel } = useI18n();
   const [confirm, setConfirm] = useState(false);
   const cat = CATS[item.category];
   const diff = DIFF[item.difficulty];
@@ -100,7 +100,7 @@ function TemplateRow({ item, removable, inList, added, onAdd, onRemove }) {
                 <Icon name={DAYPARTS.find((d) => d.id === item.when).icon} size={12} />{t(`daypart.${item.when}.short`)}
               </span>
             )}
-            {item.repeat === 'daily' && <span className="inline-flex items-center gap-1 rounded-full bg-sky-100 px-2 py-0.5 text-sky-800 dark:bg-sky-400/15 dark:text-sky-200"><Icon name="repeat" size={12} />{t('task.daily')}</span>}
+            {item.repeat && item.repeat !== 'none' && <span className="inline-flex items-center gap-1 rounded-full bg-sky-100 px-2 py-0.5 text-sky-800 dark:bg-sky-400/15 dark:text-sky-200"><Icon name="repeat" size={12} />{repeatLabel({ repeatDays: [], ...item })}</span>}
             {item.minutes && <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2 py-0.5 text-violet-800 dark:bg-violet-400/10 dark:text-violet-200"><Icon name="timer" size={12} />{duration(item.minutes)}</span>}
             {item.steps && item.steps.length > 0 && <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-amber-900 dark:bg-amber-400/15 dark:text-amber-100"><Icon name="steps" size={12} />{t('libraryView.steps', { count: item.steps.length })}</span>}
             {inList && !added && <span className="text-slate-400">{t('libraryView.inList')}</span>}

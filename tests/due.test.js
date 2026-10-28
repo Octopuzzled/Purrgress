@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { addDays, daysBetween, isDayKey } from '../src/lib/date.js';
 import { dueStatus, groupByDay, isCurrent, isDueToday, sortByDue } from '../src/lib/due.js';
 import { initialState, normalizeTask } from '../src/lib/state.js';
-import { addFirstStep, completeTask, isStuck, leftoverTasks, nextOpenTask, pickTask, postponeTask, reopenDailyTasks, setDueDates } from '../src/lib/tasks.js';
+import { addFirstStep, completeTask, isStuck, leftoverTasks, nextOpenTask, pickTask, postponeTask, rollRepeatingTasks, setDueDates } from '../src/lib/tasks.js';
 import { createI18n } from '../src/i18n/index.js';
 
 const TODAY = '2026-10-28';
@@ -46,22 +46,22 @@ describe('Fälligkeit', () => {
 describe('Tägliche Aufgaben', () => {
   it('rutschen weiter statt sich zu verdoppeln, wenn sie liegen geblieben sind', () => {
     const start = { ...initialState(), tasks: [task('a', { repeat: 'daily', due: '2026-10-25' })] };
-    const next = reopenDailyTasks(start, TODAY);
+    const next = rollRepeatingTasks(start, TODAY);
     expect(next.tasks).toHaveLength(1);
     expect(next.tasks[0].due).toBe(TODAY);
-    expect(reopenDailyTasks(next, TODAY)).toBe(next);
+    expect(rollRepeatingTasks(next, TODAY)).toBe(next);
   });
 
   it('öffnen sich am neuen Tag wieder und sind dann heute fällig', () => {
     const start = { ...initialState(), tasks: [task('a', { repeat: 'daily', done: true, doneDay: '2026-10-27', due: '2026-10-27' })] };
-    const t = reopenDailyTasks(start, TODAY).tasks[0];
+    const t = rollRepeatingTasks(start, TODAY).tasks[0];
     expect(t.done).toBe(false);
     expect(t.due).toBe(TODAY);
   });
 
   it('lassen Aufgaben mit festem Datum in Ruhe', () => {
     const start = { ...initialState(), tasks: [task('a', { due: '2026-10-20' })] };
-    expect(reopenDailyTasks(start, TODAY)).toBe(start);
+    expect(rollRepeatingTasks(start, TODAY)).toBe(start);
   });
 });
 
@@ -77,7 +77,7 @@ describe('„Nicht heute“ und Tagesabschluss', () => {
   it('lässt eine übersprungene tägliche Aufgabe bis morgen in Ruhe', () => {
     const start = { ...initialState(), tasks: [task('a', { repeat: 'daily', due: TODAY })] };
     const skipped = postponeTask(start, 'a', TODAY);
-    expect(reopenDailyTasks(skipped, TODAY)).toBe(skipped);
+    expect(rollRepeatingTasks(skipped, TODAY)).toBe(skipped);
     expect(isCurrent(skipped.tasks[0], TODAY)).toBe(false);
     expect(isCurrent(skipped.tasks[0], '2026-10-29')).toBe(true);
   });
@@ -114,6 +114,7 @@ describe('„Zu groß?“', () => {
     const old = { createdAt: NOW - 10 * DAY };
     expect(isStuck(task('schritt', { ...old, steps: ['Anfangen'] }), TODAY, NOW)).toBe(false);
     expect(isStuck(task('taeglich', { ...old, repeat: 'daily' }), TODAY, NOW)).toBe(false);
+    expect(isStuck(task('woche', { ...old, repeat: 'weekly', repeatDays: [1] }), TODAY, NOW)).toBe(false);
     expect(isStuck(task('fertig', { ...old, done: true }), TODAY, NOW)).toBe(false);
   });
 
