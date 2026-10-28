@@ -7,6 +7,9 @@ import { groupByDaypart, usesDayparts } from '../lib/dayparts.js';
 import { groupByDay, isCurrent, isDueToday, sortByDue } from '../lib/due.js';
 import { timerLeft } from '../lib/timebox.js';
 import { DayWrapUp } from '../components/tasks/DayWrapUp.jsx';
+import { EnergyCheckIn } from '../components/tasks/EnergyCheckIn.jsx';
+import { WRAP_UP_FROM } from '../constants/dayparts.js';
+import { ENERGY_ICONS } from '../lib/energy.js';
 import { DaypartSection } from '../components/tasks/DaypartSection.jsx';
 import { TaskRow } from '../components/tasks/TaskRow.jsx';
 import { Icon } from '../components/ui/Icon.jsx';
@@ -14,7 +17,7 @@ import { SegmentedControl } from '../components/ui/SegmentedControl.jsx';
 import { btnPrimary, btnSoft, focusRing, iconBtn, inputCls, pill, sheet } from '../components/ui/styles.js';
 import { useI18n } from '../i18n/useI18n.js';
 
-export function TasksView({ tasks, timer, todayCount, onToggle, onToggleStep, onEdit, onDelete, onNew, onFocus, onClearDone, onGoLibrary, onStart, onOpenTimer, onSnooze, onMoveToTomorrow }) {
+export function TasksView({ tasks, timer, todayCount, energy, onEnergy, onToggle, onToggleStep, onEdit, onNew, onFocus, onClearDone, onGoLibrary, onStart, onOpenTimer, onSnooze, onMoveToTomorrow }) {
   const { t, duration, clock, day } = useI18n();
   const now = useNow(timer && timer.running ? 15000 : 30000);
   const [query, setQuery] = useState('');
@@ -27,6 +30,9 @@ export function TasksView({ tasks, timer, todayCount, onToggle, onToggleStep, on
   const sections = useCollapsed();
   const [collapsedDays, setCollapsedDays] = useState(() => new Set());
   const today = dayKey(new Date(now));
+  // Tagesform: nur heute gültig; abends wird nicht mehr gefragt
+  const energyToday = energy && energy.day === today ? energy : null;
+  const askEnergy = !energyToday && new Date(now).getHours() < WRAP_UP_FROM;
 
   const q = query.trim().toLowerCase();
   const matches = (t) => (cat === 'alle' || t.category === cat)
@@ -43,7 +49,7 @@ export function TasksView({ tasks, timer, todayCount, onToggle, onToggleStep, on
   // Abschnitte nach Tageszeit nur, wenn wirklich eine Aufgabe eine feste Tageszeit hat
   const grouped = usesDayparts(currentTasks);
 
-  const rowProps = { onToggle, onToggleStep, onEdit, onDelete, onStart, onOpenTimer, onSnooze, activeId: timer ? timer.taskId : null, today };
+  const rowProps = { onToggle, onToggleStep, onEdit, onStart, onOpenTimer, onSnooze, activeId: timer ? timer.taskId : null, today };
 
   const toggleDay = (key) => setCollapsedDays((prev) => {
     const next = new Set(prev);
@@ -67,6 +73,12 @@ export function TasksView({ tasks, timer, todayCount, onToggle, onToggleStep, on
           <p className="text-sm text-slate-500 dark:text-slate-400">
             {t('tasks.open', { count: totalOpen })}
           </p>
+          {energyToday && energyToday.level && (
+            <button type="button" onClick={() => onEnergy(undefined)} aria-label={t('energy.change')} title={t('energy.change')}
+              className={`mt-1 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 ${focusRing}`}>
+              <Icon name={ENERGY_ICONS[energyToday.level]} size={14} />{t('energy.current', { level: t(`energy.${energyToday.level}`) })}
+            </button>
+          )}
           {planMs > 0 && (
             <p className="mt-0.5 flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
               <Icon name="timer" size={15} className="text-violet-400" />
@@ -79,6 +91,8 @@ export function TasksView({ tasks, timer, todayCount, onToggle, onToggleStep, on
           <button type="button" className={btnPrimary} onClick={onNew}><Icon name="plus" size={18} strokeWidth={2.5} />{t('tasks.new')}</button>
         </div>
       </div>
+
+      {askEnergy && <EnergyCheckIn onChoose={onEnergy} />}
 
       <DayWrapUp tasks={tasks} today={today} now={now} doneCount={todayCount} onMoveToTomorrow={onMoveToTomorrow} />
 

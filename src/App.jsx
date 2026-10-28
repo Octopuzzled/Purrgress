@@ -10,6 +10,7 @@ import { playSound } from './lib/audio.js';
 import { addDays, dayKey } from './lib/date.js';
 import { pointFrom } from './lib/dom.js';
 import { levelInfo } from './lib/progress.js';
+import { dailyGoalFor, setEnergy, todayEnergy } from './lib/energy.js';
 import { restoreBackup } from './lib/backup.js';
 import { clearState, initialState, normalizeTask } from './lib/state.js';
 import { isUnlocked } from './constants/shop.js';
@@ -78,9 +79,10 @@ export function App() {
 
   const lvl = levelInfo(state.xp);
   const todayCount = state.history[dayKey()] || 0;
+  const goal = dailyGoalFor(state);
   const defaultLine = todayCount === 0
     ? t('hero.lineStart')
-    : todayCount >= settings.dailyGoal
+    : todayCount >= goal
       ? t('hero.lineGoal')
       : t('hero.lineDefault');
 
@@ -216,6 +218,14 @@ export function App() {
 
   const deleteCustomTemplate = (id) => setState((s) => removeCustomTemplate(s, id));
 
+  /* Tagesform: level 'wenig' | 'mittel' | 'viel', null = übersprungen, undefined = neu fragen */
+  const chooseEnergy = (level) => {
+    setState((s) => setEnergy(s, level));
+    if (level === 'wenig') celebrate.say(t('energy.lineWenig', { goal: dailyGoalFor(setEnergy(state, level)) }));
+    else if (level === 'mittel') celebrate.say(t('energy.lineMittel'));
+    else if (level === 'viel') celebrate.say(t('energy.lineViel'));
+  };
+
   /* ---------- Zeitbox ---------- */
   const startTimebox = (taskId, minutes) => {
     if (!timebox.start(taskId, minutes)) return;
@@ -309,7 +319,7 @@ export function App() {
           <AppHeader sound={settings.sound} isDark={isDark}
             onToggleSound={() => updateSettings({ sound: !settings.sound })}
             onToggleTheme={() => updateSettings({ theme: isDark ? 'light' : 'dark' })} />
-          <HeroCard data={state} lvl={lvl} todayCount={todayCount} cheering={celebrate.cheering} cheerTick={celebrate.cheerTick}
+          <HeroCard data={state} lvl={lvl} todayCount={todayCount} goal={goal} cheering={celebrate.cheering} cheerTick={celebrate.cheerTick}
             line={celebrate.heroLine || defaultLine} onRename={rename} onTada={() => setTadaOpen(true)} />
         </aside>
 
@@ -318,10 +328,11 @@ export function App() {
           <div className="mt-3" key={tab}>
             {tab === 'aufgaben' && (
               <TasksView tasks={state.tasks} timer={timebox.timer} todayCount={todayCount}
+                energy={state.energy} onEnergy={chooseEnergy}
                 onSnooze={snoozeTask} onMoveToTomorrow={moveToTomorrow}
                 onStart={startTimebox} onOpenTimer={() => setTimerOpen(true)}
                 onToggle={toggleTask} onToggleStep={toggleStep}
-                onEdit={(task) => setForm({ task })} onDelete={deleteTask} onNew={() => setForm({ task: null })}
+                onEdit={(task) => setForm({ task })} onNew={() => setForm({ task: null })}
                 onFocus={() => setFocusOpen(true)} onClearDone={() => setState(clearDoneTasks)} onGoLibrary={goLibrary} />
             )}
             {tab === 'vorlagen' && (
@@ -345,11 +356,12 @@ export function App() {
       {toast && <Toast toast={toast} onUndo={undoToast} onClose={() => setToast(null)} lifted={miniVisible} />}
 
       {form && (
-        <TaskFormModal key={form.task ? form.task.id : 'neu'} initial={form.task} onClose={() => setForm(null)} onSave={saveTask} />
+        <TaskFormModal key={form.task ? form.task.id : 'neu'} initial={form.task} onClose={() => setForm(null)} onSave={saveTask}
+          onDelete={(id) => { deleteTask(id); setForm(null); }} />
       )}
       {tadaOpen && <TadaModal onClose={() => setTadaOpen(false)} onSave={logTada} />}
       {focusOpen && (
-        <FocusModal tasks={state.tasks} onClose={() => setFocusOpen(false)} onStart={startTimebox}
+        <FocusModal tasks={state.tasks} energy={todayEnergy(state)} onClose={() => setFocusOpen(false)} onStart={startTimebox}
           onComplete={(id, e) => { toggleTask(id, e); setFocusOpen(false); }}
           onToggleStep={toggleStep} onGoLibrary={goLibrary} />
       )}

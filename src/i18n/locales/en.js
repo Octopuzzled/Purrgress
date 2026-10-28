@@ -124,6 +124,20 @@ export const en = {
     hide: 'Hide for today',
   },
 
+  energy: {
+    question: 'How much energy do you have today?',
+    hint: 'I’ll adjust my suggestions. Every answer is right.',
+    wenig: 'Low',
+    mittel: 'Medium',
+    viel: 'High',
+    skip: 'Skip',
+    current: 'Energy today: {level}',
+    change: 'Change today’s energy',
+    lineWenig: 'A gentle day. Your goal today is {goal} – that’s plenty.',
+    lineMittel: 'A regular day. One step at a time.',
+    lineViel: 'Lots of energy today! Maybe time for the big one?',
+  },
+
   due: {
     today: 'Today',
     tomorrow: 'Tomorrow',
@@ -178,7 +192,7 @@ export const en = {
     openTimer: 'Open timebox for “{title}”',
     startTimer: 'Start timebox for “{title}”',
     edit: 'Edit “{title}”',
-    remove: 'Delete “{title}”',
+    energy: 'Energy: {label} · +{xp} XP · {coins} coins',
     due: 'due {day}',
     snooze: 'Not today: “{title}”',
     tada: 'Ta-da',
@@ -219,6 +233,7 @@ export const en = {
     duePick: 'Other date',
     dueHint: 'Tasks with a later date only show up in your list on that day.',
     dueDaily: 'Daily tasks are due every day. If one doesn’t happen, it simply moves on to the next day.',
+    delete: 'Delete task',
   },
 
   focus: {
@@ -235,6 +250,7 @@ export const en = {
     alreadyDone: 'Already done',
     emptyTitle: 'No open tasks.',
     emptyText: 'Enjoy the break or pick a small template.',
+    lowEnergy: 'Low energy today – I’ll only suggest easy things.',
   },
 
   timer: {

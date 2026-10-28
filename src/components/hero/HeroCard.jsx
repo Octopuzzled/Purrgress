@@ -8,7 +8,7 @@ import { XpBar } from '../ui/XpBar.jsx';
 import { focusRing, iconBtn, inputCls } from '../ui/styles.js';
 import { useI18n } from '../../i18n/useI18n.js';
 
-export function HeroCard({ data, lvl, todayCount, cheering, cheerTick, line, onRename, onTada }) {
+export function HeroCard({ data, lvl, todayCount, goal, cheering, cheerTick, line, onRename, onTada }) {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(data.hero.name);
   useEffect(() => { if (!editing) setName(data.hero.name); }, [data.hero.name, editing]);
@@ -19,7 +19,6 @@ export function HeroCard({ data, lvl, todayCount, cheering, cheerTick, line, onR
     if (n) onRename(n); else setName(data.hero.name);
     setEditing(false);
   };
-  const goal = data.settings.dailyGoal;
   const reached = todayCount >= goal;
 
   return (

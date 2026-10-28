@@ -58,7 +58,7 @@ describe('Tageszeiten', () => {
     const original = Math.random;
     let seed = 1;
     Math.random = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-    for (let i = 0; i < 600; i++) counts[pickTask(pool, null, 'morgens').id]++;
+    for (let i = 0; i < 600; i++) counts[pickTask(pool, null, { daypart: 'morgens' }).id]++;
     Math.random = original;
     expect(counts.morgen > counts.egal * 2).toBe(true);
     expect(counts.egal > 0 && counts.abend > 0).toBe(true);

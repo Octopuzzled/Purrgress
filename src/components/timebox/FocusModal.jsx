@@ -11,16 +11,16 @@ import { useI18n } from '../../i18n/useI18n.js';
 import { currentDaypart } from '../../lib/dayparts.js';
 import { isCurrent } from '../../lib/due.js';
 
-export function FocusModal({ tasks, onClose, onComplete, onToggleStep, onGoLibrary, onStart }) {
+export function FocusModal({ tasks, energy, onClose, onComplete, onToggleStep, onGoLibrary, onStart }) {
   const { t, duration } = useI18n();
   // Erst später fällige Aufgaben bleiben hier außen vor
   const openTasks = tasks.filter((t) => !t.done && isCurrent(t));
-  const [currentId, setCurrentId] = useState(() => { const p = pickTask(openTasks, null, currentDaypart()); return p ? p.id : null; });
+  const [currentId, setCurrentId] = useState(() => { const p = pickTask(openTasks, null, { daypart: currentDaypart(), energy }); return p ? p.id : null; });
   const current = openTasks.find((t) => t.id === currentId) || null;
 
   const [picking, setPicking] = useState(false);
   const other = () => {
-    const p = pickTask(openTasks, currentId, currentDaypart());
+    const p = pickTask(openTasks, currentId, { daypart: currentDaypart(), energy });
     if (p) { setCurrentId(p.id); setPicking(false); }
   };
 
@@ -33,6 +33,7 @@ export function FocusModal({ tasks, onClose, onComplete, onToggleStep, onGoLibra
         <div>
           <h2 id="focus-title" className="font-display text-2xl font-semibold text-slate-800 dark:text-slate-50">{t('focus.title')}</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">{t('focus.subtitle')}</p>
+          {energy === 'wenig' && <p className="mt-1 text-sm font-semibold text-rose-700 dark:text-rose-300">{t('focus.lowEnergy')}</p>}
         </div>
         <button type="button" className={iconBtn} onClick={onClose} aria-label={t('common.close')}><Icon name="x" /></button>
       </div>

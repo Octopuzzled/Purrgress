@@ -126,5 +126,6 @@ export function merge3(base, local, remote) {
     tasks: mergeById(base.tasks, local.tasks, remote.tasks),
     customTemplates: mergeById(base.customTemplates, local.customTemplates, remote.customTemplates),
     dailyGoal: mergeValue(base.dailyGoal, local.dailyGoal, remote.dailyGoal),
+    energy: mergeValue(base.energy ?? null, local.energy ?? null, remote.energy ?? null),
   };
 }

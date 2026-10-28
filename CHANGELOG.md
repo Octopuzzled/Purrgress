@@ -13,9 +13,11 @@ Alle nennenswerten Änderungen an diesem Projekt. Das Format orientiert sich an 
 - „Nicht heute“ an jeder Aufgabe: legt sie mit einem Tipp auf morgen (auch tägliche), mit Rückgängig
 - „Ta-da!“ neben Mochis Sprechblase: schon Geschafftes nachträglich eintragen und dafür belohnt werden
 - Tagesabschluss ab 18 Uhr: zeigt, was heute geschafft ist, und legt Liegengebliebenes mit Datum auf Wunsch auf morgen. Für heute ausblendbar
+- Tagesform: Einmal am Tag fragt die App „Wie viel Kraft hast du heute?“ (Wenig, Mittel, Viel – oder überspringen). Bei wenig Kraft schlägt „Was jetzt?“ nur Leichtes vor und das Tagesziel halbiert sich (aufgerundet); bei viel Kraft kommen größere Aufgaben öfter dran. Wird zwischen Geräten abgeglichen
 
 ### Geändert
 
+- Ruhigere Aufgabenzeilen: Statt „Leicht: +10 XP, 5 Münzen“ zeigen ein bis drei Punkte, wie viel Kraft eine Aufgabe kostet (Details als Tooltip). Löschen ist in den Bearbeiten-Dialog umgezogen
 - Die Liste ist nach Datum sortiert: Überfälliges zuerst, dann Heutiges, dann Aufgaben ohne Datum
 - Tägliche Aufgaben sind immer heute fällig. Bleibt eine liegen, rutscht nur ihr Datum weiter – es entsteht keine Kopie
 - „Was jetzt?“, „Weiter mit …“, die Anzahl offener Aufgaben und die Listenzeit beachten nur, was heute dran ist; heute Fälliges wird bei „Was jetzt?“ etwas öfter vorgeschlagen

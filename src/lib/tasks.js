@@ -5,29 +5,32 @@
 import { DAILY_GOAL_BONUS, DIFF, LEVEL_BONUS_COINS, STEP_XP } from '../constants/game.js';
 import { addDays, dayKey } from './date.js';
 import { isCurrent, isDueToday } from './due.js';
+import { dailyGoalFor, energyWeight } from './energy.js';
 import { levelInfo } from './progress.js';
 import { withoutTimer } from './timebox.js';
 
 /**
- * Wählt eine offene Aufgabe zufällig aus. Leichte Aufgaben kommen öfter dran,
- * Aufgaben der aktuellen Tageszeit (daypart) deutlich öfter, heute fällige etwas öfter.
+ * Wählt eine offene Aufgabe zufällig aus. Die Tagesform (energy) bestimmt, wie oft leichte
+ * oder schwere drankommen – bei wenig Kraft nur leichte, solange es welche gibt.
+ * Aufgaben der aktuellen Tageszeit (daypart) kommen deutlich öfter, heute fällige etwas öfter.
  * Erst später fällige Aufgaben kommen nicht in Frage.
  */
-export function pickTask(openTasks, excludeId, daypart = null, today = dayKey()) {
+export function pickTask(openTasks, excludeId, { daypart = null, today = dayKey(), energy = null } = {}) {
   const current = openTasks.filter((t) => isCurrent(t, today));
   const pool = current.length > 1 ? current.filter((t) => t.id !== excludeId) : current;
   if (pool.length === 0) return null;
-  const byDifficulty = { leicht: 3, mittel: 2, schwer: 1 };
-  const weight = (t) => (byDifficulty[t.difficulty] || 1)
+  const fits = pool.some((t) => energyWeight(t.difficulty, energy) > 0);
+  const weight = (t) => energyWeight(t.difficulty, fits ? energy : null)
     * (daypart && t.when === daypart ? 4 : 1)
     * (isDueToday(t, today) ? 2 : 1);
   const total = pool.reduce((s, t) => s + weight(t), 0);
   let r = Math.random() * total;
   for (const t of pool) {
-    r -= weight(t);
-    if (r <= 0) return t;
+    const w = weight(t);
+    r -= w;
+    if (w > 0 && r <= 0) return t;
   }
-  return pool[pool.length - 1];
+  return [...pool].reverse().find((t) => weight(t) > 0) || pool[pool.length - 1];
 }
 
 /** Berechnet XP-Gewinn inklusive Level-Up-Bonus. */
@@ -49,7 +52,7 @@ export function completeTask(state, id, now = Date.now()) {
   const lv = rewardFor(state.xp, r.xp);
   const day = dayKey();
   const doneToday = (state.history[day] || 0) + 1;
-  const goalBonus = doneToday >= (state.settings?.dailyGoal || 3) && state.goalBonusDay !== day ? DAILY_GOAL_BONUS : 0;
+  const goalBonus = doneToday >= dailyGoalFor(state, day) && state.goalBonusDay !== day ? DAILY_GOAL_BONUS : 0;
   const awarded = { xp: r.xp, coins: r.coins + lv.bonus + goalBonus, pts: r.pts, goalBonus };
   const base = state.timer && state.timer.taskId === id ? withoutTimer(state, now) : state;
   return {

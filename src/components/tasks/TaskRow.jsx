@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { CATS, DIFF, STEP_XP } from '../../constants/game.js';
+import { CATS, DIFF, DIFF_ORDER, STEP_XP } from '../../constants/game.js';
 import { TimePicker } from '../timebox/TimePicker.jsx';
-import { Coin } from '../ui/Coin.jsx';
 import { Icon } from '../ui/Icon.jsx';
 import { btnPrimary, focusRing, iconBtn } from '../ui/styles.js';
 import { useI18n } from '../../i18n/useI18n.js';
@@ -15,12 +14,23 @@ const DUE_TONE = {
   future: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300',
 };
 
-export function TaskRow({ task, onToggle, onToggleStep, onEdit, onDelete, onStart, onOpenTimer, onSnooze, activeId, today = dayKey(), hideDue = false }) {
+/** Wie viel Kraft eine Aufgabe kostet – ein bis drei Punkte statt Text. Details als Tooltip und für Screenreader. */
+function EnergyDots({ difficulty, label }) {
+  const filled = DIFF_ORDER.indexOf(difficulty) + 1;
+  return (
+    <span role="img" aria-label={label} title={label} className="inline-flex items-center gap-0.5 rounded-full px-1.5 py-1">
+      {DIFF_ORDER.map((d, i) => (
+        <span key={d} className={`h-1.5 w-1.5 rounded-full ${i < filled ? 'bg-violet-400 dark:bg-violet-300' : 'bg-slate-200 dark:bg-slate-600'}`} />
+      ))}
+    </span>
+  );
+}
+
+export function TaskRow({ task, onToggle, onToggleStep, onEdit, onStart, onOpenTimer, onSnooze, activeId, today = dayKey(), hideDue = false }) {
   const { t, duration, day } = useI18n();
   const isActive = activeId === task.id;
   const [picking, setPicking] = useState(false);
   const [open, setOpen] = useState(false);
-  const [confirm, setConfirm] = useState(false);
   const cat = CATS[task.category];
   const diff = DIFF[task.difficulty];
   const stepsDone = task.steps.filter((s) => s.done).length;
@@ -53,9 +63,7 @@ export function TaskRow({ task, onToggle, onToggleStep, onEdit, onDelete, onStar
 
           <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-xs font-bold">
             <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 ${cat.chip}`}><Icon name={cat.icon} size={12} strokeWidth={2.5} />{t(`category.${task.category}.label`)}</span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
-              {t('common.reward', { label: t(`difficulty.${task.difficulty}`), xp: diff.xp })} <Coin size={12} />{diff.coins}
-            </span>
+            <EnergyDots difficulty={task.difficulty} label={t('task.energy', { label: t(`difficulty.${task.difficulty}`), xp: diff.xp, coins: diff.coins })} />
             {due !== 'none' && (
               <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 ${DUE_TONE[due]}`} title={t('task.due', { day: day(task.due, today) })}>
                 <Icon name="calendar" size={12} strokeWidth={2.5} />{dueText}
@@ -121,13 +129,6 @@ export function TaskRow({ task, onToggle, onToggleStep, onEdit, onDelete, onStar
             </div>
           )}
 
-          {confirm && (
-            <div className="anim-fade mt-3 flex flex-wrap items-center gap-2 rounded-2xl bg-rose-50 p-2.5 text-sm dark:bg-rose-400/10">
-              <span className="font-bold text-rose-900 dark:text-rose-100">{t('task.deleteConfirm')}</span>
-              <button type="button" onClick={() => onDelete(task.id)} className={`rounded-xl bg-rose-200 px-3 py-1 font-bold text-rose-900 hover:bg-rose-300 ${focusRing}`}>{t('task.delete')}</button>
-              <button type="button" onClick={() => setConfirm(false)} className={`rounded-xl px-3 py-1 font-bold text-slate-600 hover:bg-white dark:text-slate-300 dark:hover:bg-slate-700 ${focusRing}`}>{t('task.keep')}</button>
-            </div>
-          )}
         </div>
 
         <div className="flex shrink-0 items-center">
@@ -145,7 +146,6 @@ export function TaskRow({ task, onToggle, onToggleStep, onEdit, onDelete, onStar
             </button>
           )}
           <button type="button" className={iconBtn} onClick={() => onEdit(task)} aria-label={t('task.edit', { title: task.title })}><Icon name="pencil" size={17} /></button>
-          <button type="button" className={iconBtn} onClick={() => setConfirm(true)} aria-label={t('task.remove', { title: task.title })}><Icon name="trash" size={17} /></button>
         </div>
       </div>
     </li>

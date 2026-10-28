@@ -103,8 +103,8 @@ describe('„Nicht heute“ und Tagesabschluss', () => {
 describe('„Was jetzt?“ und „Weiter mit …“', () => {
   it('schlagen keine erst später fälligen Aufgaben vor', () => {
     const pool = [task('spaeter', { due: '2026-11-01' }), task('jetzt')];
-    for (let i = 0; i < 50; i++) expect(pickTask(pool, null, null, TODAY).id).toBe('jetzt');
-    expect(pickTask([task('spaeter', { due: '2026-11-01' })], null, null, TODAY)).toBeNull();
+    for (let i = 0; i < 50; i++) expect(pickTask(pool, null, { today: TODAY }).id).toBe('jetzt');
+    expect(pickTask([task('spaeter', { due: '2026-11-01' })], null, { today: TODAY })).toBeNull();
     expect(nextOpenTask([task('a'), pool[0], pool[1]], 'a', TODAY).id).toBe('jetzt');
   });
 });

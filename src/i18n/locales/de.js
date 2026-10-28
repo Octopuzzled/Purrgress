@@ -124,6 +124,20 @@ export const de = {
     hide: 'Für heute ausblenden',
   },
 
+  energy: {
+    question: 'Wie viel Kraft hast du heute?',
+    hint: 'Ich passe meine Vorschläge daran an. Jede Antwort ist richtig.',
+    wenig: 'Wenig',
+    mittel: 'Mittel',
+    viel: 'Viel',
+    skip: 'Überspringen',
+    current: 'Kraft heute: {level}',
+    change: 'Tagesform ändern',
+    lineWenig: 'Sanfter Tag. Dein Tagesziel ist heute {goal} – das reicht völlig.',
+    lineMittel: 'Ein ganz normaler Tag. Schritt für Schritt.',
+    lineViel: 'Viel Kraft heute! Vielleicht ist Zeit für die große Sache?',
+  },
+
   due: {
     today: 'Heute',
     tomorrow: 'Morgen',
@@ -178,7 +192,7 @@ export const de = {
     openTimer: 'Zeitbox für „{title}“ öffnen',
     startTimer: 'Zeitbox für „{title}“ starten',
     edit: '„{title}“ bearbeiten',
-    remove: '„{title}“ löschen',
+    energy: 'Kraft: {label} · +{xp} XP · {coins} Münzen',
     due: 'fällig {day}',
     snooze: 'Nicht heute: „{title}“',
     tada: 'Ta-da',
@@ -219,6 +233,7 @@ export const de = {
     duePick: 'Anderes Datum',
     dueHint: 'Aufgaben mit späterem Datum tauchen erst an diesem Tag in deiner Liste auf.',
     dueDaily: 'Tägliche Aufgaben sind jeden Tag fällig. Klappt es mal nicht, rutschen sie einfach auf den nächsten Tag.',
+    delete: 'Aufgabe löschen',
   },
 
   focus: {
@@ -235,6 +250,7 @@ export const de = {
     alreadyDone: 'Schon erledigt',
     emptyTitle: 'Keine offene Aufgabe.',
     emptyText: 'Genieß die Pause oder hol dir eine kleine Vorlage.',
+    lowEnergy: 'Heute mit wenig Kraft – ich schlage nur Leichtes vor.',
   },
 
   timer: {

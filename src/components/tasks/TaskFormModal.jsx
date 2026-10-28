@@ -11,7 +11,7 @@ import { useI18n } from '../../i18n/useI18n.js';
 import { DAYPARTS, DEFAULT_DAYPART } from '../../constants/dayparts.js';
 import { addDays, dayKey } from '../../lib/date.js';
 
-export function TaskFormModal({ initial, onClose, onSave }) {
+export function TaskFormModal({ initial, onClose, onSave, onDelete }) {
   const { t, duration, day } = useI18n();
   const isEdit = !!initial;
   const [title, setTitle] = useState(initial ? initial.title : '');
@@ -30,6 +30,7 @@ export function TaskFormModal({ initial, onClose, onSave }) {
   const [steps, setSteps] = useState(initial ? initial.steps.map((s) => ({ ...s })) : []);
   const [newStep, setNewStep] = useState('');
   const [error, setError] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const addStep = () => {
     const text = newStep.trim();
@@ -185,6 +186,21 @@ export function TaskFormModal({ initial, onClose, onSave }) {
             <button type="button" className={`${btnSoft} px-3 py-2`} onClick={addStep} aria-label={t('form.addStep')}><Icon name="plus" size={18} /></button>
           </div>
         </div>
+
+        {isEdit && (
+          confirmDelete ? (
+            <div className="anim-fade flex flex-wrap items-center gap-2 rounded-2xl bg-rose-50 p-2.5 text-sm dark:bg-rose-400/10">
+              <span className="font-bold text-rose-900 dark:text-rose-100">{t('task.deleteConfirm')}</span>
+              <button type="button" onClick={() => onDelete(initial.id)} className={`rounded-xl bg-rose-200 px-3 py-1 font-bold text-rose-900 hover:bg-rose-300 ${focusRing}`}>{t('task.delete')}</button>
+              <button type="button" onClick={() => setConfirmDelete(false)} className={`rounded-xl px-3 py-1 font-bold text-slate-600 hover:bg-white dark:text-slate-300 dark:hover:bg-slate-700 ${focusRing}`}>{t('task.keep')}</button>
+            </div>
+          ) : (
+            <button type="button" onClick={() => setConfirmDelete(true)}
+              className={`inline-flex items-center gap-1.5 rounded-xl px-2 py-1 text-sm font-bold text-rose-700 hover:bg-rose-50 dark:text-rose-300 dark:hover:bg-rose-400/10 ${focusRing}`}>
+              <Icon name="trash" size={16} />{t('form.delete')}
+            </button>
+          )
+        )}
 
         <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
           <button type="button" className={btnSoft} onClick={onClose}>{t('common.cancel')}</button>

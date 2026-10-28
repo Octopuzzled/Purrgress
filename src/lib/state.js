@@ -11,6 +11,7 @@ import { dayKey, isDayKey } from './date.js';
 import { uid } from './id.js';
 import { prefersReducedMotion } from './media.js';
 import { normalizeCustomTemplate } from './templates.js';
+import { normalizeEnergy } from './energy.js';
 
 /** Tageszeit je Vorlage – für Aufgaben aus der Zeit, bevor es Tageszeiten gab. */
 const TEMPLATE_DAYPART = Object.fromEntries(
@@ -81,6 +82,7 @@ export function initialState(language = 'system') {
     goalBonusDay: null,
     focusLog: {},
     timer: null,
+    energy: null, // Tagesform: { day, level }
     settings: { language, theme: 'system', sound: true, reduceMotion: prefersReducedMotion(), dailyGoal: 3, chimeEvery: 0 },
     createdAt: Date.now(),
   };
@@ -112,6 +114,7 @@ export function migrate(p) {
       ? p.customTemplates.map(normalizeCustomTemplate).filter((t) => t.title)
       : [],
     timer: validTimer(p.timer, p.tasks),
+    energy: normalizeEnergy(p.energy),
     settings: { ...base.settings, ...(p.settings || {}) },
   };
 }

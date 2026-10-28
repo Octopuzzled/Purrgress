@@ -1,7 +1,7 @@
 /**
  * Welcher Teil des Spielstands wird zwischen Geräten abgeglichen?
  *
- * Abgeglichen: Fortschritt, Aufgaben, eigene Vorlagen, Held, Umkleide, Tagesziel.
+ * Abgeglichen: Fortschritt, Aufgaben, eigene Vorlagen, Held, Umkleide, Tagesziel, Tagesform.
  * Pro Gerät: laufende Zeitbox und Einstellungen wie Sprache, Farbschema oder Töne.
  */
 import { FREE_ITEMS } from '../constants/shop.js';
@@ -23,6 +23,7 @@ export function toSyncable(state) {
     tasks: state.tasks,
     customTemplates: state.customTemplates || [],
     dailyGoal: state.settings.dailyGoal,
+    energy: state.energy || null,
   };
 }
 
@@ -40,6 +41,7 @@ export function applySyncable(state, s) {
     tasks: s.tasks,
     customTemplates: s.customTemplates,
     settings: { ...state.settings, dailyGoal: s.dailyGoal },
+    energy: s.energy,
   };
 }
 
