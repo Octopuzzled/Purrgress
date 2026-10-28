@@ -7,7 +7,11 @@ import { addDays, dayKey } from './date.js';
 import { isCurrent, isDueToday } from './due.js';
 import { dailyGoalFor, energyWeight } from './energy.js';
 import { levelInfo } from './progress.js';
+import { uid } from './id.js';
 import { withoutTimer } from './timebox.js';
+
+/** Ab wie vielen Tagen Warten eine Aufgabe „Zu groß?“ anbietet. */
+export const STUCK_DAYS = 3;
 
 /**
  * Wählt eine offene Aufgabe zufällig aus. Die Tagesform (energy) bestimmt, wie oft leichte
@@ -147,6 +151,22 @@ export function postponeTask(state, id, today = dayKey()) {
  */
 export function leftoverTasks(tasks, today = dayKey()) {
   return tasks.filter((t) => !t.done && t.repeat !== 'daily' && t.due && t.due <= today);
+}
+
+/**
+ * Hängt eine Aufgabe fest? Sie wartet schon eine Weile (oder ist überfällig)
+ * und hat keinen offenen Mikro-Schritt, an dem man einfach anfangen könnte.
+ */
+export function isStuck(task, today = dayKey(), now = Date.now()) {
+  if (task.done || task.repeat === 'daily' || task.steps.some((s) => !s.done)) return false;
+  return (!!task.due && task.due < today) || now - (task.createdAt || now) >= STUCK_DAYS * 86400000;
+}
+
+/** „Zu groß?“: Der allerkleinste erste Schritt kommt ganz nach vorn. */
+export function addFirstStep(state, taskId, text) {
+  const step = { id: uid(), text: String(text).trim(), done: false, xp: 0, coins: 0 };
+  if (!step.text) return state;
+  return { ...state, tasks: state.tasks.map((t) => (t.id === taskId ? { ...t, steps: [step, ...t.steps] } : t)) };
 }
 
 /** Legt eine Aufgabe ans Ende der Liste („Später“). */

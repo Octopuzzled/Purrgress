@@ -3,6 +3,7 @@ import { CATS, DIFF } from '../../constants/game.js';
 import { QUICK_MINUTES } from '../../constants/timebox.js';
 import { pickTask } from '../../lib/tasks.js';
 import { TimePicker } from './TimePicker.jsx';
+import { FirstStepPrompt } from '../tasks/FirstStepPrompt.jsx';
 import { Coin } from '../ui/Coin.jsx';
 import { Icon } from '../ui/Icon.jsx';
 import { Modal } from '../ui/Modal.jsx';
@@ -11,7 +12,7 @@ import { useI18n } from '../../i18n/useI18n.js';
 import { currentDaypart } from '../../lib/dayparts.js';
 import { isCurrent } from '../../lib/due.js';
 
-export function FocusModal({ tasks, energy, onClose, onComplete, onToggleStep, onGoLibrary, onStart }) {
+export function FocusModal({ tasks, energy, onClose, onComplete, onToggleStep, onAddFirstStep, onGoLibrary, onStart }) {
   const { t, duration } = useI18n();
   // Erst später fällige Aufgaben bleiben hier außen vor
   const openTasks = tasks.filter((t) => !t.done && isCurrent(t));
@@ -19,9 +20,10 @@ export function FocusModal({ tasks, energy, onClose, onComplete, onToggleStep, o
   const current = openTasks.find((t) => t.id === currentId) || null;
 
   const [picking, setPicking] = useState(false);
+  const [shrinking, setShrinking] = useState(false);
   const other = () => {
     const p = pickTask(openTasks, currentId, { daypart: currentDaypart(), energy });
-    if (p) { setCurrentId(p.id); setPicking(false); }
+    if (p) { setCurrentId(p.id); setPicking(false); setShrinking(false); }
   };
 
   const nextStep = current ? current.steps.find((s) => !s.done) : null;
@@ -57,6 +59,17 @@ export function FocusModal({ tasks, energy, onClose, onComplete, onToggleStep, o
                 </span>
               </button>
             )}
+            {!nextStep && (shrinking ? (
+              <div className="mt-3">
+                <FirstStepPrompt key={current.id} onCancel={() => setShrinking(false)}
+                  onAdd={(text) => { setShrinking(false); onAddFirstStep(current.id, text); }} />
+              </div>
+            ) : (
+              <button type="button" onClick={() => setShrinking(true)}
+                className={`mt-3 inline-flex items-center gap-1.5 rounded-xl px-2 py-1 text-sm font-bold text-amber-800 hover:bg-amber-50 dark:text-amber-200 dark:hover:bg-amber-400/10 ${focusRing}`}>
+                <Icon name="steps" size={16} />{t('tooBig.buttonLabel')}
+              </button>
+            ))}
           </div>
 
           <div className="rounded-2xl bg-violet-50 p-4 dark:bg-violet-400/10">

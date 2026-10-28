@@ -138,6 +138,16 @@ export const en = {
     lineViel: 'Lots of energy today! Maybe time for the big one?',
   },
 
+  tooBig: {
+    button: 'Too big?',
+    buttonLabel: 'Too big? Find the tiniest first step',
+    question: 'What’s the tiniest first step?',
+    hint: 'So small it feels almost silly. Two minutes is enough.',
+    placeholder: 'e.g. Just open the document',
+    add: 'That’s my step',
+    line: 'Perfect. Just this one step – nothing more.',
+  },
+
   due: {
     today: 'Today',
     tomorrow: 'Tomorrow',

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { CATS, DIFF, DIFF_ORDER, STEP_XP } from '../../constants/game.js';
 import { TimePicker } from '../timebox/TimePicker.jsx';
+import { FirstStepPrompt } from './FirstStepPrompt.jsx';
+import { isStuck } from '../../lib/tasks.js';
 import { Icon } from '../ui/Icon.jsx';
 import { btnPrimary, focusRing, iconBtn } from '../ui/styles.js';
 import { useI18n } from '../../i18n/useI18n.js';
@@ -26,11 +28,12 @@ function EnergyDots({ difficulty, label }) {
   );
 }
 
-export function TaskRow({ task, onToggle, onToggleStep, onEdit, onStart, onOpenTimer, onSnooze, activeId, today = dayKey(), hideDue = false }) {
+export function TaskRow({ task, onToggle, onToggleStep, onEdit, onStart, onOpenTimer, onSnooze, onAddFirstStep, activeId, today = dayKey(), hideDue = false }) {
   const { t, duration, day } = useI18n();
   const isActive = activeId === task.id;
   const [picking, setPicking] = useState(false);
   const [open, setOpen] = useState(false);
+  const [shrinking, setShrinking] = useState(false);
   const cat = CATS[task.category];
   const diff = DIFF[task.difficulty];
   const stepsDone = task.steps.filter((s) => s.done).length;
@@ -94,6 +97,12 @@ export function TaskRow({ task, onToggle, onToggleStep, onEdit, onStart, onOpenT
                 <Icon name="steps" size={12} strokeWidth={2.5} />{t('task.steps', { done: stepsDone, total: task.steps.length })}
               </button>
             )}
+            {!shrinking && isStuck(task, today) && (
+              <button type="button" onClick={() => setShrinking(true)} aria-label={t('tooBig.buttonLabel')} title={t('tooBig.buttonLabel')}
+                className={`inline-flex items-center gap-1 rounded-full border border-dashed border-amber-400 px-2 py-px text-amber-800 hover:bg-amber-50 dark:border-amber-300/50 dark:text-amber-200 dark:hover:bg-amber-400/10 ${focusRing}`}>
+                <Icon name="steps" size={12} strokeWidth={2.5} />{t('tooBig.button')}
+              </button>
+            )}
           </div>
 
           {open && (
@@ -120,6 +129,13 @@ export function TaskRow({ task, onToggle, onToggleStep, onEdit, onStart, onOpenT
                   <Icon name="check" size={18} strokeWidth={3} />{t('task.allStepsDone')}
                 </button>
               )}
+            </div>
+          )}
+
+          {shrinking && !task.done && (
+            <div className="mt-3">
+              <FirstStepPrompt onCancel={() => setShrinking(false)}
+                onAdd={(text) => { setShrinking(false); setOpen(true); onAddFirstStep(task.id, text); }} />
             </div>
           )}
 

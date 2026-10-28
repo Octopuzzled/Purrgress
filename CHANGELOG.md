@@ -14,6 +14,7 @@ Alle nennenswerten Änderungen an diesem Projekt. Das Format orientiert sich an 
 - „Ta-da!“ neben Mochis Sprechblase: schon Geschafftes nachträglich eintragen und dafür belohnt werden
 - Tagesabschluss ab 18 Uhr: zeigt, was heute geschafft ist, und legt Liegengebliebenes mit Datum auf Wunsch auf morgen. Für heute ausblendbar
 - Tagesform: Einmal am Tag fragt die App „Wie viel Kraft hast du heute?“ (Wenig, Mittel, Viel – oder überspringen). Bei wenig Kraft schlägt „Was jetzt?“ nur Leichtes vor und das Tagesziel halbiert sich (aufgerundet); bei viel Kraft kommen größere Aufgaben öfter dran. Wird zwischen Geräten abgeglichen
+- „Zu groß?“: Aufgaben, die seit drei Tagen warten oder überfällig sind und keinen offenen Mikro-Schritt haben, fragen nach dem allerkleinsten ersten Schritt. Auch in „Was jetzt?“ jederzeit möglich
 
 ### Geändert
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { addDays, daysBetween, isDayKey } from '../src/lib/date.js';
 import { dueStatus, groupByDay, isCurrent, isDueToday, sortByDue } from '../src/lib/due.js';
 import { initialState, normalizeTask } from '../src/lib/state.js';
-import { completeTask, leftoverTasks, nextOpenTask, pickTask, postponeTask, reopenDailyTasks, setDueDates } from '../src/lib/tasks.js';
+import { addFirstStep, completeTask, isStuck, leftoverTasks, nextOpenTask, pickTask, postponeTask, reopenDailyTasks, setDueDates } from '../src/lib/tasks.js';
 import { createI18n } from '../src/i18n/index.js';
 
 const TODAY = '2026-10-28';
@@ -97,6 +97,32 @@ describe('„Nicht heute“ und Tagesabschluss', () => {
     const { state } = completeTask({ ...initialState(), tasks: [t] }, 'x');
     expect(state.tasks[0].done).toBe(true);
     expect(state.xp).toBeGreaterThan(0);
+  });
+});
+
+describe('„Zu groß?“', () => {
+  const NOW = new Date(2026, 9, 28, 12).getTime();
+  const DAY = 86400000;
+
+  it('erkennt Aufgaben, die schon eine Weile warten oder überfällig sind', () => {
+    expect(isStuck(task('neu', { createdAt: NOW - DAY }), TODAY, NOW)).toBe(false);
+    expect(isStuck(task('alt', { createdAt: NOW - 3 * DAY }), TODAY, NOW)).toBe(true);
+    expect(isStuck(task('drueber', { createdAt: NOW, due: '2026-10-27' }), TODAY, NOW)).toBe(true);
+  });
+
+  it('lässt Aufgaben mit offenem Schritt, tägliche und erledigte in Ruhe', () => {
+    const old = { createdAt: NOW - 10 * DAY };
+    expect(isStuck(task('schritt', { ...old, steps: ['Anfangen'] }), TODAY, NOW)).toBe(false);
+    expect(isStuck(task('taeglich', { ...old, repeat: 'daily' }), TODAY, NOW)).toBe(false);
+    expect(isStuck(task('fertig', { ...old, done: true }), TODAY, NOW)).toBe(false);
+  });
+
+  it('setzt den kleinsten Schritt ganz nach vorn', () => {
+    const start = { ...initialState(), tasks: [task('a', { steps: ['Zweiter'] })] };
+    const next = addFirstStep(start, 'a', '  Nur öffnen  ');
+    expect(next.tasks[0].steps.map((s) => s.text)).toEqual(['Nur öffnen', 'Zweiter']);
+    expect(next.tasks[0].steps[0].done).toBe(false);
+    expect(addFirstStep(start, 'a', '   ')).toBe(start);
   });
 });
 

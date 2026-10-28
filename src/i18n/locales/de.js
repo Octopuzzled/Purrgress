@@ -138,6 +138,16 @@ export const de = {
     lineViel: 'Viel Kraft heute! Vielleicht ist Zeit für die große Sache?',
   },
 
+  tooBig: {
+    button: 'Zu groß?',
+    buttonLabel: 'Zu groß? Den kleinsten ersten Schritt finden',
+    question: 'Was ist der allerkleinste erste Schritt?',
+    hint: 'So klein, dass es fast albern wirkt. Zwei Minuten reichen.',
+    placeholder: 'z. B. Nur das Dokument öffnen',
+    add: 'Das ist mein Schritt',
+    line: 'Perfekt. Nur dieser eine Schritt – mehr nicht.',
+  },
+
   due: {
     today: 'Heute',
     tomorrow: 'Morgen',

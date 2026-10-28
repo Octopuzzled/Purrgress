@@ -17,7 +17,7 @@ import { SegmentedControl } from '../components/ui/SegmentedControl.jsx';
 import { btnPrimary, btnSoft, focusRing, iconBtn, inputCls, pill, sheet } from '../components/ui/styles.js';
 import { useI18n } from '../i18n/useI18n.js';
 
-export function TasksView({ tasks, timer, todayCount, energy, onEnergy, onToggle, onToggleStep, onEdit, onNew, onFocus, onClearDone, onGoLibrary, onStart, onOpenTimer, onSnooze, onMoveToTomorrow }) {
+export function TasksView({ tasks, timer, todayCount, energy, onEnergy, onToggle, onToggleStep, onEdit, onNew, onFocus, onClearDone, onGoLibrary, onStart, onOpenTimer, onSnooze, onMoveToTomorrow, onAddFirstStep }) {
   const { t, duration, clock, day } = useI18n();
   const now = useNow(timer && timer.running ? 15000 : 30000);
   const [query, setQuery] = useState('');
@@ -49,7 +49,7 @@ export function TasksView({ tasks, timer, todayCount, energy, onEnergy, onToggle
   // Abschnitte nach Tageszeit nur, wenn wirklich eine Aufgabe eine feste Tageszeit hat
   const grouped = usesDayparts(currentTasks);
 
-  const rowProps = { onToggle, onToggleStep, onEdit, onStart, onOpenTimer, onSnooze, activeId: timer ? timer.taskId : null, today };
+  const rowProps = { onToggle, onToggleStep, onEdit, onStart, onOpenTimer, onSnooze, onAddFirstStep, activeId: timer ? timer.taskId : null, today };
 
   const toggleDay = (key) => setCollapsedDays((prev) => {
     const next = new Set(prev);

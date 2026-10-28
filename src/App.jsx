@@ -16,7 +16,7 @@ import { clearState, initialState, normalizeTask } from './lib/state.js';
 import { isUnlocked } from './constants/shop.js';
 import { removeCustomTemplate, saveCustomTemplate } from './lib/templates.js';
 import {
-  addTask, clearDoneTasks, completeStep, completeTask, nextOpenTask, postponeTask, removeTask, reopenStep, reopenTask, setDueDates, updateTask,
+  addFirstStep, addTask, clearDoneTasks, completeStep, completeTask, nextOpenTask, postponeTask, removeTask, reopenStep, reopenTask, setDueDates, updateTask,
 } from './lib/tasks.js';
 import { HeroCard } from './components/hero/HeroCard.jsx';
 import { LevelUpModal } from './components/hero/LevelUpModal.jsx';
@@ -153,6 +153,12 @@ export function App() {
     setState((s) => setDueDates(s, Object.fromEntries(ids.map((id) => [id, tomorrow]))));
     celebrate.say(t('hero.lineGoodNight'));
     setToast({ id: `many-${Date.now()}`, kind: 'snoozed', count: ids.length, prevDue });
+  };
+
+  /* „Zu groß?“: kleinsten ersten Schritt vorn anfügen */
+  const shrinkTask = (taskId, text) => {
+    setState((s) => addFirstStep(s, taskId, text));
+    celebrate.say(t('tooBig.line'));
   };
 
   const undoToast = () => {
@@ -329,7 +335,7 @@ export function App() {
             {tab === 'aufgaben' && (
               <TasksView tasks={state.tasks} timer={timebox.timer} todayCount={todayCount}
                 energy={state.energy} onEnergy={chooseEnergy}
-                onSnooze={snoozeTask} onMoveToTomorrow={moveToTomorrow}
+                onSnooze={snoozeTask} onMoveToTomorrow={moveToTomorrow} onAddFirstStep={shrinkTask}
                 onStart={startTimebox} onOpenTimer={() => setTimerOpen(true)}
                 onToggle={toggleTask} onToggleStep={toggleStep}
                 onEdit={(task) => setForm({ task })} onNew={() => setForm({ task: null })}
@@ -363,7 +369,7 @@ export function App() {
       {focusOpen && (
         <FocusModal tasks={state.tasks} energy={todayEnergy(state)} onClose={() => setFocusOpen(false)} onStart={startTimebox}
           onComplete={(id, e) => { toggleTask(id, e); setFocusOpen(false); }}
-          onToggleStep={toggleStep} onGoLibrary={goLibrary} />
+          onToggleStep={toggleStep} onAddFirstStep={shrinkTask} onGoLibrary={goLibrary} />
       )}
       {timerOpen && (timebox.timer || afterDone) && (
         <TimerModal timer={timebox.timer} task={timebox.task} after={afterDone} nextTask={nextTask}
