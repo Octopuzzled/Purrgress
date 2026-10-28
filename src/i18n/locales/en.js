@@ -287,6 +287,13 @@ export const en = {
     lowEnergy: 'Low energy today – I’ll only suggest easy things.',
   },
 
+  buddy: {
+    read: '{name} is reading next to you.',
+    knit: '{name} is knitting next to you.',
+    write: '{name} is writing next to you.',
+    doze: '{name} is dozing until you carry on.',
+  },
+
   timer: {
     label: 'Timebox',
     until: 'until {time}',

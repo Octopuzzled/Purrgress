@@ -71,6 +71,11 @@
   .anim-sparkle { animation: sparkle 900ms ease-in-out 1 both; transform-box: fill-box; transform-origin: center; }
   .anim-fade { animation: fadeIn 240ms ease-out; }
   .anim-pop { animation: pop 420ms ease-out; }
+  /* Mochi arbeitet mit: Seite umblättern, stricken, schreiben, dösen */
+  .anim-page { animation: page 4.5s ease-in-out infinite; transform-box: view-box; transform-origin: 100px 150px; }
+  .anim-knit { animation: knit 0.9s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 50% 100%; }
+  .anim-write { animation: write 1.8s ease-in-out infinite; }
+  .anim-zzz { animation: zzz 3s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 
   .live-dot {
     display: inline-block;
@@ -148,6 +153,10 @@
   15%, 75% { opacity: 1; transform: translate(-50%, -8px); }
   100% { opacity: 0; transform: translate(-50%, -8px); }
 }
+@keyframes page { 0% { opacity: 0; transform: scaleX(1); } 10%, 60% { opacity: 1; transform: scaleX(1); } 85% { opacity: 1; transform: scaleX(-1); } 100% { opacity: 0; transform: scaleX(-1); } }
+@keyframes knit { from { transform: rotate(-7deg); } to { transform: rotate(7deg); } }
+@keyframes write { 0%, 100% { transform: translate(0px, 0px); } 25% { transform: translate(5px, 1px); } 50% { transform: translate(10px, 0px); } 75% { transform: translate(5px, 1px); } }
+@keyframes zzz { 0% { opacity: 0; transform: translate(0px, 4px); } 30% { opacity: 0.7; } 100% { opacity: 0; transform: translate(6px, -10px); } }
 @keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.22); } 100% { transform: scale(1); } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0px); } }
 @keyframes live { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.75); } }

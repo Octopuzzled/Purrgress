@@ -392,7 +392,7 @@ export function App() {
           onToggleStep={toggleStep} onAddFirstStep={shrinkTask} onGoLibrary={goLibrary} />
       )}
       {timerOpen && (timebox.timer || afterDone) && (
-        <TimerModal timer={timebox.timer} task={timebox.task} after={afterDone} nextTask={nextTask}
+        <TimerModal timer={timebox.timer} task={timebox.task} hero={state.hero} after={afterDone} nextTask={nextTask}
           noiseOn={timebox.noiseOn} onNoise={timebox.toggleNoise} onMinimize={closeTimerModal}
           onPause={timebox.pause} onResume={timebox.resume} onAdjust={timebox.adjust}
           onComplete={completeTimebox} onStop={stopTimebox} onLater={postponeTimebox}

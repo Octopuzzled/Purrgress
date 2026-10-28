@@ -287,6 +287,13 @@ export const de = {
     lowEnergy: 'Heute mit wenig Kraft – ich schlage nur Leichtes vor.',
   },
 
+  buddy: {
+    read: '{name} liest neben dir.',
+    knit: '{name} strickt neben dir.',
+    write: '{name} schreibt neben dir.',
+    doze: '{name} döst, bis du weitermachst.',
+  },
+
   timer: {
     label: 'Zeitbox',
     until: 'bis {time}',

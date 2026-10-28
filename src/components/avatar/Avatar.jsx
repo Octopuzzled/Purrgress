@@ -4,7 +4,56 @@ import { starPoints } from '../../lib/geometry.js';
 import { renderBackground, renderClothBack, renderClothBody, renderClothFront, renderExtra, renderEyes, renderHat } from './parts.jsx';
 import { useI18n } from '../../i18n/useI18n.js';
 
-export function Avatar({ equip, mood = 'idle', title, still = false }) {
+/** Kleine Requisiten, wenn Mochi während einer Zeitbox mitarbeitet. Sitzen vor dem Bauch. */
+function renderActivity(activity, fur) {
+  switch (activity) {
+    case 'read':
+      return (
+        <g>
+          <path d="M64 140 L100 147 L136 140 L136 167 L100 174 L64 167 Z" fill="#a78bfa" stroke={fur.shade} strokeWidth="2" strokeLinejoin="round" />
+          <path d="M68 141 Q85 138 100 145 L100 169 Q85 163 68 165 Z" fill="#ffffff" />
+          <path d="M132 141 Q115 138 100 145 L100 169 Q115 163 132 165 Z" fill="#ffffff" />
+          <g stroke="#cbd5e1" strokeWidth="1.6" strokeLinecap="round">
+            <path d="M74 148 L94 151" /><path d="M74 154 L94 157" /><path d="M126 148 L106 151" /><path d="M126 154 L106 157" />
+          </g>
+          <path className="anim-page" d="M132 141 Q115 138 100 145 L100 169 Q115 163 132 165 Z" fill="#f8fafc" stroke="#e2e8f0" strokeWidth="1" />
+        </g>
+      );
+    case 'knit':
+      return (
+        <g>
+          <rect x="84" y="148" width="30" height="16" rx="4" fill="#93c5fd" stroke={fur.shade} strokeWidth="2" />
+          <path d="M88 154 L110 154 M88 159 L110 159" stroke="#60a5fa" strokeWidth="1.6" strokeLinecap="round" />
+          <g className="anim-knit">
+            <path d="M80 134 L108 160" stroke="#b45309" strokeWidth="3" strokeLinecap="round" />
+            <path d="M118 134 L90 160" stroke="#b45309" strokeWidth="3" strokeLinecap="round" />
+          </g>
+          <circle cx="132" cy="163" r="10" fill="#f9a8d4" stroke={fur.shade} strokeWidth="2" />
+          <path d="M125 158 Q132 165 139 158 M124 165 Q132 171 140 165" fill="none" stroke="#ec4899" strokeWidth="1.4" strokeLinecap="round" />
+          <path d="M122 163 Q114 166 112 160" fill="none" stroke="#f9a8d4" strokeWidth="2" strokeLinecap="round" />
+        </g>
+      );
+    case 'write':
+      return (
+        <g>
+          <rect x="68" y="146" width="56" height="24" rx="3" fill="#ffffff" stroke={fur.shade} strokeWidth="2" />
+          <g stroke="#cbd5e1" strokeWidth="1.6" strokeLinecap="round"><path d="M74 153 L112 153" /><path d="M74 159 L106 159" /><path d="M74 165 L96 165" /></g>
+          <g className="anim-write">
+            <path d="M96 164 L110 142" stroke="#f59e0b" strokeWidth="4.5" strokeLinecap="round" />
+            <path d="M96 164 L98.5 160" stroke="#334155" strokeWidth="4.5" strokeLinecap="round" />
+          </g>
+        </g>
+      );
+    default:
+      return null;
+  }
+}
+
+/**
+ * mood: 'idle' | 'cheer'. activity (während einer Zeitbox): 'read' | 'knit' | 'write' | 'doze'.
+ * Beim Dösen sind die Augen zu, ein „z“ steigt auf.
+ */
+export function Avatar({ equip, mood = 'idle', title, still = false, activity = null }) {
   const { t } = useI18n();
   const idRef = useRef('av' + Math.random().toString(36).slice(2, 9));
   const id = idRef.current;
@@ -46,10 +95,19 @@ export function Avatar({ equip, mood = 'idle', title, still = false }) {
           {/* Gesicht */}
           <ellipse cx="66" cy="127" rx="8.5" ry="5" fill="#f7a1b5" opacity="0.55" />
           <ellipse cx="134" cy="127" rx="8.5" ry="5" fill="#f7a1b5" opacity="0.55" />
-          {renderEyes(cheer ? 'augen-froh' : e.augen, fur, still)}
+          {activity === 'doze' ? (
+            <g>
+              <g fill="none" stroke={fur.eye} strokeWidth="3.2" strokeLinecap="round">
+                <path d="M73 113 Q80 119 87 113" /><path d="M113 113 Q120 119 127 113" />
+              </g>
+              <text className="anim-zzz" x="150" y="88" fontSize="16" fontWeight="700" fill={fur.eye} fontFamily="Fredoka, Nunito, sans-serif">z</text>
+              <text className="anim-zzz" x="162" y="72" fontSize="11" fontWeight="700" fill={fur.eye} fontFamily="Fredoka, Nunito, sans-serif" style={{ animationDelay: '1.2s' }}>z</text>
+            </g>
+          ) : renderEyes(cheer ? 'augen-froh' : e.augen, fur, still)}
           {cheer
             ? <path d="M93 123 Q100 135 107 123 Z" fill="#e8798f" stroke={fur.eye} strokeWidth="2" strokeLinejoin="round" />
             : <path d="M93 123 Q96.5 127.5 100 123 Q103.5 127.5 107 123" fill="none" stroke={fur.eye} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />}
+          {!cheer && renderActivity(activity, fur)}
           {renderHat(e.kopf)}
           {renderExtra(e.extra, fur)}
           {cheer && (

@@ -1,4 +1,5 @@
-import { QUICK_MINUTES } from '../../constants/timebox.js';
+import { BUDDY_ACTIVITY, QUICK_MINUTES } from '../../constants/timebox.js';
+import { Avatar } from '../avatar/Avatar.jsx';
 import { useNow } from '../../hooks/useNow.js';
 import { fmtTimer } from '../../lib/format.js';
 import { timerLeft, timerProgress } from '../../lib/timebox.js';
@@ -8,7 +9,7 @@ import { Modal } from '../ui/Modal.jsx';
 import { btnPrimary, btnSoft, focusRing, iconBtn } from '../ui/styles.js';
 import { useI18n } from '../../i18n/useI18n.js';
 
-export function TimerModal({ timer, task, after, nextTask, noiseOn, onNoise, onMinimize, onPause, onResume, onAdjust, onComplete, onStop, onLater, onToggleStep, onStartNext }) {
+export function TimerModal({ timer, task, hero, after, nextTask, noiseOn, onNoise, onMinimize, onPause, onResume, onAdjust, onComplete, onStop, onLater, onToggleStep, onStartNext }) {
   const now = useNow(timer && timer.running ? 250 : null);
   const { t, clock, duration } = useI18n();
 
@@ -37,6 +38,8 @@ export function TimerModal({ timer, task, after, nextTask, noiseOn, onNoise, onM
   const left = timerLeft(timer, now);
   const over = left < 0;
   const nextStep = task.steps.find((s) => !s.done);
+  // Mochi arbeitet mit (Body Doubling) – und döst, solange pausiert ist
+  const activity = timer.running ? BUDDY_ACTIVITY[task.category] || 'read' : 'doze';
   const status = over ? t('timer.over') : timer.running ? t('timer.until', { time: clock(now + left) }) : t('timer.paused');
 
   return (
@@ -51,8 +54,12 @@ export function TimerModal({ timer, task, after, nextTask, noiseOn, onNoise, onM
       </div>
 
       <h2 id="timer-title" className="mt-2 text-center font-display text-2xl font-semibold leading-snug text-slate-800 dark:text-slate-50">{task.title}</h2>
+      <p className="mt-0.5 text-center text-sm text-slate-500 dark:text-slate-400" aria-live="polite">{t(`buddy.${activity}`, { name: hero.name })}</p>
 
-      <div className="mt-4 flex justify-center">
+      <div className="relative mx-auto mt-4 flex w-fit justify-center">
+        <div className="absolute z-10 -left-20 -bottom-2 h-28 w-28 sm:-left-28 sm:h-32 sm:w-32" aria-hidden="true">
+          <Avatar equip={hero.equip} activity={activity} />
+        </div>
         <TimerRing size={196} stroke={7} progress={timerProgress(timer, left)} over={over} running={timer.running}>
           <div>
             <span className={`block font-display text-[44px] font-semibold leading-none tabular-nums ${over ? 'text-orange-600 dark:text-orange-300' : 'text-slate-800 dark:text-slate-50'}`}
