@@ -11,8 +11,9 @@ import { useI18n } from '../../i18n/useI18n.js';
 import { DAYPARTS, DEFAULT_DAYPART } from '../../constants/dayparts.js';
 import { addDays, dayKey, parseDayKey } from '../../lib/date.js';
 import { nextOccurrence, normalizeRepeat, WEEK_ORDER } from '../../lib/repeat.js';
+import { estimateFor } from '../../lib/estimate.js';
 
-export function TaskFormModal({ initial, onClose, onSave, onDelete }) {
+export function TaskFormModal({ initial, timeLog, onClose, onSave, onDelete }) {
   const { t, duration, day, weekday } = useI18n();
   const isEdit = !!initial;
   const [title, setTitle] = useState(initial ? initial.title : '');
@@ -28,6 +29,10 @@ export function TaskFormModal({ initial, onClose, onSave, onDelete }) {
   const [repeatDays, setRepeatDays] = useState(initial && initial.repeatDays.length ? initial.repeatDays : [parseDayKey(today).getDay()]);
   const [due, setDue] = useState(initial && initial.repeat === 'none' ? initial.due : null);
   const customDue = !!due && due !== today && due !== tomorrow;
+  // Zeitgefühl: Was dauert so etwas bei dir wirklich?
+  const estimate = minutes
+    ? estimateFor(timeLog, { id: initial ? initial.id : '', templateId: initial ? initial.templateId : null, repeat, title, category }, minutes)
+    : null;
   const boxChoices = Array.from(new Set([...BOX_CHOICES, ...(initial && initial.minutes ? [initial.minutes] : [])])).sort((a, b) => a - b);
   const [steps, setSteps] = useState(initial ? initial.steps.map((s) => ({ ...s })) : []);
   const [newStep, setNewStep] = useState('');
@@ -116,6 +121,11 @@ export function TaskFormModal({ initial, onClose, onSave, onDelete }) {
             ))}
           </div>
           <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">{t('form.timeboxHint')}</p>
+          {estimate && (
+            <p className="mt-1 flex items-center gap-1.5 text-xs font-semibold text-violet-700 dark:text-violet-300">
+              <Icon name="clock" size={13} />{t('form.timeEstimate', { duration: duration(estimate.suggested) })}
+            </p>
+          )}
         </fieldset>
 
         <fieldset>

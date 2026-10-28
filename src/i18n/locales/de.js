@@ -259,6 +259,7 @@ export const de = {
     timebox: 'Zeitbox',
     noTimebox: 'Keine',
     timeboxHint: 'So lange darfst du dir Zeit nehmen. Überziehen ist erlaubt.',
+    timeEstimate: 'So etwas dauert bei dir meist etwa: {duration}',
     daypart: 'Wann passt es am besten?',
     daypartHint: 'Aufgaben mit Tageszeit bekommen in der Liste einen eigenen Abschnitt.',
     repeat: 'Wiederholen',
@@ -303,6 +304,17 @@ export const de = {
     emptyTitle: 'Keine offene Aufgabe.',
     emptyText: 'Genieß die Pause oder hol dir eine kleine Vorlage.',
     lowEnergy: 'Heute mit wenig Kraft – ich schlage nur Leichtes vor.',
+  },
+
+  estimate: {
+    longer: {
+      task: 'Das dauert bei dir meist etwas länger – lieber {suggested} statt {planned}?',
+      category: '{category}-Aufgaben dauern bei dir meist etwas länger – lieber {suggested} statt {planned}?',
+      overall: 'Aufgaben dauern bei dir meist etwas länger als geplant – lieber {suggested} statt {planned}?',
+    },
+    shorter: 'Das schaffst du meist schneller als gedacht.',
+    take: '{duration} nehmen',
+    dismiss: 'Passt so',
   },
 
   buddy: {

@@ -7,6 +7,8 @@
  * Form eines Timers:
  * {
  *   taskId, startedAt, plannedMs,     // Aufgabe, Startzeit, geplante Gesamtlänge
+ *   baseMs,                           // ursprünglich geplant (ohne ±5) – zum Vergleich mit der echten Dauer
+ *   activeMs,                         // bisher gelaufene Zeit ohne Pausen (ohne den aktuellen Abschnitt)
  *   running,                          // läuft gerade?
  *   endAt,                            // nur wenn running: geplantes Ende (ms)
  *   remainingMs,                      // nur wenn pausiert: Restzeit (negativ = Überzeit)
@@ -31,6 +33,8 @@ export function createTimer(taskId, minutes, now) {
   return {
     taskId,
     plannedMs: minutes * MINUTE,
+    baseMs: minutes * MINUTE,
+    activeMs: 0,
     endAt: now + minutes * MINUTE,
     remainingMs: null,
     running: true,
@@ -41,7 +45,12 @@ export function createTimer(taskId, minutes, now) {
 }
 
 export function pausedTimer(timer, now) {
-  return { ...timer, running: false, remainingMs: timer.endAt - now, endAt: null };
+  return { ...timer, running: false, remainingMs: timer.endAt - now, endAt: null, activeMs: (timer.activeMs || 0) + (now - timer.segStart) };
+}
+
+/** Wie lange die Zeitbox wirklich lief – Pausen zählen nicht. */
+export function activeTime(timer, now) {
+  return (timer.activeMs || 0) + (timer.running ? now - timer.segStart : 0);
 }
 
 export function resumedTimer(timer, now) {

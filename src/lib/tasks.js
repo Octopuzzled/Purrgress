@@ -8,6 +8,7 @@ import { addDays, dayKey } from './date.js';
 import { isCurrent, isDueToday } from './due.js';
 import { dailyGoalFor, energyWeight } from './energy.js';
 import { latestOccurrence, nextOccurrence } from './repeat.js';
+import { addSample, makeSample, removeSample } from './estimate.js';
 import { levelInfo } from './progress.js';
 import { uid } from './id.js';
 import { withoutTimer } from './timebox.js';
@@ -62,8 +63,14 @@ export function completeTask(state, id, now = Date.now(), surprise = null) {
   const goalBonus = doneToday >= dailyGoalFor(state, day) && state.goalBonusDay !== day ? DAILY_GOAL_BONUS : 0;
   const found = surprise && surprise.kind === 'coins' ? surprise.coins : 0;
   const gift = surprise && surprise.kind === 'gift' && !state.owned.includes(surprise.id) ? { slot: surprise.slot, id: surprise.id } : null;
-  const awarded = { xp: r.xp, coins: r.coins + lv.bonus + goalBonus + found, pts: r.pts, goalBonus, ...(gift ? { gift } : {}) };
-  const base = state.timer && state.timer.taskId === id ? withoutTimer(state, now) : state;
+  // Endet hier eine Zeitbox, wird daraus eine Messung fürs Zeitgefühl
+  const timed = state.timer && state.timer.taskId === id;
+  const sample = timed ? makeSample(task, state.timer, now) : null;
+  const awarded = {
+    xp: r.xp, coins: r.coins + lv.bonus + goalBonus + found, pts: r.pts, goalBonus,
+    ...(gift ? { gift } : {}), ...(sample ? { sampleId: sample.id } : {}),
+  };
+  const base = addSample(timed ? withoutTimer(state, now) : state, sample);
   return {
     state: {
       ...base,
@@ -90,7 +97,7 @@ export function reopenTask(state, id) {
   const equip = gift && state.hero.equip[gift.slot] === gift.id
     ? { ...state.hero.equip, [gift.slot]: DEFAULT_EQUIP[gift.slot] } : state.hero.equip;
   return {
-    ...state,
+    ...removeSample(state, a.sampleId),
     owned: gift ? state.owned.filter((x) => x !== gift.id) : state.owned,
     hero: equip === state.hero.equip ? state.hero : { ...state.hero, equip },
     xp: Math.max(0, state.xp - a.xp),

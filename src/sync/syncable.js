@@ -2,7 +2,7 @@
  * Welcher Teil des Spielstands wird zwischen Geräten abgeglichen?
  *
  * Abgeglichen: Fortschritt, Aufgaben, eigene Vorlagen, Held, Umkleide, Tagesziel, Tagesform,
- * Ruhetage und Kuscheldecken.
+ * Ruhetage, Kuscheldecken und Zeitgefühl-Messungen.
  * Pro Gerät: laufende Zeitbox und Einstellungen wie Sprache, Farbschema oder Töne.
  */
 import { FREE_ITEMS } from '../constants/shop.js';
@@ -28,6 +28,7 @@ export function toSyncable(state) {
     restDays: state.restDays || [],
     shields: state.shields || 0,
     shieldUsedOn: state.shieldUsedOn || null,
+    timeLog: state.timeLog || [],
   };
 }
 
@@ -49,6 +50,7 @@ export function applySyncable(state, s) {
     restDays: s.restDays,
     shields: s.shields,
     shieldUsedOn: s.shieldUsedOn,
+    timeLog: s.timeLog,
   };
 }
 

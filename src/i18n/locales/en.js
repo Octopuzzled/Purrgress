@@ -259,6 +259,7 @@ export const en = {
     timebox: 'Timebox',
     noTimebox: 'None',
     timeboxHint: 'This is how long you may take. Going over is allowed.',
+    timeEstimate: 'For you, this usually takes about: {duration}',
     daypart: 'When does it fit best?',
     daypartHint: 'Tasks with a time of day get their own section in the list.',
     repeat: 'Repeat',
@@ -303,6 +304,17 @@ export const en = {
     emptyTitle: 'No open tasks.',
     emptyText: 'Enjoy the break or pick a small template.',
     lowEnergy: 'Low energy today – I’ll only suggest easy things.',
+  },
+
+  estimate: {
+    longer: {
+      task: 'This usually takes you a bit longer – {suggested} instead of {planned}?',
+      category: '{category} tasks usually take you a bit longer – {suggested} instead of {planned}?',
+      overall: 'Tasks usually take you a bit longer than planned – {suggested} instead of {planned}?',
+    },
+    shorter: 'You usually manage this faster than expected.',
+    take: 'Take {duration}',
+    dismiss: 'Keep it',
   },
 
   buddy: {

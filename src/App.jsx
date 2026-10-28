@@ -400,7 +400,7 @@ export function App() {
       {toast && <Toast toast={toast} onUndo={undoToast} onClose={() => setToast(null)} lifted={miniVisible} />}
 
       {form && (
-        <TaskFormModal key={form.task ? form.task.id : 'neu'} initial={form.task} onClose={() => setForm(null)} onSave={saveTask}
+        <TaskFormModal key={form.task ? form.task.id : 'neu'} initial={form.task} timeLog={state.timeLog} onClose={() => setForm(null)} onSave={saveTask}
           onDelete={(id) => { deleteTask(id); setForm(null); }} />
       )}
       {tadaOpen && <TadaModal onClose={() => setTadaOpen(false)} onSave={logTada} />}
@@ -410,7 +410,7 @@ export function App() {
           onToggleStep={toggleStep} onAddFirstStep={shrinkTask} onGoLibrary={goLibrary} />
       )}
       {timerOpen && (timebox.timer || afterDone) && (
-        <TimerModal timer={timebox.timer} task={timebox.task} hero={state.hero} after={afterDone} nextTask={nextTask}
+        <TimerModal timer={timebox.timer} task={timebox.task} hero={state.hero} timeLog={state.timeLog} after={afterDone} nextTask={nextTask}
           noiseOn={timebox.noiseOn} onNoise={timebox.toggleNoise} onMinimize={closeTimerModal}
           onPause={timebox.pause} onResume={timebox.resume} onAdjust={timebox.adjust}
           onComplete={completeTimebox} onStop={stopTimebox} onLater={postponeTimebox}

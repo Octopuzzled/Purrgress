@@ -11,6 +11,8 @@
  * dann bleibt die bearbeitete Fassung erhalten.
  */
 
+import { normalizeTimeLog } from '../lib/estimate.js';
+
 /** JSON mit sortierten Schlüsseln – für verlässliche Vergleiche. */
 export function stableStringify(value) {
   if (Array.isArray(value)) return `[${value.map(stableStringify).join(',')}]`;
@@ -124,6 +126,7 @@ export function merge3(base, local, remote) {
       equip: mergeValueMap(base.hero.equip, local.hero.equip, remote.hero.equip),
     },
     tasks: mergeById(base.tasks, local.tasks, remote.tasks),
+    timeLog: normalizeTimeLog(mergeById(base.timeLog || [], local.timeLog || [], remote.timeLog || [])),
     customTemplates: mergeById(base.customTemplates, local.customTemplates, remote.customTemplates),
     dailyGoal: mergeValue(base.dailyGoal, local.dailyGoal, remote.dailyGoal),
     restDays: mergeSet(base.restDays || [], local.restDays || [], remote.restDays || []),

@@ -14,6 +14,7 @@ import { normalizeCustomTemplate } from './templates.js';
 import { normalizeEnergy } from './energy.js';
 import { nextOccurrence, normalizeRepeat } from './repeat.js';
 import { normalizeRest } from './rest.js';
+import { normalizeTimeLog } from './estimate.js';
 
 /** Tageszeit je Vorlage – für Aufgaben aus der Zeit, bevor es Tageszeiten gab. */
 const TEMPLATE_DAYPART = Object.fromEntries(
@@ -87,6 +88,7 @@ export function initialState(language = 'system') {
     restDays: [], // Ruhetage (auch von Kuscheldecken geschützte)
     shields: 0, // Kuscheldecken auf Vorrat
     shieldUsedOn: null,
+    timeLog: [], // Messungen geplant vs. tatsächlich (lib/estimate.js)
     timer: null,
     energy: null, // Tagesform: { day, level }
     settings: { language, theme: 'system', sound: true, reduceMotion: prefersReducedMotion(), dailyGoal: 3, chimeEvery: 0 },
@@ -122,6 +124,7 @@ export function migrate(p) {
     timer: validTimer(p.timer, p.tasks),
     energy: normalizeEnergy(p.energy),
     ...normalizeRest(p),
+    timeLog: normalizeTimeLog(p.timeLog),
     settings: { ...base.settings, ...(p.settings || {}) },
   };
 }

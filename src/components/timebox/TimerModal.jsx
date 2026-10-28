@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { BUDDY_ACTIVITY, QUICK_MINUTES } from '../../constants/timebox.js';
 import { Avatar } from '../avatar/Avatar.jsx';
+import { estimateFor } from '../../lib/estimate.js';
 import { useNow } from '../../hooks/useNow.js';
 import { fmtTimer } from '../../lib/format.js';
 import { timerLeft, timerProgress } from '../../lib/timebox.js';
@@ -9,9 +11,10 @@ import { Modal } from '../ui/Modal.jsx';
 import { btnPrimary, btnSoft, focusRing, iconBtn } from '../ui/styles.js';
 import { useI18n } from '../../i18n/useI18n.js';
 
-export function TimerModal({ timer, task, hero, after, nextTask, noiseOn, onNoise, onMinimize, onPause, onResume, onAdjust, onComplete, onStop, onLater, onToggleStep, onStartNext }) {
+export function TimerModal({ timer, task, hero, timeLog, after, nextTask, noiseOn, onNoise, onMinimize, onPause, onResume, onAdjust, onComplete, onStop, onLater, onToggleStep, onStartNext }) {
   const now = useNow(timer && timer.running ? 250 : null);
   const { t, clock, duration } = useI18n();
+  const [estimateSeen, setEstimateSeen] = useState(false);
 
   if (after || !timer || !task) {
     return (
@@ -38,6 +41,10 @@ export function TimerModal({ timer, task, hero, after, nextTask, noiseOn, onNois
   const left = timerLeft(timer, now);
   const over = left < 0;
   const nextStep = task.steps.find((s) => !s.done);
+  // Zeitgefühl: Hinweis nur, solange die Länge noch nicht angepasst wurde
+  const plannedMin = Math.round((timer.baseMs || timer.plannedMs) / 60000);
+  const estimate = !estimateSeen && !over && timer.plannedMs === (timer.baseMs || timer.plannedMs)
+    ? estimateFor(timeLog, task, plannedMin) : null;
   // Mochi arbeitet mit (Body Doubling) – und döst, solange pausiert ist
   const activity = timer.running ? BUDDY_ACTIVITY[task.category] || 'read' : 'doze';
   const status = over ? t('timer.over') : timer.running ? t('timer.until', { time: clock(now + left) }) : t('timer.paused');
@@ -77,6 +84,28 @@ export function TimerModal({ timer, task, hero, after, nextTask, noiseOn, onNois
         </button>
         <button type="button" className={`${btnSoft} h-11 w-16 px-0 text-sm`} onClick={() => onAdjust(5)} aria-label={t('timer.more')}>+5</button>
       </div>
+
+      {estimate && (
+        <div className="anim-fade mt-4 rounded-2xl bg-violet-50 p-3 text-sm text-violet-900 dark:bg-violet-400/10 dark:text-violet-100">
+          <p className="flex items-start gap-2">
+            <Icon name="clock" size={16} className="mt-0.5 shrink-0" />
+            <span>{estimate.longer
+              ? t(`estimate.longer.${estimate.scope}`, { category: t(`category.${task.category}.label`), suggested: duration(estimate.suggested), planned: duration(plannedMin) })
+              : t('estimate.shorter')}</span>
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2 pl-6">
+            {estimate.longer && (
+              <button type="button" className={`${btnSoft} py-1.5 text-sm`} onClick={() => { onAdjust(estimate.suggested - plannedMin); setEstimateSeen(true); }}>
+                {t('estimate.take', { duration: duration(estimate.suggested) })}
+              </button>
+            )}
+            <button type="button" onClick={() => setEstimateSeen(true)}
+              className={`rounded-xl px-2 py-1 text-sm font-semibold text-violet-800/80 hover:text-violet-950 dark:text-violet-200/80 dark:hover:text-violet-50 ${focusRing}`}>
+              {t('estimate.dismiss')}
+            </button>
+          </div>
+        </div>
+      )}
 
       {over && (
         <p className="anim-fade mt-4 rounded-2xl bg-orange-50 p-3 text-center text-sm text-orange-900 dark:bg-orange-400/10 dark:text-orange-100">
