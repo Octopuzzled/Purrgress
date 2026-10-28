@@ -81,6 +81,9 @@ export const de = {
     levelUpTitle: 'Level {level}!',
     levelUpText: 'Du wächst – in deinem eigenen Tempo.',
     levelUpBonus: '+{bonus} Bonus-Münzen',
+    lineSnooze: 'Gute Entscheidung. Morgen ist auch ein Tag.',
+    lineTada: 'Ta-da! Auch Ungeplantes zählt.',
+    lineGoodNight: 'Für heute ist Schluss. Du hast genug getan.',
   },
 
   praise: [
@@ -95,6 +98,30 @@ export const de = {
   toast: {
     done: 'Erledigt: {title}',
     undo: 'Rückgängig',
+    tada: 'Ta-da: {title}',
+    snoozed: 'Auf morgen gelegt: {title}',
+    snoozedMany: { one: 'Eine Aufgabe auf morgen gelegt', other: '{count} Aufgaben auf morgen gelegt' },
+  },
+
+  tada: {
+    button: 'Ta-da!',
+    buttonLabel: 'Etwas eintragen, das du schon geschafft hast',
+    title: 'Ta-da! Was hast du geschafft?',
+    subtitle: 'Auch Ungeplantes zählt. Trag es ein und hol dir deine Belohnung.',
+    name: 'Was war es?',
+    placeholder: 'z. B. Endlich den Brief geöffnet',
+    effort: 'Wie viel Kraft hat es gekostet?',
+    submit: 'Eintragen',
+  },
+
+  wrapUp: {
+    title: 'Dein Tag',
+    done: { one: 'Heute geschafft: eine Sache.', other: 'Heute geschafft: {count} Sachen.' },
+    nothing: 'Heute ohne Häkchen – das ist okay. Ausruhen zählt auch.',
+    more: '+{count} weitere',
+    move: { one: 'Die offene auf morgen legen', other: '{count} offene auf morgen legen' },
+    moveHint: 'Was heute fällig war, darf morgen dran sein.',
+    hide: 'Für heute ausblenden',
   },
 
   due: {
@@ -153,6 +180,8 @@ export const de = {
     edit: '„{title}“ bearbeiten',
     remove: '„{title}“ löschen',
     due: 'fällig {day}',
+    snooze: 'Nicht heute: „{title}“',
+    tada: 'Ta-da',
   },
 
   form: {

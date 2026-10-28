@@ -81,6 +81,9 @@ export const en = {
     levelUpTitle: 'Level {level}!',
     levelUpText: "You're growing – at your own pace.",
     levelUpBonus: '+{bonus} bonus coins',
+    lineSnooze: 'Good call. Tomorrow is another day.',
+    lineTada: 'Ta-da! Unplanned wins count too.',
+    lineGoodNight: 'That’s it for today. You did enough.',
   },
 
   praise: [
@@ -95,6 +98,30 @@ export const en = {
   toast: {
     done: 'Done: {title}',
     undo: 'Undo',
+    tada: 'Ta-da: {title}',
+    snoozed: 'Moved to tomorrow: {title}',
+    snoozedMany: { one: 'One task moved to tomorrow', other: '{count} tasks moved to tomorrow' },
+  },
+
+  tada: {
+    button: 'Ta-da!',
+    buttonLabel: 'Log something you already did',
+    title: 'Ta-da! What did you do?',
+    subtitle: 'Unplanned things count too. Log it and collect your reward.',
+    name: 'What was it?',
+    placeholder: 'e.g. Finally opened that letter',
+    effort: 'How much energy did it take?',
+    submit: 'Log it',
+  },
+
+  wrapUp: {
+    title: 'Your day',
+    done: { one: 'Done today: one thing.', other: 'Done today: {count} things.' },
+    nothing: 'No ticks today – that’s okay. Resting counts too.',
+    more: '+{count} more',
+    move: { one: 'Move the open one to tomorrow', other: 'Move {count} open to tomorrow' },
+    moveHint: 'What was due today may be tomorrow’s.',
+    hide: 'Hide for today',
   },
 
   due: {
@@ -153,6 +180,8 @@ export const en = {
     edit: 'Edit “{title}”',
     remove: 'Delete “{title}”',
     due: 'due {day}',
+    snooze: 'Not today: “{title}”',
+    tada: 'Ta-da',
   },
 
   form: {

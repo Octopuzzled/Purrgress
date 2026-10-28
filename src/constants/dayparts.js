@@ -14,3 +14,6 @@ export const DEFAULT_DAYPART = 'jederzeit';
 /** Ab wann „morgens“ endet und „abends“ beginnt (volle Stunden, Ortszeit). */
 export const MORNING_UNTIL = 12;
 export const EVENING_FROM = 17;
+
+/** Ab wann der Tagesabschluss in der Aufgabenliste erscheint (volle Stunde, Ortszeit). */
+export const WRAP_UP_FROM = 18;

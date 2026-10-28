@@ -6,7 +6,7 @@ import { Icon } from '../ui/Icon.jsx';
 import { btnPrimary, focusRing, iconBtn } from '../ui/styles.js';
 import { useI18n } from '../../i18n/useI18n.js';
 import { addDays, dayKey } from '../../lib/date.js';
-import { dueStatus } from '../../lib/due.js';
+import { dueStatus, isCurrent } from '../../lib/due.js';
 
 /** Farben für das Fälligkeits-Kärtchen – Überfälliges sanft orange, nicht alarmrot. */
 const DUE_TONE = {
@@ -15,7 +15,7 @@ const DUE_TONE = {
   future: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300',
 };
 
-export function TaskRow({ task, onToggle, onToggleStep, onEdit, onDelete, onStart, onOpenTimer, activeId, today = dayKey(), hideDue = false }) {
+export function TaskRow({ task, onToggle, onToggleStep, onEdit, onDelete, onStart, onOpenTimer, onSnooze, activeId, today = dayKey(), hideDue = false }) {
   const { t, duration, day } = useI18n();
   const isActive = activeId === task.id;
   const [picking, setPicking] = useState(false);
@@ -60,6 +60,9 @@ export function TaskRow({ task, onToggle, onToggleStep, onEdit, onDelete, onStar
               <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 ${DUE_TONE[due]}`} title={t('task.due', { day: day(task.due, today) })}>
                 <Icon name="calendar" size={12} strokeWidth={2.5} />{dueText}
               </span>
+            )}
+            {task.tada && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-pink-100 px-2 py-0.5 text-pink-900 dark:bg-pink-400/15 dark:text-pink-100"><Icon name="sparkles" size={12} strokeWidth={2.5} />{t('task.tada')}</span>
             )}
             {task.repeat === 'daily' && (
               <span className="inline-flex items-center gap-1 rounded-full bg-sky-100 px-2 py-0.5 text-sky-800 dark:bg-sky-400/15 dark:text-sky-200"><Icon name="repeat" size={12} strokeWidth={2.5} />{t('task.daily')}</span>
@@ -133,6 +136,12 @@ export function TaskRow({ task, onToggle, onToggleStep, onEdit, onDelete, onStar
               onClick={() => (isActive ? onOpenTimer() : onStart(task.id))}
               aria-label={t(isActive ? 'task.openTimer' : 'task.startTimer', { title: task.title })}>
               <Icon name={isActive ? 'timer' : 'play'} size={16} />
+            </button>
+          )}
+          {!task.done && !isActive && isCurrent(task, today) && (
+            <button type="button" className={iconBtn} onClick={(e) => onSnooze(task.id, e)}
+              aria-label={t('task.snooze', { title: task.title })} title={t('task.snooze', { title: task.title })}>
+              <Icon name="later" size={17} />
             </button>
           )}
           <button type="button" className={iconBtn} onClick={() => onEdit(task)} aria-label={t('task.edit', { title: task.title })}><Icon name="pencil" size={17} /></button>

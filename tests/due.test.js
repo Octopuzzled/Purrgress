@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { addDays, daysBetween, isDayKey } from '../src/lib/date.js';
 import { dueStatus, groupByDay, isCurrent, isDueToday, sortByDue } from '../src/lib/due.js';
 import { initialState, normalizeTask } from '../src/lib/state.js';
-import { nextOpenTask, pickTask, reopenDailyTasks } from '../src/lib/tasks.js';
+import { completeTask, leftoverTasks, nextOpenTask, pickTask, postponeTask, reopenDailyTasks, setDueDates } from '../src/lib/tasks.js';
 import { createI18n } from '../src/i18n/index.js';
 
 const TODAY = '2026-10-28';
@@ -62,6 +62,41 @@ describe('Tägliche Aufgaben', () => {
   it('lassen Aufgaben mit festem Datum in Ruhe', () => {
     const start = { ...initialState(), tasks: [task('a', { due: '2026-10-20' })] };
     expect(reopenDailyTasks(start, TODAY)).toBe(start);
+  });
+});
+
+describe('„Nicht heute“ und Tagesabschluss', () => {
+  it('legt eine Aufgabe auf morgen und kann das zurücknehmen', () => {
+    const start = { ...initialState(), tasks: [task('a'), task('b', { due: '2026-10-20' })] };
+    const later = postponeTask(start, 'b', TODAY);
+    expect(later.tasks[1].due).toBe('2026-10-29');
+    expect(setDueDates(later, { b: '2026-10-20' }).tasks[1].due).toBe('2026-10-20');
+    expect(postponeTask(start, 'a', TODAY).tasks[0].due).toBe('2026-10-29');
+  });
+
+  it('lässt eine übersprungene tägliche Aufgabe bis morgen in Ruhe', () => {
+    const start = { ...initialState(), tasks: [task('a', { repeat: 'daily', due: TODAY })] };
+    const skipped = postponeTask(start, 'a', TODAY);
+    expect(reopenDailyTasks(skipped, TODAY)).toBe(skipped);
+    expect(isCurrent(skipped.tasks[0], TODAY)).toBe(false);
+    expect(isCurrent(skipped.tasks[0], '2026-10-29')).toBe(true);
+  });
+
+  it('findet nur Liegengebliebenes mit Datum – ohne tägliche und ohne Datum', () => {
+    const list = [
+      task('heute', { due: TODAY }), task('alt', { due: '2026-10-01' }), task('morgen', { due: '2026-10-29' }),
+      task('ohne'), task('taeglich', { repeat: 'daily', due: TODAY }), task('fertig', { due: TODAY, done: true }),
+    ];
+    expect(leftoverTasks(list, TODAY).map((t) => t.id)).toEqual(['heute', 'alt']);
+  });
+
+  it('merkt sich Ta-da-Einträge und belohnt sie wie andere Aufgaben', () => {
+    const t = task('x', { tada: true, difficulty: 'mittel' });
+    expect(t.tada).toBe(true);
+    expect(task('y').tada).toBe(false);
+    const { state } = completeTask({ ...initialState(), tasks: [t] }, 'x');
+    expect(state.tasks[0].done).toBe(true);
+    expect(state.xp).toBeGreaterThan(0);
   });
 });
 

@@ -49,6 +49,7 @@ export function normalizeTask(t) {
     minutes: Number(t.minutes) > 0 ? Math.min(240, Math.round(Number(t.minutes))) : null,
     when: daypartFor(t),
     templateId: t.templateId || null,
+    tada: !!t.tada, // nachträglich eingetragen („Ta-da!“), nicht vorher geplant
     createdAt: t.createdAt || Date.now(),
   };
 }

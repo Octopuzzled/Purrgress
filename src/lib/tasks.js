@@ -3,7 +3,7 @@
  * Sie verändern nichts, sondern geben immer einen neuen Zustand zurück.
  */
 import { DAILY_GOAL_BONUS, DIFF, LEVEL_BONUS_COINS, STEP_XP } from '../constants/game.js';
-import { dayKey } from './date.js';
+import { addDays, dayKey } from './date.js';
 import { isCurrent, isDueToday } from './due.js';
 import { levelInfo } from './progress.js';
 import { withoutTimer } from './timebox.js';
@@ -119,12 +119,31 @@ export function reopenDailyTasks(state, today = dayKey()) {
   const tasks = state.tasks.map((t) => {
     if (t.repeat !== 'daily') return t;
     const reopen = t.done && t.doneDay !== today;
-    if (!reopen && t.due === today) return t;
+    // Mit „Nicht heute“ auf später gelegte tägliche Aufgaben warten bis zu ihrem Tag
+    if (!reopen && t.due >= today) return t;
     changed = true;
     if (!reopen) return { ...t, due: today };
     return { ...t, due: today, done: false, doneDay: null, awarded: null, steps: t.steps.map((s) => ({ ...s, done: false, xp: 0, coins: 0 })) };
   });
   return changed ? { ...state, tasks } : state;
+}
+
+/** Setzt Fälligkeiten neu: dueById = { [id]: 'YYYY-MM-DD' | null } */
+export function setDueDates(state, dueById) {
+  return { ...state, tasks: state.tasks.map((t) => (t.id in dueById ? { ...t, due: dueById[t.id] } : t)) };
+}
+
+/** „Nicht heute“: Die Aufgabe ist morgen wieder dran – auch eine tägliche. */
+export function postponeTask(state, id, today = dayKey()) {
+  return setDueDates(state, { [id]: addDays(today, 1) });
+}
+
+/**
+ * Was heute fällig war und offen blieb (ohne tägliche – die kommen von selbst wieder).
+ * Aufgaben ohne Datum gehören zu keinem Tag und bleiben, wo sie sind.
+ */
+export function leftoverTasks(tasks, today = dayKey()) {
+  return tasks.filter((t) => !t.done && t.repeat !== 'daily' && t.due && t.due <= today);
 }
 
 /** Legt eine Aufgabe ans Ende der Liste („Später“). */

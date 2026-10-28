@@ -7,7 +7,7 @@ import { useLanguage } from './hooks/useLanguage.js';
 import { useSync } from './hooks/useSync.js';
 import { useTimebox } from './hooks/useTimebox.js';
 import { playSound } from './lib/audio.js';
-import { dayKey } from './lib/date.js';
+import { addDays, dayKey } from './lib/date.js';
 import { pointFrom } from './lib/dom.js';
 import { levelInfo } from './lib/progress.js';
 import { restoreBackup } from './lib/backup.js';
@@ -15,13 +15,14 @@ import { clearState, initialState, normalizeTask } from './lib/state.js';
 import { isUnlocked } from './constants/shop.js';
 import { removeCustomTemplate, saveCustomTemplate } from './lib/templates.js';
 import {
-  addTask, clearDoneTasks, completeStep, completeTask, nextOpenTask, removeTask, reopenStep, reopenTask, updateTask,
+  addTask, clearDoneTasks, completeStep, completeTask, nextOpenTask, postponeTask, removeTask, reopenStep, reopenTask, setDueDates, updateTask,
 } from './lib/tasks.js';
 import { HeroCard } from './components/hero/HeroCard.jsx';
 import { LevelUpModal } from './components/hero/LevelUpModal.jsx';
 import { SyncChoiceDialog } from './components/sync/SyncChoiceDialog.jsx';
 import { AppHeader } from './components/layout/AppHeader.jsx';
 import { TabBar } from './components/layout/TabBar.jsx';
+import { TadaModal } from './components/tasks/TadaModal.jsx';
 import { TaskFormModal } from './components/tasks/TaskFormModal.jsx';
 import { FocusModal } from './components/timebox/FocusModal.jsx';
 import { MiniTimer } from './components/timebox/MiniTimer.jsx';
@@ -45,6 +46,7 @@ export function App() {
   const [levelUp, setLevelUp] = useState(null);
   const [form, setForm] = useState(null); // { task: Task | null }
   const [focusOpen, setFocusOpen] = useState(false);
+  const [tadaOpen, setTadaOpen] = useState(false);
   const [timerOpen, setTimerOpen] = useState(false);
   const [afterDone, setAfterDone] = useState(null); // { title, nextId }
 
@@ -104,6 +106,15 @@ export function App() {
     const { reward } = completeTask(state, id);
     if (!reward) return;
     setState((s) => completeTask(s, id).state);
+    celebrateReward(reward, evt);
+    const praise = t('praise');
+    celebrate.say(reward.goalBonus
+      ? t('hero.lineGoalBonus', { coins: reward.goalBonus })
+      : praise[Math.floor(Math.random() * praise.length)]);
+    setToast({ id: `${id}-${Date.now()}`, kind: 'done', taskId: id, text: task.title });
+  };
+
+  const celebrateReward = (reward, evt) => {
     celebrate.burst(pointFrom(evt), [
       { text: t('common.xpGain', { xp: reward.xp }), tone: 'xp' },
       { text: t('common.coinGain', { coins: reward.coins }), tone: 'coin' },
@@ -111,18 +122,47 @@ export function App() {
     ]);
     sfx(reward.gained > 0 ? 'level' : 'done');
     celebrate.cheer();
-    const praise = t('praise');
-    celebrate.say(reward.goalBonus
-      ? t('hero.lineGoalBonus', { coins: reward.goalBonus })
-      : praise[Math.floor(Math.random() * praise.length)]);
-    setToast({ id: `${id}-${Date.now()}`, taskId: id, text: task.title });
     showLevelUp(reward);
+  };
+
+  /* „Ta-da!“: schon Geschafftes eintragen – wird angelegt und sofort abgehakt */
+  const logTada = ({ title, difficulty }, evt) => {
+    const task = normalizeTask({ title, difficulty, tada: true, createdAt: Date.now() });
+    const { reward } = completeTask(addTask(state, task), task.id);
+    setState((s) => completeTask(addTask(s, task), task.id).state);
+    setTadaOpen(false);
+    celebrateReward(reward, evt);
+    celebrate.say(reward.goalBonus ? t('hero.lineGoalBonus', { coins: reward.goalBonus }) : t('hero.lineTada'));
+    setToast({ id: `${task.id}-${Date.now()}`, kind: 'tada', taskId: task.id, text: title });
+  };
+
+  /* „Nicht heute“ und Tagesabschluss: auf morgen legen, mit Rückgängig */
+  const snoozeTask = (id) => {
+    const task = state.tasks.find((t) => t.id === id);
+    if (!task) return;
+    setState((s) => postponeTask(s, id));
+    celebrate.say(t('hero.lineSnooze'));
+    setToast({ id: `${id}-${Date.now()}`, kind: 'snoozed', text: task.title, prevDue: { [id]: task.due } });
+  };
+
+  const moveToTomorrow = (ids) => {
+    const prevDue = Object.fromEntries(state.tasks.filter((t) => ids.includes(t.id)).map((t) => [t.id, t.due]));
+    const tomorrow = addDays(dayKey(), 1);
+    setState((s) => setDueDates(s, Object.fromEntries(ids.map((id) => [id, tomorrow]))));
+    celebrate.say(t('hero.lineGoodNight'));
+    setToast({ id: `many-${Date.now()}`, kind: 'snoozed', count: ids.length, prevDue });
   };
 
   const undoToast = () => {
     if (!toast) return;
-    const task = state.tasks.find((t) => t.id === toast.taskId);
-    if (task && task.done) toggleTask(task.id);
+    if (toast.prevDue) {
+      setState((s) => setDueDates(s, toast.prevDue));
+    } else if (toast.kind === 'tada') {
+      setState((s) => removeTask(reopenTask(s, toast.taskId), toast.taskId));
+    } else {
+      const task = state.tasks.find((t) => t.id === toast.taskId);
+      if (task && task.done) toggleTask(task.id);
+    }
     setToast(null);
   };
 
@@ -270,14 +310,15 @@ export function App() {
             onToggleSound={() => updateSettings({ sound: !settings.sound })}
             onToggleTheme={() => updateSettings({ theme: isDark ? 'light' : 'dark' })} />
           <HeroCard data={state} lvl={lvl} todayCount={todayCount} cheering={celebrate.cheering} cheerTick={celebrate.cheerTick}
-            line={celebrate.heroLine || defaultLine} onRename={rename} />
+            line={celebrate.heroLine || defaultLine} onRename={rename} onTada={() => setTadaOpen(true)} />
         </aside>
 
         <main className="mt-4 lg:mt-0">
           <TabBar tab={tab} onChange={setTab} />
           <div className="mt-3" key={tab}>
             {tab === 'aufgaben' && (
-              <TasksView tasks={state.tasks} timer={timebox.timer}
+              <TasksView tasks={state.tasks} timer={timebox.timer} todayCount={todayCount}
+                onSnooze={snoozeTask} onMoveToTomorrow={moveToTomorrow}
                 onStart={startTimebox} onOpenTimer={() => setTimerOpen(true)}
                 onToggle={toggleTask} onToggleStep={toggleStep}
                 onEdit={(task) => setForm({ task })} onDelete={deleteTask} onNew={() => setForm({ task: null })}
@@ -306,6 +347,7 @@ export function App() {
       {form && (
         <TaskFormModal key={form.task ? form.task.id : 'neu'} initial={form.task} onClose={() => setForm(null)} onSave={saveTask} />
       )}
+      {tadaOpen && <TadaModal onClose={() => setTadaOpen(false)} onSave={logTada} />}
       {focusOpen && (
         <FocusModal tasks={state.tasks} onClose={() => setFocusOpen(false)} onStart={startTimebox}
           onComplete={(id, e) => { toggleTask(id, e); setFocusOpen(false); }}

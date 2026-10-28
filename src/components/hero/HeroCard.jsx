@@ -5,10 +5,10 @@ import { Avatar } from '../avatar/Avatar.jsx';
 import { CoinBadge } from '../ui/Coin.jsx';
 import { Icon } from '../ui/Icon.jsx';
 import { XpBar } from '../ui/XpBar.jsx';
-import { iconBtn, inputCls } from '../ui/styles.js';
+import { focusRing, iconBtn, inputCls } from '../ui/styles.js';
 import { useI18n } from '../../i18n/useI18n.js';
 
-export function HeroCard({ data, lvl, todayCount, cheering, cheerTick, line, onRename }) {
+export function HeroCard({ data, lvl, todayCount, cheering, cheerTick, line, onRename, onTada }) {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(data.hero.name);
   useEffect(() => { if (!editing) setName(data.hero.name); }, [data.hero.name, editing]);
@@ -61,9 +61,15 @@ export function HeroCard({ data, lvl, todayCount, cheering, cheerTick, line, onR
         </div>
       </div>
 
-      <p className={`mt-3 rounded-2xl px-3.5 py-2 text-sm lg:mt-4 ${reached ? 'bg-emerald-50 text-emerald-900 dark:bg-emerald-400/10 dark:text-emerald-100' : 'bg-violet-50 text-violet-900 dark:bg-violet-400/10 dark:text-violet-100'}`} aria-live="polite">
-        {line}
-      </p>
+      <div className="mt-3 flex items-stretch gap-2 lg:mt-4">
+        <p className={`min-w-0 flex-1 rounded-2xl px-3.5 py-2 text-sm ${reached ? 'bg-emerald-50 text-emerald-900 dark:bg-emerald-400/10 dark:text-emerald-100' : 'bg-violet-50 text-violet-900 dark:bg-violet-400/10 dark:text-violet-100'}`} aria-live="polite">
+          {line}
+        </p>
+        <button type="button" onClick={onTada} aria-label={t('tada.buttonLabel')} title={t('tada.buttonLabel')}
+          className={`inline-flex shrink-0 items-center gap-1.5 rounded-2xl bg-pink-100 px-3 text-sm font-bold text-pink-900 transition hover:bg-pink-200 active:scale-[0.98] dark:bg-pink-400/15 dark:text-pink-100 dark:hover:bg-pink-400/25 ${focusRing}`}>
+          <Icon name="sparkles" size={16} />{t('tada.button')}
+        </button>
+      </div>
 
       <div className="mt-5 hidden grid-cols-2 gap-x-4 gap-y-3 lg:grid">
         {CAT_ORDER.map((c) => {

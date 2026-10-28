@@ -6,6 +6,7 @@ import { dayKey } from '../lib/date.js';
 import { groupByDaypart, usesDayparts } from '../lib/dayparts.js';
 import { groupByDay, isCurrent, isDueToday, sortByDue } from '../lib/due.js';
 import { timerLeft } from '../lib/timebox.js';
+import { DayWrapUp } from '../components/tasks/DayWrapUp.jsx';
 import { DaypartSection } from '../components/tasks/DaypartSection.jsx';
 import { TaskRow } from '../components/tasks/TaskRow.jsx';
 import { Icon } from '../components/ui/Icon.jsx';
@@ -13,7 +14,7 @@ import { SegmentedControl } from '../components/ui/SegmentedControl.jsx';
 import { btnPrimary, btnSoft, focusRing, iconBtn, inputCls, pill, sheet } from '../components/ui/styles.js';
 import { useI18n } from '../i18n/useI18n.js';
 
-export function TasksView({ tasks, timer, onToggle, onToggleStep, onEdit, onDelete, onNew, onFocus, onClearDone, onGoLibrary, onStart, onOpenTimer }) {
+export function TasksView({ tasks, timer, todayCount, onToggle, onToggleStep, onEdit, onDelete, onNew, onFocus, onClearDone, onGoLibrary, onStart, onOpenTimer, onSnooze, onMoveToTomorrow }) {
   const { t, duration, clock, day } = useI18n();
   const now = useNow(timer && timer.running ? 15000 : 30000);
   const [query, setQuery] = useState('');
@@ -42,7 +43,7 @@ export function TasksView({ tasks, timer, onToggle, onToggleStep, onEdit, onDele
   // Abschnitte nach Tageszeit nur, wenn wirklich eine Aufgabe eine feste Tageszeit hat
   const grouped = usesDayparts(currentTasks);
 
-  const rowProps = { onToggle, onToggleStep, onEdit, onDelete, onStart, onOpenTimer, activeId: timer ? timer.taskId : null, today };
+  const rowProps = { onToggle, onToggleStep, onEdit, onDelete, onStart, onOpenTimer, onSnooze, activeId: timer ? timer.taskId : null, today };
 
   const toggleDay = (key) => setCollapsedDays((prev) => {
     const next = new Set(prev);
@@ -78,6 +79,8 @@ export function TasksView({ tasks, timer, onToggle, onToggleStep, onEdit, onDele
           <button type="button" className={btnPrimary} onClick={onNew}><Icon name="plus" size={18} strokeWidth={2.5} />{t('tasks.new')}</button>
         </div>
       </div>
+
+      <DayWrapUp tasks={tasks} today={today} now={now} doneCount={todayCount} onMoveToTomorrow={onMoveToTomorrow} />
 
       <div className="space-y-2.5">
         <SegmentedControl label={t('tasks.view.label')} value={view} onChange={setView}

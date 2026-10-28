@@ -10,6 +10,9 @@ Alle nennenswerten Änderungen an diesem Projekt. Das Format orientiert sich an 
 - Ansichten in der Aufgabenliste: „Jetzt“ (ohne Datum, heute und überfällig), „Nur heute“ und „Mit Geplantem“ (dazu alles Spätere, nach Tagen gruppiert)
 - Hinweis unter der Liste, wie viele Aufgaben für später geplant sind – ein Tipp zeigt sie an
 - Kärtchen an der Aufgabe: „Heute“, „Morgen“, Wochentag oder Datum; Überfälliges sanft orange mit „seit …“
+- „Nicht heute“ an jeder Aufgabe: legt sie mit einem Tipp auf morgen (auch tägliche), mit Rückgängig
+- „Ta-da!“ neben Mochis Sprechblase: schon Geschafftes nachträglich eintragen und dafür belohnt werden
+- Tagesabschluss ab 18 Uhr: zeigt, was heute geschafft ist, und legt Liegengebliebenes mit Datum auf Wunsch auf morgen. Für heute ausblendbar
 
 ### Geändert
 
