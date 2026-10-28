@@ -95,6 +95,24 @@ export const de = {
     'Du kümmerst dich um dich. Toll.',
   ],
 
+  surprise: {
+    coins: 'Überraschung! Ich habe {coins} Münzen gefunden – für dich.',
+    coinsBurst: '+{coins} Fundstück',
+    gift: 'Überraschung! Ich schenke dir „{item}“. Schau mal in die Umkleide.',
+    giftBurst: 'Ein Geschenk!',
+    phraseBurst: 'Psst!',
+    phrases: [
+      'Psst … du bist mein Lieblingsmensch.',
+      'Ich hab grad eine Mini-Party für dich gefeiert.',
+      'Wusstest du? Katzen schnurren auch, wenn sie stolz sind.',
+      'Das war so gut, ich muss kurz meine Pfoten schütteln.',
+      'Ich schreib das in mein Tagebuch: Heute war jemand toll.',
+      'Mrrrp! Das ist Katzisch für „Wow“.',
+      'Ich hab dir in Gedanken eine Decke angewärmt.',
+      'Kleiner Schritt für dich, großes Schnurren für mich.',
+    ],
+  },
+
   toast: {
     done: 'Erledigt: {title}',
     undo: 'Rückgängig',

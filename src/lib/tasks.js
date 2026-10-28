@@ -3,6 +3,7 @@
  * Sie verändern nichts, sondern geben immer einen neuen Zustand zurück.
  */
 import { DAILY_GOAL_BONUS, DIFF, LEVEL_BONUS_COINS, STEP_XP } from '../constants/game.js';
+import { DEFAULT_EQUIP } from '../constants/shop.js';
 import { addDays, dayKey } from './date.js';
 import { isCurrent, isDueToday } from './due.js';
 import { dailyGoalFor, energyWeight } from './energy.js';
@@ -49,8 +50,9 @@ export function rewardFor(currentXp, xp) {
 /**
  * Hakt eine Aufgabe ab. Gibt den neuen Zustand und die Belohnung zurück.
  * Wird damit das Tagesziel erreicht, gibt es einmal pro Tag den Tagesziel-Bonus.
+ * surprise: vorher ausgewürfelte Überraschung (siehe lib/surprise.js) oder null.
  */
-export function completeTask(state, id, now = Date.now()) {
+export function completeTask(state, id, now = Date.now(), surprise = null) {
   const task = state.tasks.find((t) => t.id === id);
   if (!task || task.done) return { state, reward: null };
   const r = DIFF[task.difficulty];
@@ -58,7 +60,9 @@ export function completeTask(state, id, now = Date.now()) {
   const day = dayKey();
   const doneToday = (state.history[day] || 0) + 1;
   const goalBonus = doneToday >= dailyGoalFor(state, day) && state.goalBonusDay !== day ? DAILY_GOAL_BONUS : 0;
-  const awarded = { xp: r.xp, coins: r.coins + lv.bonus + goalBonus, pts: r.pts, goalBonus };
+  const found = surprise && surprise.kind === 'coins' ? surprise.coins : 0;
+  const gift = surprise && surprise.kind === 'gift' && !state.owned.includes(surprise.id) ? { slot: surprise.slot, id: surprise.id } : null;
+  const awarded = { xp: r.xp, coins: r.coins + lv.bonus + goalBonus + found, pts: r.pts, goalBonus, ...(gift ? { gift } : {}) };
   const base = state.timer && state.timer.taskId === id ? withoutTimer(state, now) : state;
   return {
     state: {
@@ -68,9 +72,10 @@ export function completeTask(state, id, now = Date.now()) {
       stats: { ...base.stats, [task.category]: (base.stats[task.category] || 0) + r.pts },
       history: { ...base.history, [day]: doneToday },
       goalBonusDay: goalBonus ? day : base.goalBonusDay || null,
+      owned: gift ? [...base.owned, gift.id] : base.owned,
       tasks: base.tasks.map((t) => (t.id === id ? { ...t, done: true, doneDay: day, awarded } : t)),
     },
-    reward: { xp: r.xp, coins: r.coins, goalBonus, ...lv },
+    reward: { xp: r.xp, coins: r.coins, goalBonus, surprise: gift ? { kind: 'gift', ...gift } : surprise && surprise.kind !== 'gift' ? surprise : null, ...lv },
   };
 }
 
@@ -80,8 +85,14 @@ export function reopenTask(state, id) {
   if (!task || !task.done) return state;
   const a = task.awarded || { xp: 0, coins: 0, pts: 0 };
   const day = task.doneDay;
+  // Ein Überraschungsgeschenk geht mit zurück – sonst ließe es sich durch An- und Abhaken sammeln
+  const gift = a.gift;
+  const equip = gift && state.hero.equip[gift.slot] === gift.id
+    ? { ...state.hero.equip, [gift.slot]: DEFAULT_EQUIP[gift.slot] } : state.hero.equip;
   return {
     ...state,
+    owned: gift ? state.owned.filter((x) => x !== gift.id) : state.owned,
+    hero: equip === state.hero.equip ? state.hero : { ...state.hero, equip },
     xp: Math.max(0, state.xp - a.xp),
     coins: Math.max(0, state.coins - a.coins),
     stats: { ...state.stats, [task.category]: Math.max(0, (state.stats[task.category] || 0) - a.pts) },

@@ -95,6 +95,24 @@ export const en = {
     "You're looking after yourself. Great.",
   ],
 
+  surprise: {
+    coins: 'Surprise! I found {coins} coins – they’re yours.',
+    coinsBurst: '+{coins} found',
+    gift: 'Surprise! I’m giving you “{item}”. Take a look in the wardrobe.',
+    giftBurst: 'A gift!',
+    phraseBurst: 'Psst!',
+    phrases: [
+      'Psst … you’re my favourite human.',
+      'I just threw a tiny party for you.',
+      'Did you know? Cats purr when they’re proud, too.',
+      'That was so good, I have to shake my paws for a moment.',
+      'Writing this in my diary: someone was great today.',
+      'Mrrrp! That’s cat for “wow”.',
+      'I warmed up a blanket for you in my mind.',
+      'One small step for you, one big purr for me.',
+    ],
+  },
+
   toast: {
     done: 'Done: {title}',
     undo: 'Undo',

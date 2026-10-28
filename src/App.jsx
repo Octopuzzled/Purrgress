@@ -12,6 +12,7 @@ import { pointFrom } from './lib/dom.js';
 import { levelInfo } from './lib/progress.js';
 import { dailyGoalFor, energyAsked, setEnergy, todayEnergy } from './lib/energy.js';
 import { buyShield, isRestDay, setRestDay } from './lib/rest.js';
+import { rollSurprise } from './lib/surprise.js';
 import { restoreBackup } from './lib/backup.js';
 import { clearState, initialState, normalizeTask } from './lib/state.js';
 import { isUnlocked } from './constants/shop.js';
@@ -109,15 +110,30 @@ export function App() {
       return;
     }
 
-    const { reward } = completeTask(state, id);
+    const surprise = rollSurprise(state);
+    const { reward } = completeTask(state, id, Date.now(), surprise);
     if (!reward) return;
-    setState((s) => completeTask(s, id).state);
+    setState((s) => completeTask(s, id, Date.now(), surprise).state);
     celebrateReward(reward, evt);
     const praise = t('praise');
-    celebrate.say(reward.goalBonus
-      ? t('hero.lineGoalBonus', { coins: reward.goalBonus })
-      : praise[Math.floor(Math.random() * praise.length)]);
+    celebrate.say(rewardLine(reward) || praise[Math.floor(Math.random() * praise.length)]);
     setToast({ id: `${id}-${Date.now()}`, kind: 'done', taskId: id, text: task.title });
+  };
+
+  /* Was Mochi zu einer Belohnung sagt: Tagesziel-Bonus vor Überraschung. null = normales Lob. */
+  const rewardLine = (reward) => {
+    if (reward.goalBonus) return t('hero.lineGoalBonus', { coins: reward.goalBonus });
+    const s = reward.surprise;
+    if (!s) return null;
+    if (s.kind === 'coins') return t('surprise.coins', { coins: s.coins });
+    if (s.kind === 'gift') return t('surprise.gift', { item: t(`shop.items.${s.id}`) });
+    return t('surprise.phrases')[s.index] || null;
+  };
+
+  const surpriseBurst = (s) => {
+    if (!s) return [];
+    if (s.kind === 'coins') return [{ text: t('surprise.coinsBurst', { coins: s.coins }), tone: 'coin' }];
+    return [{ text: t(s.kind === 'gift' ? 'surprise.giftBurst' : 'surprise.phraseBurst'), tone: 'xp' }];
   };
 
   const celebrateReward = (reward, evt) => {
@@ -125,6 +141,7 @@ export function App() {
       { text: t('common.xpGain', { xp: reward.xp }), tone: 'xp' },
       { text: t('common.coinGain', { coins: reward.coins }), tone: 'coin' },
       ...(reward.goalBonus ? [{ text: t('common.goalBonus', { coins: reward.goalBonus }), tone: 'coin' }] : []),
+      ...surpriseBurst(reward.surprise),
     ]);
     sfx(reward.gained > 0 ? 'level' : 'done');
     celebrate.cheer();
@@ -134,11 +151,12 @@ export function App() {
   /* „Ta-da!“: schon Geschafftes eintragen – wird angelegt und sofort abgehakt */
   const logTada = ({ title, difficulty }, evt) => {
     const task = normalizeTask({ title, difficulty, tada: true, createdAt: Date.now() });
-    const { reward } = completeTask(addTask(state, task), task.id);
-    setState((s) => completeTask(addTask(s, task), task.id).state);
+    const surprise = rollSurprise(state);
+    const { reward } = completeTask(addTask(state, task), task.id, Date.now(), surprise);
+    setState((s) => completeTask(addTask(s, task), task.id, Date.now(), surprise).state);
     setTadaOpen(false);
     celebrateReward(reward, evt);
-    celebrate.say(reward.goalBonus ? t('hero.lineGoalBonus', { coins: reward.goalBonus }) : t('hero.lineTada'));
+    celebrate.say(rewardLine(reward) || t('hero.lineTada'));
     setToast({ id: `${task.id}-${Date.now()}`, kind: 'tada', taskId: task.id, text: title });
   };
 

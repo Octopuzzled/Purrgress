@@ -19,6 +19,7 @@ Alle nennenswerten Änderungen an diesem Projekt. Das Format orientiert sich an 
 - Ruhetage: „Heute ist Ruhetag“ in der Tagesform-Frage oder im Tagesabschluss. Ruhetage unterbrechen die Serie nicht, Mochi nimmt den Druck raus, im Wochenverlauf zeigt ein Mond den Tag. Ein Tipp auf das Ruhetag-Kärtchen nimmt ihn zurück
 - Kuscheldecke in der Umkleide (60 Münzen, bis zu 2 auf Vorrat): schützt die Serie automatisch an vergessenen Tagen – nur wenn der Vorrat für die ganze Lücke reicht
 - Mochi arbeitet mit: Während einer Zeitbox sitzt Mochi neben dem Timer und liest (Pflege), strickt (Routine, Sozial) oder schreibt (Fokus). In der Pause döst Mochi. Respektiert „Weniger Bewegung“
+- Kleine Überraschungen: Etwa jede siebte erledigte Aufgabe bringt eine Überraschung – Fundmünzen (+3 bis 10), einen seltenen Mochi-Satz oder selten ein kleines Geschenk für die Umkleide. Rückgängig nimmt auch die Überraschung zurück
 
 ### Geändert
 
