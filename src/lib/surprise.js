@@ -9,25 +9,58 @@ import { levelInfo } from './progress.js';
 export const SURPRISE_CHANCE = 1 / 7;
 /** So viele seltene Sätze gibt es in jeder Sprache (surprise.phrases). */
 export const PHRASE_COUNT = 8;
-/** Geschenkt werden nur kleine Teile, die es ohne Level-Grenze gibt. */
+/** Aus dem Laden werden nur kleine Teile verschenkt, die es ohne Level-Grenze gibt. */
 export const MAX_GIFT_PRICE = 60;
+/**
+ * Anteile innerhalb der Überraschungen. Bei etwa drei Aufgaben am Tag heißt das ungefähr:
+ * ein Geschenk alle zwei bis drei Wochen, ein Überraschungs-Teil etwa alle sechs Wochen,
+ * ein seltenes alle drei bis vier Monate.
+ */
+const GIFT_SHARE = 0.15;
+const EXCLUSIVE_SHARE = 0.5;
+const RARE_SHARE = 0.3;
 
-export function giftCandidates(state) {
+/** Was noch verschenkt werden kann: kleine Ladenteile und Überraschungs-Teile (häufiger und selten). */
+export function giftPools(state) {
   const owned = new Set(state.owned);
   const level = levelInfo(state.xp).level;
-  return SLOTS.flatMap((slot) => SHOP[slot].items
-    .filter((i) => i.price > 0 && i.price <= MAX_GIFT_PRICE && !owned.has(i.id) && isUnlocked(i, level))
-    .map((i) => ({ slot, id: i.id })));
+  const pools = { small: [], common: [], rare: [] };
+  for (const slot of SLOTS) {
+    for (const i of SHOP[slot].items) {
+      if (owned.has(i.id)) continue;
+      if (i.surprise) pools[i.surprise === 'rare' ? 'rare' : 'common'].push({ slot, id: i.id });
+      else if (i.price > 0 && i.price <= MAX_GIFT_PRICE && isUnlocked(i, level)) pools.small.push({ slot, id: i.id });
+    }
+  }
+  return pools;
+}
+
+export function giftCandidates(state) {
+  const { small, common, rare } = giftPools(state);
+  return [...small, ...common, ...rare];
+}
+
+function pickFrom(list, rng) {
+  return list[Math.floor(rng() * list.length)];
+}
+
+/** Ein Geschenk auswählen – oder null, wenn es nichts mehr zu verschenken gibt. */
+function pickGift(state, rng) {
+  const { small, common, rare } = giftPools(state);
+  if (common.length + rare.length > 0 && (small.length === 0 || rng() < EXCLUSIVE_SHARE)) {
+    return pickFrom(rare.length > 0 && (common.length === 0 || rng() < RARE_SHARE) ? rare : common, rng);
+  }
+  return small.length > 0 ? pickFrom(small, rng) : null;
 }
 
 /** null oder { kind: 'coins', coins } | { kind: 'phrase', index } | { kind: 'gift', slot, id } */
 export function rollSurprise(state, rng = Math.random) {
   if (rng() >= SURPRISE_CHANCE) return null;
   const r = rng();
-  if (r < 0.1) {
-    const gifts = giftCandidates(state);
-    if (gifts.length > 0) return { kind: 'gift', ...gifts[Math.floor(rng() * gifts.length)] };
+  if (r < GIFT_SHARE) {
+    const gift = pickGift(state, rng);
+    if (gift) return { kind: 'gift', ...gift };
   }
-  if (r < 0.4 && r >= 0.1) return { kind: 'phrase', index: Math.floor(rng() * PHRASE_COUNT) };
+  if (r < 0.4 && r >= GIFT_SHARE) return { kind: 'phrase', index: Math.floor(rng() * PHRASE_COUNT) };
   return { kind: 'coins', coins: 3 + Math.floor(rng() * 8) };
 }

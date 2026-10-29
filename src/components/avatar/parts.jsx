@@ -38,8 +38,71 @@ export function Background({ id }) {
           ))}
         </g>
       );
+    case 'bg-herbst':
+      return (
+        <g>
+          <rect width="200" height="200" fill="#fdebd3" />
+          {[[30, 40, 20, '#f6a37c'], [64, 22, -30, '#e9c46a'], [150, 30, 40, '#fbbf77'], [178, 70, -15, '#f6a37c'], [22, 100, 60, '#e9c46a'], [176, 132, 25, '#fbbf77'], [34, 168, -40, '#f6a37c'], [160, 178, 10, '#e9c46a']].map(([x, y, r, c], i) => (
+            <g key={i} transform={`rotate(${r} ${x} ${y})`}>
+              <ellipse cx={x} cy={y} rx="9" ry="5" fill={c} />
+              <path d={`M${x - 9} ${y} L${x + 9} ${y}`} stroke="#ffffff" strokeWidth="1" opacity="0.6" />
+            </g>
+          ))}
+        </g>
+      );
+    case 'bg-abendrot':
+      return (
+        <g>
+          <rect width="200" height="200" fill="#ffe9c7" />
+          <rect width="200" height="50" fill="#c8b6ff" />
+          <rect y="50" width="200" height="40" fill="#e9b8e4" />
+          <rect y="90" width="200" height="40" fill="#f9c4c4" />
+          <circle cx="156" cy="72" r="20" fill="#fde68a" opacity="0.9" />
+        </g>
+      );
+    case 'bg-nordlicht':
+      return (
+        <g>
+          <rect width="200" height="200" fill="#1f2a44" />
+          {[['#6ee7b7', 'M-10 70 Q40 30 90 60 T210 40'], ['#93c5fd', 'M-10 92 Q50 58 100 84 T210 66'], ['#c4b5fd', 'M-10 114 Q60 84 110 106 T210 92']].map(([c, d], i) => (
+            <path key={i} d={d} fill="none" stroke={c} strokeWidth="13" strokeLinecap="round" opacity="0.5" />
+          ))}
+          {[[30, 24], [80, 16], [140, 22], [182, 36], [20, 150], [176, 160], [60, 178]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r="1.3" fill="#f8fafc" opacity="0.8" />
+          ))}
+        </g>
+      );
+    case 'bg-seifenblasen':
+      return (
+        <g>
+          <rect width="200" height="200" fill="#e0f2fe" />
+          {[[36, 46, 14], [160, 38, 10], [176, 110, 16], [26, 130, 9], [56, 176, 12], [150, 172, 8], [96, 22, 7]].map(([x, y, r], i) => (
+            <g key={i}>
+              <circle cx={x} cy={y} r={r} fill="#ffffff" fillOpacity="0.35" stroke="#ffffff" strokeWidth="1.6" />
+              <path d={`M${x - r * 0.5} ${y - r * 0.3} Q${x - r * 0.4} ${y - r * 0.6} ${x - r * 0.1} ${y - r * 0.65}`} fill="none" stroke="#c4b5fd" strokeWidth="1.4" strokeLinecap="round" />
+            </g>
+          ))}
+        </g>
+      );
+    case 'bg-sternschnuppe':
+      return (
+        <g>
+          <rect width="200" height="200" fill="#2b2f55" />
+          {[[150, 160], [30, 150], [176, 120], [60, 18], [36, 46], [20, 80], [184, 92]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r="1.2" fill="#fef3c7" opacity="0.75" />
+          ))}
+          <path d="M104 8 L170 40" stroke="#fef3c7" strokeWidth="4" strokeLinecap="round" opacity="0.35" />
+          <path d="M138 24 L170 40" stroke="#fde68a" strokeWidth="3" strokeLinecap="round" opacity="0.6" />
+          <polygon points={starPoints(174, 42, 9, 3.6)} fill="#fde68a" />
+        </g>
+      );
     default: return <rect width="200" height="200" fill="#d6f5e7" />;
   }
+}
+
+/** Kleines Herz – für Augen und Muster. */
+function heartPath(x, y, s) {
+  return `M${x} ${y + s * 0.9} C${x - s * 1.4} ${y} ${x - s * 0.8} ${y - s} ${x} ${y - s * 0.35} C${x + s * 0.8} ${y - s} ${x + s * 1.4} ${y} ${x} ${y + s * 0.9} Z`;
 }
 
 const FLOWERS = [[56, 84, '#fbcfe8'], [70, 74, '#fde68a'], [85, 68, '#c4b5fd'], [100, 65, '#fbcfe8'], [115, 68, '#fed7aa'], [130, 74, '#bbf7d0'], [144, 84, '#c4b5fd']];
@@ -110,6 +173,54 @@ export function Hat({ id }) {
           <ellipse cx="100" cy="77" rx="60" ry="10" fill="#655493" />
         </g>
       );
+    case 'kopf-stirnband':
+      return (
+        <g>
+          <path d="M48 88 Q100 64 152 88" fill="none" stroke="#7dd3fc" strokeWidth="9" strokeLinecap="round" />
+          <circle cx="146" cy="84" r="5" fill="#38bdf8" />
+          <path d="M148 88 L156 98 M146 89 L150 101" stroke="#7dd3fc" strokeWidth="4" strokeLinecap="round" />
+        </g>
+      );
+    case 'kopf-baskenmuetze':
+      return (
+        <g transform="rotate(-12 100 70)">
+          <ellipse cx="96" cy="70" rx="50" ry="17" fill="#f6a5a5" />
+          <path d="M50 74 Q96 90 144 74" fill="none" stroke="#ee8b8b" strokeWidth="4" strokeLinecap="round" />
+          <rect x="93" y="48" width="5" height="9" rx="2" fill="#ee8b8b" />
+        </g>
+      );
+    case 'kopf-mond':
+      return (
+        <g>
+          <path d="M48 90 Q52 34 112 28 Q156 26 172 62 Q150 48 132 54 L152 90 Z" fill="#4c4f8f" />
+          <circle cx="94" cy="56" r="11" fill="#fde68a" />
+          <circle cx="99" cy="52" r="10" fill="#4c4f8f" />
+          <polygon points={starPoints(124, 44, 4, 1.6)} fill="#fde68a" />
+          <polygon points={starPoints(72, 70, 3.5, 1.4)} fill="#fde68a" />
+          <rect x="44" y="80" width="112" height="15" rx="7.5" fill="#3d4080" />
+          <circle cx="172" cy="64" r="8" fill="#fde68a" />
+        </g>
+      );
+    case 'kopf-schmetterling':
+      return (
+        <g transform="rotate(-15 132 66)">
+          <ellipse cx="124" cy="60" rx="9" ry="12" fill="#f9a8d4" transform="rotate(-25 124 60)" />
+          <ellipse cx="140" cy="60" rx="9" ry="12" fill="#f9a8d4" transform="rotate(25 140 60)" />
+          <ellipse cx="125" cy="74" rx="6" ry="8" fill="#c4b5fd" transform="rotate(20 125 74)" />
+          <ellipse cx="139" cy="74" rx="6" ry="8" fill="#c4b5fd" transform="rotate(-20 139 74)" />
+          <circle cx="124" cy="58" r="2.5" fill="#ffffff" opacity="0.8" />
+          <circle cx="140" cy="58" r="2.5" fill="#ffffff" opacity="0.8" />
+          <path d="M132 54 L132 80" stroke="#6b5b95" strokeWidth="3" strokeLinecap="round" />
+          <path d="M132 55 Q128 46 124 44 M132 55 Q136 46 140 44" fill="none" stroke="#6b5b95" strokeWidth="1.5" strokeLinecap="round" />
+        </g>
+      );
+    case 'kopf-heiligenschein':
+      return (
+        <g>
+          <ellipse cx="100" cy="30" rx="38" ry="10" fill="none" stroke="#fde68a" strokeWidth="11" opacity="0.3" />
+          <ellipse cx="100" cy="30" rx="38" ry="10" fill="none" stroke="#fde68a" strokeWidth="5" />
+        </g>
+      );
     case 'kopf-krone':
       return (
         <g>
@@ -154,6 +265,27 @@ export function ClothBody({ id }) {
           <rect x="77" y="154" width="46" height="14" rx="7" fill="#95dcbc" />
         </g>
       );
+    case 'kleidung-weste':
+      return (
+        <g>
+          <path d="M38 132 L94 140 L92 180 L38 180 Z" fill="#e9c3a0" />
+          <path d="M162 132 L106 140 L108 180 L162 180 Z" fill="#e9c3a0" />
+          <g stroke="#dcae86" strokeWidth="2" strokeLinecap="round">
+            <path d="M52 146 L52 176 M66 146 L66 176 M80 146 L80 176" /><path d="M120 146 L120 176 M134 146 L134 176 M148 146 L148 176" />
+          </g>
+          {[150, 162, 174].map((y) => <circle key={y} cx="89" cy={y} r="2.6" fill="#a87b55" />)}
+        </g>
+      );
+    case 'kleidung-regenjacke':
+      return (
+        <g>
+          <rect x="38" y="132" width="124" height="48" fill="#fde68a" />
+          <path d="M100 136 L100 180" stroke="#f5c542" strokeWidth="3" />
+          <rect x="58" y="158" width="26" height="6" rx="3" fill="#f5c542" />
+          <rect x="116" y="158" width="26" height="6" rx="3" fill="#f5c542" />
+          <circle cx="100" cy="146" r="2.4" fill="#ffffff" />
+        </g>
+      );
     case 'kleidung-latzhose':
       return (
         <g>
@@ -177,6 +309,13 @@ export function ClothFront({ id }) {
           <path d="M50 128 Q100 150 150 128 L148 142 Q100 164 52 142 Z" fill="#fdb99b" stroke="#f59e7c" strokeWidth="2" strokeLinejoin="round" />
           <path d="M116 146 L124 178 L110 180 L104 150 Z" fill="#fdb99b" stroke="#f59e7c" strokeWidth="2" strokeLinejoin="round" />
           <path d="M108 164 L121 162" stroke="#fde2d2" strokeWidth="3" strokeLinecap="round" />
+        </g>
+      );
+    case 'kleidung-regenjacke':
+      return (
+        <g>
+          <path d="M66 128 L100 138 L84 150 Z" fill="#fcd34d" stroke="#f5c542" strokeWidth="1.5" strokeLinejoin="round" />
+          <path d="M134 128 L100 138 L116 150 Z" fill="#fcd34d" stroke="#f5c542" strokeWidth="1.5" strokeLinejoin="round" />
         </g>
       );
     case 'kleidung-umhang':
@@ -219,6 +358,53 @@ export function Extra({ id, fur }) {
           <rect x="148" y="97" width="19" height="30" rx="9" fill="#f9a8c9" />
         </g>
       );
+    case 'extra-pflaster':
+      return (
+        <g transform="rotate(-25 134 90)">
+          <rect x="120" y="85" width="28" height="10" rx="5" fill="#fcd9b6" stroke="#f2bf92" strokeWidth="1.2" />
+          <rect x="129" y="85" width="10" height="10" fill="#f6c39b" />
+          {[[124, 88], [124, 92], [144, 88], [144, 92]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="0.9" fill="#e9a77a" />)}
+        </g>
+      );
+    case 'extra-tee':
+      return (
+        <g>
+          <ellipse cx="160" cy="160" rx="17" ry="4.5" fill="#e2e8f0" />
+          <path d="M147 140 L173 140 L170 158 Q160 163 150 158 Z" fill="#fbcfe8" stroke="#f5a8cf" strokeWidth="1.6" strokeLinejoin="round" />
+          <path d="M172 144 Q181 146 172 154" fill="none" stroke="#f5a8cf" strokeWidth="2.4" strokeLinecap="round" />
+          <ellipse cx="160" cy="140.5" rx="13" ry="2.5" fill="#d6a273" />
+          <path d="M155 134 Q152 128 156 123 M164 134 Q161 127 165 121" fill="none" stroke="#cbd5e1" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
+        </g>
+      );
+    case 'extra-buch':
+      return (
+        <g transform="rotate(-18 40 150)">
+          <rect x="22" y="136" width="34" height="26" rx="3" fill="#93c5fd" stroke="#60a5fa" strokeWidth="1.6" />
+          <rect x="54" y="138" width="4" height="22" rx="1" fill="#ffffff" />
+          <path d="M28 144 L48 144" stroke="#dbeafe" strokeWidth="2" strokeLinecap="round" />
+          <path d="M32 136 L32 168 L36 164 L40 168 L40 136" fill="#f472b6" />
+        </g>
+      );
+    case 'extra-laterne':
+      return (
+        <g>
+          <circle cx="168" cy="150" r="26" fill="#fde68a" opacity="0.22" />
+          <path d="M158 126 Q168 114 178 126" fill="none" stroke="#a16207" strokeWidth="2.5" strokeLinecap="round" />
+          <rect x="157" y="128" width="22" height="6" rx="2" fill="#a16207" />
+          <rect x="159" y="134" width="18" height="26" rx="4" fill="#fff7d6" stroke="#ca8a04" strokeWidth="2" />
+          <ellipse cx="168" cy="148" rx="4" ry="6" fill="#fcd34d" />
+          <rect x="157" y="160" width="22" height="5" rx="2" fill="#a16207" />
+        </g>
+      );
+    case 'extra-kleeblatt':
+      return (
+        <g>
+          <path d="M40 152 Q36 164 30 172" fill="none" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" />
+          {[[34, 142, 0], [46, 142, 90], [46, 154, 180], [34, 154, 270]].map(([x, y, r], i) => (
+            <path key={i} d={heartPath(x, y, 6)} fill="#86efac" stroke="#4ade80" strokeWidth="1" transform={`rotate(${r + 45} ${x} ${y})`} />
+          ))}
+        </g>
+      );
     case 'extra-stab':
       return (
         <g>
@@ -252,6 +438,15 @@ export function Eyes({ id, fur, still }) {
           </g>
           <text x="160" y="96" fontSize="14" fontWeight="700" fill={c} opacity="0.45" fontFamily="Fredoka, Nunito, sans-serif">z</text>
           <text x="170" y="82" fontSize="10" fontWeight="700" fill={c} opacity="0.35" fontFamily="Fredoka, Nunito, sans-serif">z</text>
+        </g>
+      );
+    case 'augen-herz':
+      return (
+        <g>
+          <path d={heartPath(80, 112, 7.5)} fill="#e8798f" />
+          <path d={heartPath(120, 112, 7.5)} fill="#e8798f" />
+          <circle cx="77" cy="108" r="1.8" fill="#ffffff" opacity="0.9" />
+          <circle cx="117" cy="108" r="1.8" fill="#ffffff" opacity="0.9" />
         </g>
       );
     case 'augen-funkeln':

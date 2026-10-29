@@ -22,6 +22,8 @@ Alle nennenswerten Änderungen an diesem Projekt. Das Format orientiert sich an 
 - Einstellungen: Tagesform-Frage am Morgen und Tagesabschluss am Abend lassen sich einzeln ausschalten
 - Einführung: eine kurze, ruhige Tour in sieben Schritten – startet einmal von selbst (auch nach dem Update auf 1.7) und lässt sich unter Fortschritt → Einstellungen jederzeit wieder einschalten. Währenddessen warten Tagesform-Frage und Tagesabschluss
 - Wöchentliche Vorlagen: „Müll rausbringen“ und „Wochenplanung“
+- Umkleide erweitert: 16 neue Teile, darunter je ein Meilenstein-Teil für Level 15, 20, 25 und 30 (Sternenstaub-Fell, Mondsichel-Mütze, Laterne, Nordlicht) und mehr Auswahl zwischen 100 und 180 Münzen
+- Fünf Teile gibt es nur als Überraschung, nicht zu kaufen: Schmetterling, Glücksklee und Seifenblasen – und selten Heiligenschein und Sternschnuppe
 - Kleine Überraschungen: Etwa jede siebte erledigte Aufgabe bringt eine Überraschung – Fundmünzen (+3 bis 10), einen seltenen Mochi-Satz oder selten ein kleines Geschenk für die Umkleide. Rückgängig nimmt auch die Überraschung zurück
 - Zeitgefühl: Zeitboxen, die mit „Erledigt“ enden, werden zu Messungen (geplant vs. tatsächlich, ohne Pausen und ohne ±5). Ab drei Messungen schlägt die Zeitbox beim Start eine passendere Länge vor – erst für dieselbe Aufgabe, sonst für die Kategorie, sonst allgemein. Auch im Aufgaben-Formular als kleiner Hinweis. Wird abgeglichen
 

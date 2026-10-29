@@ -64,3 +64,29 @@ describe('Überraschungen', () => {
     for (const lang of LANGUAGES) expect(DICTIONARIES[lang].surprise.phrases).toHaveLength(PHRASE_COUNT);
   });
 });
+
+describe('Überraschungs-Teile', () => {
+  const seeded = (seed) => () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+
+  it('kommen als Geschenk – seltene deutlich seltener', async () => {
+    const { SHOP, SLOTS } = await import('../src/constants/shop.js');
+    const rarity = Object.fromEntries(SLOTS.flatMap((s) => SHOP[s].items).filter((i) => i.surprise).map((i) => [i.id, i.surprise]));
+    const rng = seeded(11);
+    const got = { common: 0, rare: 0 };
+    for (let i = 0; i < 40000; i++) {
+      const s = rollSurprise(start(), rng);
+      if (s && s.kind === 'gift' && rarity[s.id]) got[rarity[s.id]]++;
+    }
+    // Pro Aufgabe: häufigere etwa 0,75 %, seltene etwa 0,3 %
+    expect(got.common / 40000).toBeGreaterThan(0.005);
+    expect(got.common / 40000).toBeLessThan(0.011);
+    expect(got.rare / 40000).toBeGreaterThan(0.0015);
+    expect(got.rare / 40000).toBeLessThan(0.0045);
+  });
+
+  it('werden weiter verschenkt, wenn alle kleinen Ladenteile schon im Schrank sind', () => {
+    const smallOwned = { ...start(), owned: [...start().owned, ...giftCandidates(start()).filter((g) => !g.id.startsWith('kopf-heiligen')).map((g) => g.id)] };
+    expect(giftCandidates(smallOwned).map((g) => g.id)).toEqual(['kopf-heiligenschein']);
+    expect(rollSurprise(smallOwned, seq(0, 0.05, 0, 0))).toMatchObject({ kind: 'gift', id: 'kopf-heiligenschein' });
+  });
+});

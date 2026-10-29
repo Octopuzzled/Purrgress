@@ -27,3 +27,25 @@ describe('Umkleide', () => {
     }
   });
 });
+
+describe('Umkleide-Erweiterung', () => {
+  it('belohnt späte Level mit je einem Meilenstein-Teil', () => {
+    for (const level of [15, 20, 25, 30]) expect(items.some((i) => i.minLevel === level)).toBe(true);
+  });
+
+  it('hat Überraschungs-Teile, die man nicht kaufen kann und die nicht von Anfang an da sind', async () => {
+    const { isBuyable } = await import('../src/constants/shop.js');
+    const surprise = items.filter((i) => i.surprise);
+    expect(surprise.some((i) => i.surprise === 'rare')).toBe(true);
+    expect(surprise.some((i) => i.surprise === 'common')).toBe(true);
+    for (const i of surprise) {
+      expect(isBuyable(i)).toBe(false);
+      expect(FREE_ITEMS).not.toContain(i.id);
+    }
+  });
+
+  it('hat für jedes Teil einen Namen in jeder Sprache', async () => {
+    const { DICTIONARIES, LANGUAGES } = await import('../src/i18n/index.js');
+    for (const lang of LANGUAGES) for (const i of items) expect(DICTIONARIES[lang].shop.items[i.id], `${lang}: ${i.id}`).toBeTruthy();
+  });
+});

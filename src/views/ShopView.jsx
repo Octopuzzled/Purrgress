@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SHOP, SLOTS, findItem, isUnlocked } from '../constants/shop.js';
+import { SHOP, SLOTS, findItem, isBuyable, isUnlocked } from '../constants/shop.js';
 import { Avatar } from '../components/avatar/Avatar.jsx';
 import { Coin, CoinBadge } from '../components/ui/Coin.jsx';
 import { Icon } from '../components/ui/Icon.jsx';
@@ -40,16 +40,23 @@ export function ShopView({ data, level, cheering, cheerTick, onEquip, onBuy, onB
               <p className="font-display text-xl font-semibold text-slate-800 dark:text-slate-50">{t(`shop.items.${previewItem.id}`)}</p>
               <p className="text-sm text-slate-500 dark:text-slate-400">{t('shopView.previewText', { name: data.hero.name })}</p>
               <div className="mt-3 flex flex-wrap justify-center gap-2 sm:justify-start">
-                <button type="button" className={btnPrimary} disabled={!canAfford || !unlocked}
-                  onClick={(e) => { onBuy(slot, previewItem, e); setPreview(null); }}>
-                  {t('shopView.buy', { price: previewItem.price })} <Coin size={18} />
-                </button>
+                {isBuyable(previewItem) && (
+                  <button type="button" className={btnPrimary} disabled={!canAfford || !unlocked}
+                    onClick={(e) => { onBuy(slot, previewItem, e); setPreview(null); }}>
+                    {t('shopView.buy', { price: previewItem.price })} <Coin size={18} />
+                  </button>
+                )}
                 <button type="button" className={btnSoft} onClick={() => setPreview(null)}>{t('shopView.justLook')}</button>
               </div>
-              {!unlocked && (
+              {!isBuyable(previewItem) && (
+                <p className="mt-2 flex items-center justify-center gap-1.5 text-sm text-pink-800 sm:justify-start dark:text-pink-200">
+                  <Icon name="sparkles" size={15} />{t('shopView.surpriseHint', { name: data.hero.name })}
+                </p>
+              )}
+              {isBuyable(previewItem) && !unlocked && (
                 <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{t('shopView.locked', { level: previewItem.minLevel })}</p>
               )}
-              {unlocked && !canAfford && (
+              {isBuyable(previewItem) && unlocked && !canAfford && (
                 <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                   {t('shopView.missing', { count: previewItem.price - data.coins })}
                 </p>
@@ -90,7 +97,9 @@ export function ShopView({ data, level, cheering, cheerTick, onEquip, onBuy, onB
                   ? t('shopView.equipped')
                   : isOwned
                     ? t('shopView.owned')
-                    : isUnlocked(item, level)
+                    : item.surprise
+                      ? <span className="inline-flex items-center gap-1 text-pink-700 dark:text-pink-300"><Icon name="sparkles" size={12} />{t(item.surprise === 'rare' ? 'shopView.surpriseRare' : 'shopView.surpriseOnly')}</span>
+                      : isUnlocked(item, level)
                       ? <>{item.price} <Coin size={12} /></>
                       : t('shopView.fromLevel', { level: item.minLevel })}
               </span>

@@ -32,7 +32,7 @@ Eine neurodivergenz-freundliche Aufgaben-App mit sanfter Gamification: kleine Au
 | Mittel | 25 | 12 |
 | Schwer | 50 | 25 |
 
-Dazu kommen +2 XP je Mikro-Schritt, +20 Münzen je Level-Aufstieg und einmal am Tag +10 Münzen für das erreichte Tagesziel. Die Umkleide kostet insgesamt 3.635 Münzen. Grundteile gibt es ab 20 Münzen, besondere Teile erst ab Level 5, 8 oder 12. Bei drei Aufgaben am Tag dauert es etwa drei bis vier Monate, bis alles gekauft ist – der erste Kauf klappt trotzdem am ersten Tag.
+Dazu kommen +2 XP je Mikro-Schritt, +20 Münzen je Level-Aufstieg und einmal am Tag +10 Münzen für das erreichte Tagesziel. Die Umkleide kostet insgesamt 7.510 Münzen. Grundteile gibt es ab 20 Münzen, besondere Teile ab Level 5, 8 oder 12, und alle fünf Level bis Level 30 wartet ein Meilenstein-Teil. Bei drei Aufgaben am Tag dauert es etwa sieben Monate, bis alles gekauft ist – der erste Kauf klappt trotzdem am ersten Tag. Fünf Teile lassen sich nicht kaufen: Mochi verschenkt sie ab und zu als Überraschung, zwei davon nur selten.
 
 Alle Werte stehen in `src/constants/game.js` und `src/constants/shop.js`.
 

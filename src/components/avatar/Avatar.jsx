@@ -85,6 +85,13 @@ export function Avatar({ equip, mood = 'idle', title, still = false, activity = 
           {/* Körper */}
           <ellipse cx="100" cy="118" rx="58" ry="52" fill={fur.fill} stroke={fur.shade} strokeWidth="3" />
           <ellipse cx="100" cy="146" rx="30" ry="19" fill="#ffffff" opacity="0.35" />
+          {fur.speckle && (
+            <g fill={fur.speckle}>
+              {[[70, 96, 2.2], [132, 100, 1.8], [60, 146, 2], [142, 150, 2.4], [104, 166, 1.6], [84, 84, 1.4], [120, 82, 1.6]].map(([x, y, r], i) => (
+                <polygon key={i} points={starPoints(x, y, r * 1.8, r * 0.75)} opacity="0.85" />
+              ))}
+            </g>
+          )}
           <g clipPath={`url(#${id}-body)`}><ClothBody id={e.kleidung} /></g>
           <ClothFront id={e.kleidung} />
           {/* Füße & Arme */}

@@ -15,7 +15,7 @@ import { buyShield, isRestDay, setRestDay } from './lib/rest.js';
 import { rollSurprise } from './lib/surprise.js';
 import { restoreBackup } from './lib/backup.js';
 import { clearState, initialState, normalizeTask } from './lib/state.js';
-import { isUnlocked } from './constants/shop.js';
+import { isBuyable, isUnlocked } from './constants/shop.js';
 import { removeCustomTemplate, saveCustomTemplate } from './lib/templates.js';
 import {
   addFirstStep, addTask, clearDoneTasks, completeStep, completeTask, nextOpenTask, postponeTask, removeTask, reopenStep, reopenTask, setDueDates, updateTask,
@@ -318,7 +318,7 @@ export function App() {
       equipItem(slot, item.id);
       return;
     }
-    if (state.coins < item.price || !isUnlocked(item, lvl.level)) return;
+    if (!isBuyable(item) || state.coins < item.price || !isUnlocked(item, lvl.level)) return;
     setState((s) => ({
       ...s,
       coins: s.coins - item.price,
