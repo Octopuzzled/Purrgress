@@ -7,8 +7,10 @@ Mit einem Konto ist der Fortschritt auf allen Geräten gleich: Handy, Laptop und
 - Jedes Gerät behält eine eigene Kopie und funktioniert auch offline.
 - Abgeglichen wird beim Start, ein paar Sekunden nach jeder Änderung, beim Zurückkehren zur App, wenn das Netz zurückkommt, und alle fünf Minuten.
 - **Zusammenführen statt Überschreiben:** XP, Münzen und Verlauf von beiden Geräten werden addiert. Aufgaben werden einzeln abgeglichen. Löschen auf einem Gerät gegen Bearbeiten auf dem anderen: Die bearbeitete Fassung bleibt.
-- **Pro Gerät bleiben:** laufende Zeitbox, Sprache, Farbschema, Töne, Animationen, Erinnerungs-Klang.
-- Auf dem Server liegt ein Spielstand pro Person, meist 20 bis 50 KB.
+- **Abgeglichen werden:** Aufgaben (mit Fälligkeit, Wiederholung und Mikro-Schritten), eigene Vorlagen, XP, Münzen, Werte, Verlauf, Fokuszeit, Held und Umkleide, Tagesziel, die Tagesform von heute, Ruhetage und Kuscheldecken sowie die Messungen fürs Zeitgefühl.
+- **Pro Gerät bleiben:** laufende Zeitbox, Sprache, Farbschema, Töne, Animationen, Erinnerungs-Klang, die Schalter für Tagesform-Frage, Tagesabschluss und Einführung sowie eingeklappte Abschnitte.
+- **Neuer Tag auf mehreren Geräten:** Jedes Gerät schiebt wiederkehrende Aufgaben selbst weiter – nach denselben Regeln, darum entstehen keine Kopien und keine Konflikte.
+- Auf dem Server liegt ein Spielstand pro Person, meist 20 bis 50 KB. Erledigte einmalige Aufgaben werden nach 14 Tagen aufgeräumt, damit er auch bei vielen Aufgaben am Tag klein bleibt (PocketBase nimmt bis 2 MB an).
 - **Versionen:** Der Spielstand trägt eine Formatnummer. Trifft eine App auf Daten einer neueren Version, pausiert sie den Abgleich und bittet um ein Update, statt etwas zu überschreiben (ab 1.7). Darum nach einem Update alle Geräte aktualisieren – die Web-App macht das von selbst, die Android-App braucht die neue APK.
 - **Anmeldung:** wird beim Start und danach spätestens alle 12 Stunden beim Abgleich aufgefrischt, damit auch lange offene Apps angemeldet bleiben.
 
@@ -146,6 +148,17 @@ Danach wie gewohnt `npm run android:apk`.
 4. `npm run deploy:server` ausführen.
 
 **Logs:** `docker compose logs -f` im Server-Ordner, oder in der Admin-Oberfläche unter **Logs**.
+
+**Neue App-Version mit erweitertem Spielstand:** In `src/sync/syncable.js` `SYNC_FORMAT` erhöhen und im CHANGELOG darauf hinweisen. Am Server ist nichts zu tun – der Spielstand liegt dort als ein JSON-Feld. Ältere Apps (ab 1.7) pausieren den Abgleich dann von selbst, bis sie aktualisiert sind.
+
+**Was die Statusmeldungen bedeuten** (Fortschritt → Konto & Sync):
+
+| Meldung | Bedeutung |
+| --- | --- |
+| Offline | Kein Netz. Abgeglichen wird automatisch, sobald es wieder da ist |
+| Abgleich hat nicht geklappt | Server nicht erreichbar oder ein Fehler. Wird bei der nächsten Gelegenheit erneut versucht |
+| Anmeldung abgelaufen | Neu anmelden. Die Daten auf dem Gerät bleiben erhalten |
+| Neuere Version auf einem anderen Gerät | Diese App aktualisieren. Bis dahin pausiert der Abgleich, damit nichts verloren geht |
 
 ## Datenschutz
 

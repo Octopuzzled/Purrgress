@@ -18,13 +18,13 @@ Alle nennenswerten Änderungen an diesem Projekt. Das Format orientiert sich an 
 - Wiederholen an Wochentagen (z. B. „Mo, Do“ für den Müll): Wiederholen ist jetzt „Nie / Täglich / An Wochentagen“. Erledigte kommen am nächsten Termin wieder, früher Erledigtes zählt für den anstehenden Termin. Verpasste bleiben sichtbar, bis ihr nächster Tag da ist – ohne Kopien
 - Ruhetage: „Heute ist Ruhetag“ in der Tagesform-Frage oder im Tagesabschluss. Ruhetage unterbrechen die Serie nicht, Mochi nimmt den Druck raus, im Wochenverlauf zeigt ein Mond den Tag. Ein Tipp auf das Ruhetag-Kärtchen nimmt ihn zurück
 - Kuscheldecke in der Umkleide (60 Münzen, bis zu 2 auf Vorrat): schützt die Serie automatisch an vergessenen Tagen – nur wenn der Vorrat für die ganze Lücke reicht
-- Mochi arbeitet mit: Während einer Zeitbox sitzt Mochi neben dem Timer und liest (Pflege), strickt (Routine, Sozial) oder schreibt (Fokus). In der Pause döst Mochi. Respektiert „Weniger Bewegung“
+- Mochi arbeitet mit: Während einer Zeitbox sitzt Mochi neben dem Timer und liest (Pflege), strickt (Routine, Sozial) oder schreibt (Fokus). In der Pause döst Mochi. Respektiert „Ruhige Animationen“
 - Einstellungen: Tagesform-Frage am Morgen und Tagesabschluss am Abend lassen sich einzeln ausschalten
 - Einführung: eine kurze, ruhige Tour in sieben Schritten – startet einmal von selbst (auch nach dem Update auf 1.7) und lässt sich unter Fortschritt → Einstellungen jederzeit wieder einschalten. Währenddessen warten Tagesform-Frage und Tagesabschluss
 - Wöchentliche Vorlagen: „Müll rausbringen“ und „Wochenplanung“
 - Umkleide erweitert: 16 neue Teile, darunter je ein Meilenstein-Teil für Level 15, 20, 25 und 30 (Sternenstaub-Fell, Mondsichel-Mütze, Laterne, Nordlicht) und mehr Auswahl zwischen 100 und 180 Münzen
 - Fünf Teile gibt es nur als Überraschung, nicht zu kaufen: Schmetterling, Glücksklee und Seifenblasen – und selten Heiligenschein und Sternschnuppe
-- Kleine Überraschungen: Etwa jede siebte erledigte Aufgabe bringt eine Überraschung – Fundmünzen (+3 bis 10), einen seltenen Mochi-Satz oder selten ein kleines Geschenk für die Umkleide. Rückgängig nimmt auch die Überraschung zurück
+- Kleine Überraschungen beim Abhaken: Fundmünzen (+3 bis 10), ein seltener Mochi-Satz oder ab und zu ein Geschenk für die Umkleide. Die erste Überraschung des Tages kommt recht leicht, eine zweite selten, mehr gibt es nicht. Rückgängig nimmt auch die Überraschung zurück
 - Zeitgefühl: Zeitboxen, die mit „Erledigt“ enden, werden zu Messungen (geplant vs. tatsächlich, ohne Pausen und ohne ±5). Ab drei Messungen schlägt die Zeitbox beim Start eine passendere Länge vor – erst für dieselbe Aufgabe, sonst für die Kategorie, sonst allgemein. Auch im Aufgaben-Formular als kleiner Hinweis. Wird abgeglichen
 
 ### Geändert

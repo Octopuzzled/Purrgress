@@ -13,11 +13,13 @@ Eine neurodivergenz-freundliche Aufgaben-App mit sanfter Gamification: kleine Au
 - **Tageszeiten:** Start in den Tag, Jederzeit, Zum Tagesausklang – als einklappbare Abschnitte, nur wenn sie genutzt werden
 - **Vorlagen** für ADHS, Autismus, Alltag und Wohlbefinden – ein Tipp, und die Aufgabe steht in der Liste
 - **Eigene Vorlagen:** jede Aufgabe lässt sich als Vorlage speichern und wiederverwenden
-- **Held Mochi** mit Level, Werten und einer Umkleide (kostenlos anprobieren, mit Münzen kaufen)
+- **Held Mochi** mit Level, Werten und einer Umkleide: kostenlos anprobieren, mit Münzen kaufen, Meilenstein-Teile bis Level 30 und ein paar Teile, die es nur als Überraschung gibt
 - **Zeitbox:** Start per ▶, eigene Zeit wählen, ±5 Minuten, Pause, „Später“, erlaubte Überzeit, Listenzeit mit voraussichtlichem Ende, Erinnerungs-Klang und braunes Rauschen. Mochi arbeitet nebenher mit (Body Doubling) und lernt, wie lange Dinge bei dir wirklich dauern
 - **„Was jetzt?“** wählt eine Aufgabe für dich aus, wenn die Entscheidung schwerfällt
 - **Fortschritt:** 7-Tage-Verlauf, Tagesziel, Fokuszeit, Serie ohne Strafe – Ruhetage und Kuscheldecken (Umkleide) unterbrechen sie nicht
-- **Kleine Überraschungen:** ab und zu Fundmünzen, ein seltener Mochi-Satz oder ein Geschenk für die Umkleide
+- **Kleine Überraschungen:** höchstens zwei am Tag – Fundmünzen, ein seltener Mochi-Satz oder ein Geschenk für die Umkleide
+- **Einführung:** eine kurze, ruhige Tour beim ersten Start, jederzeit in den Einstellungen wieder einschaltbar
+- **Bleibt übersichtlich:** erledigte einmalige Aufgaben verschwinden nach 14 Tagen still aus der Liste – Fortschritt und Verlauf bleiben
 - **Deutsch und Englisch:** automatisch nach Gerätesprache oder fest in den Einstellungen
 - **Ruhig und zugänglich:** heller und dunkler Modus, „Ruhige Animationen“, Tastaturbedienung, Screenreader-Labels
 - **Offline-fähig** als installierbare PWA
@@ -104,8 +106,9 @@ purrgress/
 │   ├── constants/             Feste Daten ohne Texte: Spielregeln, Shop, Vorlagen, Navigation, Zeitbox
 │   ├── i18n/                  Übersetzungen: Wörterbücher (locales/), t(), Sprachwahl
 │   ├── sync/                  Abgleich: API-Client, Drei-Wege-Merge, Ablauf, Speicher
-│   ├── lib/                   Reine Funktionen ohne React (Logik, Formatierung, Audio, Speicher)
-│   ├── hooks/                 Eigene React-Hooks (Spielstand, Zeitbox, Farbschema, Belohnungen)
+│   ├── lib/                   Reine Funktionen ohne React: Aufgaben, Fälligkeit, Wiederholung, Tagesform,
+│   │                          Ruhetage, Überraschungen, Zeitgefühl, Level, Zeitbox, Speicher, Audio
+│   ├── hooks/                 Eigene React-Hooks (Spielstand, Tageswechsel, Zeitbox, Sync, Farbschema, Belohnungen)
 │   ├── components/
 │   │   ├── ui/                Wiederverwendbare Bausteine: Icon, Modal, Toast, Toggle, Styles
 │   │   ├── layout/            Kopfzeile und Tab-Leiste
@@ -113,10 +116,11 @@ purrgress/
 │   │   ├── hero/              Heldenkarte und Level-Up
 │   │   ├── settings/          Daten-Bereich: Sicherung, Einspielen, Zurücksetzen
 │   │   ├── sync/              Konto-Bereich und Auswahl beim ersten Abgleich
-│   │   ├── tasks/             Aufgabenzeile und Aufgaben-Formular
+│   │   ├── tasks/             Aufgabenzeile, Formular, Abschnitte, Tagesform, Tagesabschluss, Ta-da, „Zu groß?“
+│   │   ├── tour/              Einführung
 │   │   └── timebox/           Zeitauswahl, Timer-Ring, Mini-Leiste, Timer- und „Was jetzt?“-Dialog
 │   └── views/                 Die vier Bereiche: Aufgaben, Vorlagen, Umkleide, Fortschritt
-└── tests/                     Unit-Tests für die Logik in src/lib
+└── tests/                     Unit-Tests für src/lib und den Abgleich, inklusive Zwei-Geräte-Szenarien
 ```
 
 ## Architektur in Kürze
@@ -126,7 +130,10 @@ purrgress/
 - **Zeitbox mit Zeitstempeln:** Der Timer speichert Endzeitpunkt bzw. Restzeit statt eines laufenden Zählers. So bleibt die Zeit auch nach einem Neuladen oder im Hintergrund korrekt.
 - **Texte getrennt vom Code:** Komponenten enthalten keine Anzeigetexte, sondern Schlüssel wie `t('tasks.heading')`. Die Texte stehen in `src/i18n/locales/`.
 - **Sync ohne Datenverlust:** Jedes Gerät merkt sich den Stand beim letzten Abgleich. Beim nächsten Abgleich wird verglichen, was sich auf welcher Seite geändert hat (Drei-Wege-Merge in `src/sync/merge.js`). Zähler wie XP und Münzen werden addiert, sodass Fortschritt von allen Geräten zählt.
-- **Hooks für Nebenwirkungen:** Tab-Titel, Töne, Farbschema und der tägliche Reset leben in eigenen Hooks unter `src/hooks/`.
+- **Tageswechsel an einer Stelle:** `useDailyReset` läuft beim Start, jede Minute und beim Zurückkehren zur App. Es schiebt wiederkehrende Aufgaben weiter (`rollRepeatingTasks`), legt bei Bedarf Kuscheldecken über verpasste Tage (`protectStreak`) und räumt alte erledigte Aufgaben auf (`pruneDoneTasks`). Alles reine Funktionen – zwei Geräte kommen unabhängig voneinander zum selben Ergebnis.
+- **Zufall bleibt draußen:** Überraschungen werden vor dem Abhaken einmal ausgewürfelt (`rollSurprise`) und an `completeTask` übergeben. So bleibt die Logik rein und testbar.
+- **Versionierter Abgleich:** Der abgeglichene Spielstand trägt eine Formatnummer (`SYNC_FORMAT` in `src/sync/syncable.js`). Trifft eine App auf ein neueres Format, pausiert sie den Abgleich, statt Unbekanntes zu überschreiben. Wird das Format erweitert, die Nummer erhöhen.
+- **Hooks für Nebenwirkungen:** Töne, Farbschema, Sync und der Tageswechsel leben in eigenen Hooks unter `src/hooks/`.
 
 ## Übersetzungen
 
@@ -135,13 +142,16 @@ Die App nutzt ein kleines eigenes Übersetzungssystem ohne zusätzliche Biblioth
 **So wird ein Text verwendet**
 
 ```jsx
-const { t, duration, clock } = useI18n();
+const { t, duration, clock, day, weekday, repeatLabel } = useI18n();
 
 t('tasks.heading');                        // „Deine Aufgaben“ / „Your tasks“
 t('hero.title', { name: 'Mochi' });        // Platzhalter: „Mochi, dein Held“
 t('tasks.open', { count: 3 });             // Plural über zero/one/other
 duration(90);                              // „1 Std. 30 Min.“ / „1 h 30 min“
 clock(Date.now());                         // Uhrzeit im Format der Sprache
+day('2026-10-30');                         // „Morgen“, „Freitag“ oder „Mo., 3. Nov.“
+weekday(2);                                // „Di.“ / „Tue“ (0 = Sonntag)
+repeatLabel(task);                         // „täglich“ oder „Mo., Do.“
 ```
 
 **Einen neuen Text hinzufügen:** Schlüssel in `de.js` **und** `en.js` eintragen, dann `t('bereich.schluessel')` im Code verwenden. `npm test` meldet, wenn ein Schlüssel oder Platzhalter in einer Sprache fehlt.
@@ -153,6 +163,10 @@ clock(Date.now());                         // Uhrzeit im Format der Sprache
 3. `npm test` ausführen. Die Sprache erscheint danach automatisch in den Einstellungen.
 
 Selbst angelegte Aufgaben werden nicht übersetzt – sie gehören der Person, die sie geschrieben hat. Vorlagen und Starter-Aufgaben übernehmen die Sprache, die beim Hinzufügen aktiv ist.
+
+## Updates und mehrere Geräte
+
+Wer ein Konto nutzt, sollte nach einem Update **alle Geräte** aktualisieren, bevor sie wieder abgleichen. Die Web-App macht das beim nächsten Öffnen von selbst, die Android-App braucht die neue APK. Ab 1.7 pausiert eine veraltete App den Abgleich und bittet um ein Update, statt neuere Daten zu überschreiben. Was sich je Version ändert, steht im [CHANGELOG](CHANGELOG.md).
 
 ## Nutzen und Deployment
 
@@ -169,4 +183,4 @@ npm run android:apk  # Android-APK bauen (vorher einmalig android:add und androi
 
 ## Daten und Datenschutz
 
-Ohne Konto bleiben alle Daten im Browser bzw. auf dem Gerät – kein Server, kein Tracking. Unter Fortschritt → Einstellungen → Deine Daten lässt sich jederzeit eine Sicherung als Datei herunterladen. Mit Konto liegt zusätzlich ein Spielstand pro Person auf dem eigenen PocketBase-Server (siehe [docs/SYNC.md](docs/SYNC.md)). Jede Person kann ihr Konto samt Daten in der App selbst löschen.
+Ohne Konto bleiben alle Daten im Browser bzw. auf dem Gerät – kein Server, kein Tracking, keine Werbung. Unter Fortschritt → Einstellungen → Deine Daten lässt sich jederzeit eine Sicherung als Datei herunterladen. Mit Konto liegt zusätzlich ein Spielstand pro Person auf dem eigenen PocketBase-Server (siehe [docs/SYNC.md](docs/SYNC.md)). Jede Person kann ihr Konto samt Daten in der App selbst löschen.

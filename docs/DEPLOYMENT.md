@@ -188,7 +188,7 @@ Alternativ mit Oberfläche: `npm run android:sync`, dann `npm run android:open` 
 
 ### Updates
 
-Nach Code-Änderungen einfach wieder `npm run android:apk` ausführen und die neue APK installieren. Die Daten bleiben erhalten, solange du vom **selben PC** aus baust. Die Debug-APK wird mit einem Schlüssel signiert, der nur auf diesem Rechner liegt.
+Nach Code-Änderungen einfach wieder `npm run android:apk` ausführen und die neue APK installieren. Mit Konto: die APK auf **allen** Handys installieren, bevor sie wieder abgleichen – eine ältere Version pausiert sonst den Abgleich (ab 1.7) oder kennt neue Daten noch nicht (1.6 und älter). Die Daten bleiben erhalten, solange du vom **selben PC** aus baust. Die Debug-APK wird mit einem Schlüssel signiert, der nur auf diesem Rechner liegt.
 
 > **Debug-APK oder Release-APK?** Für die eigene Nutzung reicht die Debug-APK völlig. Für den Play Store bräuchtest du eine signierte Release-Version mit eigenem Schlüssel. Das lohnt sich erst, wenn andere die App herunterladen sollen.
 
@@ -204,4 +204,6 @@ Nach Code-Änderungen einfach wieder `npm run android:apk` ausführen und die ne
 | `android:apk`: „SDK location not found“ | `ANDROID_HOME` setzen (siehe oben) oder Projekt einmal in Android Studio öffnen |
 | `android:apk`: Java-Fehler | `JAVA_HOME` auf das JDK von Android Studio zeigen lassen |
 | Android meldet „App nicht installiert“ bei einem Update | Die alte Version wurde auf einem anderen PC gebaut. Alte App deinstallieren, dann neu installieren (Daten gehen dabei verloren) |
+| „Auf einem anderen Gerät läuft eine neuere Version“ unter Konto & Sync | Diese App ist älter als die auf einem anderen Gerät. Web-App neu laden bzw. die neue APK installieren – danach gleicht sie wieder ab |
+| „Deine Anmeldung ist abgelaufen“ | Neu anmelden. Seit 1.7 wird die Anmeldung beim Abgleich regelmäßig aufgefrischt, das sollte nur noch nach sehr langer Pause passieren |
 | Der Ende-Ton der Zeitbox kommt nicht, wenn das Handy gesperrt ist | Android pausiert JavaScript im Hintergrund. Die Zeit stimmt trotzdem. Für zuverlässige Signale kann später `@capacitor/local-notifications` ergänzt werden |
