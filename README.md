@@ -1,199 +1,205 @@
 # Purrgress
 
-Eine neurodivergenz-freundliche Aufgaben-App mit sanfter Gamification: kleine Aufgaben abhaken, XP und Münzen sammeln, den Katzen-Helden Mochi einkleiden – und mit einer Zeitbox im Stil von Llama Life fokussiert bleiben, ohne gehetzt zu werden.
+A neurodivergent-friendly task app with gentle gamification: tick off small tasks, earn XP and coins, dress up Mochi the cat hero, and stay focused with a Llama Life-style timebox, without being rushed.
 
-## Funktionen
+<p align="center">
+  <img src="docs/screenshots/tasks.png" alt="Purrgress task list with Mochi, level and coins" width="280">
+  &nbsp;&nbsp;
+  <img src="docs/screenshots/wardrobe.png" alt="Purrgress wardrobe in dark mode, where Mochi tries on fur colors" width="280">
+</p>
 
-- **Aufgaben** mit Kategorie, Kraftaufwand, Mikro-Schritten, Suche und Filter
-- **Fälligkeit:** ohne Datum, heute, morgen oder ein anderer Tag – Ansichten „Jetzt“, „Nur heute“ und „Ausblick“, Überfälliges sanft statt rot
-- **Wiederholen:** täglich oder an Wochentagen. Verpasstes rutscht weiter, ohne Kopien
-- **„Nicht heute“** legt eine Aufgabe mit einem Tipp auf morgen, **„Zu groß?“** fragt nach dem allerkleinsten ersten Schritt
-- **„Ta-da!“:** Geschafftes eintragen, das nie geplant war – zählt wie jede andere Aufgabe
-- **Tagesform am Morgen** (wenig Kraft = nur leichte Vorschläge, kleineres Tagesziel) und **Tagesabschluss am Abend** – beides abschaltbar
-- **Tageszeiten:** Start in den Tag, Jederzeit, Zum Tagesausklang – als einklappbare Abschnitte, nur wenn sie genutzt werden
-- **Vorlagen** für ADHS, Autismus, Alltag und Wohlbefinden – ein Tipp, und die Aufgabe steht in der Liste
-- **Eigene Vorlagen:** jede Aufgabe lässt sich als Vorlage speichern und wiederverwenden
-- **Held Mochi** mit Level, Werten und einer Umkleide: kostenlos anprobieren, mit Münzen kaufen, Meilenstein-Teile bis Level 30 und ein paar Teile, die es nur als Überraschung gibt
-- **Zeitbox:** Start per ▶, eigene Zeit wählen, ±5 Minuten, Pause, „Später“, erlaubte Überzeit, Listenzeit mit voraussichtlichem Ende, Erinnerungs-Klang und braunes Rauschen. Mochi arbeitet nebenher mit (Body Doubling) und lernt, wie lange Dinge bei dir wirklich dauern
-- **„Was jetzt?“** wählt eine Aufgabe für dich aus, wenn die Entscheidung schwerfällt
-- **Fortschritt:** 7-Tage-Verlauf, Tagesziel, Fokuszeit, Serie ohne Strafe – Ruhetage und Kuscheldecken (Umkleide) unterbrechen sie nicht
-- **Kleine Überraschungen:** höchstens zwei am Tag – Fundmünzen, ein seltener Mochi-Satz oder ein Geschenk für die Umkleide
-- **Einführung:** eine kurze, ruhige Tour beim ersten Start, jederzeit in den Einstellungen wieder einschaltbar
-- **Bleibt übersichtlich:** erledigte einmalige Aufgaben verschwinden nach 14 Tagen still aus der Liste – Fortschritt und Verlauf bleiben
-- **Deutsch und Englisch:** automatisch nach Gerätesprache oder fest in den Einstellungen
-- **Ruhig und zugänglich:** heller und dunkler Modus, „Ruhige Animationen“, Tastaturbedienung, Screenreader-Labels
-- **Offline-fähig** als installierbare PWA
-- **Konto & Sync** über den eigenen Server (PocketBase), Registrierung nur mit Einladung
-- **Sicherung** als Datei oder Text exportieren und wieder einspielen
+## Features
 
-## Spielbalance
+- **Tasks** with category, effort, micro-steps, search and filters
+- **Due dates:** no date, today, tomorrow or any other day. Views "Now", "Today only" and "Outlook", with overdue tasks shown gently instead of in red
+- **Repeating:** daily or on chosen weekdays. Missed tasks slide forward without leaving copies
+- **"Not today"** moves a task to tomorrow with one tap, **"Too big?"** asks for the very smallest first step
+- **"Ta-da!":** log things you did that were never planned. They count like any other task
+- **Morning check-in** (low energy = only easy suggestions and a smaller daily goal) and **evening wrap-up**, both can be switched off
+- **Times of day:** Start of day, Anytime, Wind-down, as collapsible sections that only show up when used
+- **Templates** for ADHD, autism, everyday life and wellbeing. One tap and the task is in your list
+- **Your own templates:** save any task as a template and reuse it
+- **Hero Mochi** with level, stats and a wardrobe: try on for free, buy with coins, milestone items up to level 30 and a few items that only come as surprises
+- **Timebox:** start with ▶, pick your own time, ±5 minutes, pause, "Later", allowed overtime, list time with expected finish, reminder chime and brown noise. Mochi works alongside you (body doubling) and learns how long things really take you
+- **"What now?"** picks a task for you when deciding is hard
+- **Progress:** 7-day history, daily goal, focus time, a streak without punishment. Rest days and cozy blankets (wardrobe) don't break it
+- **Little surprises:** at most two a day: found coins, a rare Mochi line or a gift for the wardrobe
+- **Introduction:** a short, calm tour on first start, can be switched back on any time in the settings
+- **Stays tidy:** finished one-off tasks quietly disappear from the list after 14 days. Progress and history stay
+- **German and English:** automatic by device language or fixed in the settings
+- **Calm and accessible:** light and dark mode, "Calm animations", keyboard control, screen reader labels
+- **Works offline** as an installable PWA
+- **Account & sync** through your own server (PocketBase), sign-up by invitation only
+- **Backup:** export and import as a file or as text
 
-| Schwierigkeit | XP | Münzen |
+## Game balance
+
+| Difficulty | XP | Coins |
 | --- | --- | --- |
-| Leicht | 10 | 5 |
-| Mittel | 25 | 12 |
-| Schwer | 50 | 25 |
+| Easy | 10 | 5 |
+| Medium | 25 | 12 |
+| Hard | 50 | 25 |
 
-Dazu kommen +2 XP je Mikro-Schritt, +20 Münzen je Level-Aufstieg und einmal am Tag +10 Münzen für das erreichte Tagesziel. Ab der siebten Aufgabe am Tag gibt es die halbe Münzzahl (aufgerundet), XP bleiben voll – so reicht die Umkleide auch dann lange, wenn Purrgress die einzige Aufgaben-App ist. Bis Level 10 braucht jedes Level 20 XP mehr als das vorige, danach wird es zusätzlich Stück für Stück länger. Überraschungen gibt es höchstens zwei am Tag. Die Umkleide kostet insgesamt 7.510 Münzen. Grundteile gibt es ab 20 Münzen, besondere Teile ab Level 5, 8 oder 12, und alle fünf Level bis Level 30 wartet ein Meilenstein-Teil. Bei drei Aufgaben am Tag dauert es etwa sieben Monate, bis alles gekauft ist (bei zwölf etwa drei) – der erste Kauf klappt trotzdem am ersten Tag. Fünf Teile lassen sich nicht kaufen: Mochi verschenkt sie ab und zu als Überraschung, zwei davon nur selten.
+On top of that come +2 XP per micro-step, +20 coins per level-up and once a day +10 coins for reaching the daily goal. From the seventh task of the day on, coins are halved (rounded up) and XP stay full, so the wardrobe lasts a long time even if Purrgress is your only task app. Up to level 10 every level needs 20 XP more than the previous one, after that it gets gradually longer. There are at most two surprises a day. The wardrobe costs 7,510 coins in total. Basic items start at 20 coins, special items unlock at level 5, 8 or 12, and every five levels up to level 30 a milestone item is waiting. At three tasks a day it takes about seven months to buy everything (about three at twelve), yet the first purchase works on day one. Five items can't be bought: Mochi hands them out now and then as a surprise, two of them only rarely.
 
-Alle Werte stehen in `src/constants/game.js` und `src/constants/shop.js`.
+All values live in `src/constants/game.js` and `src/constants/shop.js`.
 
-## Tech-Stack
+## Tech stack
 
-| Bereich | Werkzeug |
+| Area | Tool |
 | --- | --- |
 | UI | React 19 |
-| Build & Dev-Server | Vite 7 |
-| Styling | Tailwind CSS 4 (eigene Werte in px) |
-| Offline & Installation | vite-plugin-pwa (Workbox) |
-| Schriften | Fredoka und Nunito, lokal über Fontsource |
+| Build & dev server | Vite 7 |
+| Styling | Tailwind CSS 4 (custom values in px) |
+| Offline & installation | vite-plugin-pwa (Workbox) |
+| Fonts | Fredoka and Nunito, local via Fontsource |
 | Tests | Vitest |
-| Android-App | Capacitor |
-| Konto & Sync | PocketBase (selbst gehostet, Docker) |
-| Codequalität | ESLint 9, Prettier |
+| Android app | Capacitor |
+| Account & sync | PocketBase (self-hosted, Docker) |
+| Code quality | ESLint 9, Prettier |
 
-## Voraussetzungen
+## Requirements
 
-- Node.js **20.19 oder neuer** (empfohlen: 22, siehe `.nvmrc`)
+- Node.js **20.19 or newer** (recommended: 22, see `.nvmrc`)
 - npm
 
-## Schnellstart
+## Quick start
 
 ```bash
 npm install
 npm run dev
 ```
 
-Die App läuft dann unter <http://localhost:5173>. Änderungen im Code erscheinen sofort im Browser.
+The app now runs at <http://localhost:5173>. Code changes show up in the browser right away.
 
-## Skripte
+## Scripts
 
-| Befehl | Zweck |
+| Command | Purpose |
 | --- | --- |
-| `npm run dev` | Entwicklungsserver mit Hot Reload |
-| `npm run build` | Produktions-Build nach `dist/` |
-| `npm run preview` | Den fertigen Build lokal testen (inklusive PWA) |
-| `npm test` | Unit-Tests einmal ausführen |
-| `npm run test:watch` | Tests bei jeder Änderung neu ausführen |
-| `npm run lint` | Code mit ESLint prüfen |
-| `npm run format` | Code mit Prettier formatieren |
-| `npm run dev:phone` | Entwicklungsserver im WLAN erreichbar machen |
-| `npm run deploy` | Bauen und auf den eigenen Server hochladen |
-| `npm run deploy:server` | Sync-Server (PocketBase) hochladen und neu starten |
-| `npm run android:add` | Android-Projekt einmalig anlegen |
-| `npm run android:icons` | App-Icon und Startbildschirm für Android erzeugen |
-| `npm run android:apk` | Android-APK bauen |
-| `npm run android:open` | Android-Projekt in Android Studio öffnen |
+| `npm run dev` | Development server with hot reload |
+| `npm run build` | Production build into `dist/` |
+| `npm run preview` | Test the finished build locally (including the PWA) |
+| `npm test` | Run the unit tests once |
+| `npm run test:watch` | Re-run the tests on every change |
+| `npm run lint` | Check the code with ESLint |
+| `npm run format` | Format the code with Prettier |
+| `npm run dev:phone` | Make the dev server reachable on your Wi-Fi |
+| `npm run deploy` | Build and upload to your own server |
+| `npm run deploy:server` | Upload the sync server (PocketBase) and restart it |
+| `npm run android:add` | Create the Android project (once) |
+| `npm run android:icons` | Generate app icon and splash screen for Android |
+| `npm run android:apk` | Build the Android APK |
+| `npm run android:open` | Open the Android project in Android Studio |
 
-## Projektstruktur
+## Project structure
 
 ```
 purrgress/
-├── index.html                 Einstiegsseite (Vite)
-├── vite.config.js             Vite, Tailwind, PWA-Manifest, Vitest
-├── public/                    Favicon und App-Icons (Web)
-├── assets/                    Quellbilder für Android-Icon und Startbildschirm
-├── docs/DEPLOYMENT.md         Anleitung: lokal, Server, Handy, APK
-├── docs/SYNC.md               Anleitung: Sync-Server, Einladungen, Wartung
-├── scripts/deploy.sh          Bauen und per rsync hochladen
-├── scripts/deploy-server.sh   Sync-Server hochladen und neu starten
-├── server/                    PocketBase: Dockerfile, Compose, Migration, Einladungs-Hook
-├── capacitor.config.json      Einstellungen für die Android-App
+├── index.html                 Entry page (Vite)
+├── vite.config.js             Vite, Tailwind, PWA manifest, Vitest
+├── public/                    Favicon and app icons (web)
+├── assets/                    Source images for the Android icon and splash screen
+├── docs/DEPLOYMENT.md         Guide: local, server, phone, APK
+├── docs/SYNC.md               Guide: sync server, invitations, maintenance
+├── scripts/deploy.sh          Build and upload via rsync
+├── scripts/deploy-server.sh   Upload the sync server and restart it
+├── server/                    PocketBase: Dockerfile, Compose, migrations, invitation hook
+├── capacitor.config.json      Settings for the Android app
 ├── src/
-│   ├── main.jsx               Einstiegspunkt: Schriften, CSS, React
-│   ├── App.jsx                Oberste Komponente: verbindet Zustand, Hooks und Ansichten
-│   ├── styles/index.css       Tailwind-Import, Theme-Tokens, Animationen
-│   ├── constants/             Feste Daten ohne Texte: Spielregeln, Shop, Vorlagen, Navigation, Zeitbox
-│   ├── i18n/                  Übersetzungen: Wörterbücher (locales/), t(), Sprachwahl
-│   ├── sync/                  Abgleich: API-Client, Drei-Wege-Merge, Ablauf, Speicher
-│   ├── lib/                   Reine Funktionen ohne React: Aufgaben, Fälligkeit, Wiederholung, Tagesform,
-│   │                          Ruhetage, Überraschungen, Zeitgefühl, Level, Zeitbox, Speicher, Audio
-│   ├── hooks/                 Eigene React-Hooks (Spielstand, Tageswechsel, Zeitbox, Sync, Farbschema, Belohnungen)
+│   ├── main.jsx               Entry point: fonts, CSS, React
+│   ├── App.jsx                Top-level component: connects state, hooks and views
+│   ├── styles/index.css       Tailwind import, theme tokens, animations
+│   ├── constants/             Fixed data without texts: game rules, shop, templates, navigation, timebox
+│   ├── i18n/                  Translations: dictionaries (locales/), t(), language choice
+│   ├── sync/                  Syncing: API client, three-way merge, flow, storage
+│   ├── lib/                   Pure functions without React: tasks, due dates, repeating, energy check-in,
+│   │                          rest days, surprises, time sense, levels, timebox, storage, audio
+│   ├── hooks/                 Custom React hooks (game state, day change, timebox, sync, color scheme, rewards)
 │   ├── components/
-│   │   ├── ui/                Wiederverwendbare Bausteine: Icon, Modal, Toast, Toggle, Styles
-│   │   ├── layout/            Kopfzeile und Tab-Leiste
-│   │   ├── avatar/            Mochi als SVG, aufgeteilt in Einzelteile
-│   │   ├── hero/              Heldenkarte und Level-Up
-│   │   ├── settings/          Daten-Bereich: Sicherung, Einspielen, Zurücksetzen
-│   │   ├── sync/              Konto-Bereich und Auswahl beim ersten Abgleich
-│   │   ├── tasks/             Aufgabenzeile, Formular, Abschnitte, Tagesform, Tagesabschluss, Ta-da, „Zu groß?“
-│   │   ├── tour/              Einführung
-│   │   └── timebox/           Zeitauswahl, Timer-Ring, Mini-Leiste, Timer- und „Was jetzt?“-Dialog
-│   └── views/                 Die vier Bereiche: Aufgaben, Vorlagen, Umkleide, Fortschritt
-└── tests/                     Unit-Tests für src/lib und den Abgleich, inklusive Zwei-Geräte-Szenarien
+│   │   ├── ui/                Reusable building blocks: Icon, Modal, Toast, Toggle, styles
+│   │   ├── layout/            Header and tab bar
+│   │   ├── avatar/            Mochi as SVG, split into parts
+│   │   ├── hero/              Hero card and level-up
+│   │   ├── settings/          Data section: backup, import, reset
+│   │   ├── sync/              Account section and the choice on first sync
+│   │   ├── tasks/             Task row, form, sections, energy check-in, wrap-up, Ta-da, "Too big?"
+│   │   ├── tour/              Introduction
+│   │   └── timebox/           Time picker, timer ring, mini bar, timer and "What now?" dialogs
+│   └── views/                 The four areas: Tasks, Templates, Wardrobe, Progress
+└── tests/                     Unit tests for src/lib and syncing, including two-device scenarios
 ```
 
-## Architektur in Kürze
+## Architecture in brief
 
-- **Ein Zustand, eine Quelle:** Der komplette Spielstand liegt in einem Objekt (`useGameState`) und wird bei jeder Änderung in `localStorage` gespeichert (Schlüssel `purrgress-v1`). `migrate()` in `src/lib/state.js` ergänzt fehlende Felder, wenn ältere Spielstände geladen werden.
-- **Logik ohne React:** Alles, was den Zustand verändert (Abhaken, Belohnungen, Zeitbox), steckt als reine Funktion in `src/lib/`. Diese Funktionen bekommen einen Zustand und geben einen neuen zurück. Dadurch sind sie leicht zu testen und unabhängig von der Oberfläche.
-- **Zeitbox mit Zeitstempeln:** Der Timer speichert Endzeitpunkt bzw. Restzeit statt eines laufenden Zählers. So bleibt die Zeit auch nach einem Neuladen oder im Hintergrund korrekt.
-- **Texte getrennt vom Code:** Komponenten enthalten keine Anzeigetexte, sondern Schlüssel wie `t('tasks.heading')`. Die Texte stehen in `src/i18n/locales/`.
-- **Sync ohne Datenverlust:** Jedes Gerät merkt sich den Stand beim letzten Abgleich. Beim nächsten Abgleich wird verglichen, was sich auf welcher Seite geändert hat (Drei-Wege-Merge in `src/sync/merge.js`). Zähler wie XP und Münzen werden addiert, sodass Fortschritt von allen Geräten zählt.
-- **Tageswechsel an einer Stelle:** `useDailyReset` läuft beim Start, jede Minute und beim Zurückkehren zur App. Es schiebt wiederkehrende Aufgaben weiter (`rollRepeatingTasks`), legt bei Bedarf Kuscheldecken über verpasste Tage (`protectStreak`) und räumt alte erledigte Aufgaben auf (`pruneDoneTasks`). Alles reine Funktionen – zwei Geräte kommen unabhängig voneinander zum selben Ergebnis.
-- **Zufall bleibt draußen:** Überraschungen werden vor dem Abhaken einmal ausgewürfelt (`rollSurprise`) und an `completeTask` übergeben. So bleibt die Logik rein und testbar.
-- **Versionierter Abgleich:** Der abgeglichene Spielstand trägt eine Formatnummer (`SYNC_FORMAT` in `src/sync/syncable.js`). Trifft eine App auf ein neueres Format, pausiert sie den Abgleich, statt Unbekanntes zu überschreiben. Wird das Format erweitert, die Nummer erhöhen.
-- **Hooks für Nebenwirkungen:** Töne, Farbschema, Sync und der Tageswechsel leben in eigenen Hooks unter `src/hooks/`.
+- **One state, one source:** The whole game state lives in one object (`useGameState`) and is saved to `localStorage` on every change (key `purrgress-v1`). `migrate()` in `src/lib/state.js` fills in missing fields when older saves are loaded.
+- **Logic without React:** Everything that changes the state (ticking off, rewards, timebox) is a pure function in `src/lib/`. These functions take a state and return a new one, which makes them easy to test and independent of the interface.
+- **Timebox with timestamps:** The timer stores an end time or the remaining time instead of a running counter. That keeps the time correct after a reload or in the background.
+- **Texts separate from code:** Components contain no display texts, only keys like `t('tasks.heading')`. The texts live in `src/i18n/locales/`.
+- **Sync without data loss:** Each device remembers its state at the last sync. At the next sync it compares what changed on which side (three-way merge in `src/sync/merge.js`). Counters such as XP and coins are added up, so progress from every device counts.
+- **Day change in one place:** `useDailyReset` runs on start, every minute and when you return to the app. It moves repeating tasks forward (`rollRepeatingTasks`), puts cozy blankets over missed days when needed (`protectStreak`) and clears out old finished tasks (`pruneDoneTasks`). All pure functions, so two devices reach the same result independently.
+- **Randomness stays outside:** Surprises are rolled once before ticking off (`rollSurprise`) and passed to `completeTask`. That keeps the logic pure and testable.
+- **Versioned sync:** The synced state carries a format number (`SYNC_FORMAT` in `src/sync/syncable.js`). If an app meets a newer format, it pauses syncing instead of overwriting something it doesn't know. When you extend the format, raise the number.
+- **Hooks for side effects:** Sounds, color scheme, sync and the day change live in their own hooks under `src/hooks/`.
 
-## Übersetzungen
+## Translations
 
-Die App nutzt ein kleines eigenes Übersetzungssystem ohne zusätzliche Bibliothek (`src/i18n/`).
+The app uses a small translation system of its own without an extra library (`src/i18n/`).
 
-**So wird ein Text verwendet**
+**How a text is used**
 
 ```jsx
 const { t, duration, clock, day, weekday, repeatLabel } = useI18n();
 
-t('tasks.heading');                        // „Deine Aufgaben“ / „Your tasks“
-t('hero.title', { name: 'Mochi' });        // Platzhalter: „Mochi, dein Held“
-t('tasks.open', { count: 3 });             // Plural über zero/one/other
-duration(90);                              // „1 Std. 30 Min.“ / „1 h 30 min“
-clock(Date.now());                         // Uhrzeit im Format der Sprache
-day('2026-10-30');                         // „Morgen“, „Freitag“ oder „Mo., 3. Nov.“
-weekday(2);                                // „Di.“ / „Tue“ (0 = Sonntag)
-repeatLabel(task);                         // „täglich“ oder „Mo., Do.“
+t('tasks.heading');                        // "Deine Aufgaben" (de) / "Your tasks" (en)
+t('hero.title', { name: 'Mochi' });        // placeholders: "Mochi, your hero"
+t('tasks.open', { count: 3 });             // plural via zero/one/other
+duration(90);                              // "1 Std. 30 Min." (de) / "1 h 30 min" (en)
+clock(Date.now());                         // time in the language's format
+day('2026-10-30');                         // "Tomorrow", "Friday" or "Mon, Nov 3"
+weekday(2);                                // "Di." (de) / "Tue" (en) (0 = Sunday)
+repeatLabel(task);                         // "daily" or "Mon, Thu"
 ```
 
-**Einen neuen Text hinzufügen:** Schlüssel in `de.js` **und** `en.js` eintragen, dann `t('bereich.schluessel')` im Code verwenden. `npm test` meldet, wenn ein Schlüssel oder Platzhalter in einer Sprache fehlt.
+**Adding a new text:** Add the key to `de.js` **and** `en.js`, then use `t('area.key')` in the code. `npm test` reports when a key or placeholder is missing in one language.
 
-**Eine neue Sprache hinzufügen** (Beispiel Niederländisch):
+**Adding a new language** (example: Dutch):
 
-1. `src/i18n/locales/en.js` nach `nl.js` kopieren, `export const nl` nennen und alle Texte übersetzen. `meta.name` ist der Name der Sprache in ihr selbst („Nederlands“), `meta.locale` z. B. `nl-NL`.
-2. In `src/i18n/index.js` importieren und bei `DICTIONARIES` und `LANGUAGES` ergänzen.
-3. `npm test` ausführen. Die Sprache erscheint danach automatisch in den Einstellungen.
+1. Copy `src/i18n/locales/en.js` to `nl.js`, name the export `nl` and translate all texts. `meta.name` is the name of the language in itself ("Nederlands"), `meta.locale` e.g. `nl-NL`.
+2. Import it in `src/i18n/index.js` and add it to `DICTIONARIES` and `LANGUAGES`.
+3. Run `npm test`. The language then shows up in the settings automatically.
 
-Selbst angelegte Aufgaben werden nicht übersetzt – sie gehören der Person, die sie geschrieben hat. Vorlagen und Starter-Aufgaben übernehmen die Sprache, die beim Hinzufügen aktiv ist.
+Tasks you create yourself are not translated, they belong to the person who wrote them. Templates and starter tasks take the language that is active when they are added.
 
-## Updates und mehrere Geräte
+## Updates and multiple devices
 
-Wer ein Konto nutzt, sollte nach einem Update **alle Geräte** aktualisieren, bevor sie wieder abgleichen. Die Web-App macht das beim nächsten Öffnen von selbst, die Android-App braucht die neue APK. Ab 1.7 pausiert eine veraltete App den Abgleich und bittet um ein Update, statt neuere Daten zu überschreiben. Was sich je Version ändert, steht im [CHANGELOG](CHANGELOG.md).
+If you use an account, update **all devices** after an update before they sync again. The web app does this by itself the next time it opens, the Android app needs the new APK. From 1.7 on, an outdated app pauses syncing and asks for an update instead of overwriting newer data. What changes in each version is listed in the [CHANGELOG](CHANGELOG.md).
 
-## Nutzen und Deployment
+## Usage and deployment
 
-Die vollständige Anleitung steht in **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**: lokal testen, auf dem eigenen Server mit Caddy veröffentlichen, als App aufs Handy installieren und eine Android-APK bauen.
+The full guide is in **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**: test locally, publish on your own server with Caddy, install it on your phone as an app and build an Android APK.
 
-Kurzfassung:
+In short:
 
 ```bash
-npm run dev          # lokal testen
-npm run dev:phone    # im WLAN auf dem Handy testen
-npm run deploy       # bauen und auf den Server laden (vorher .env.deploy anlegen)
-npm run android:apk  # Android-APK bauen (vorher einmalig android:add und android:icons)
+npm run dev          # test locally
+npm run dev:phone    # test on your phone over Wi-Fi
+npm run deploy       # build and upload to the server (create .env.deploy first)
+npm run android:apk  # build the Android APK (run android:add and android:icons once first)
 ```
 
-## Daten und Datenschutz
+## Data and privacy
 
-Ohne Konto bleiben alle Daten im Browser bzw. auf dem Gerät – kein Server, kein Tracking, keine Werbung. Unter Fortschritt → Einstellungen → Deine Daten lässt sich jederzeit eine Sicherung als Datei herunterladen. Mit Konto liegt zusätzlich ein Spielstand pro Person auf dem eigenen PocketBase-Server (siehe [docs/SYNC.md](docs/SYNC.md)). Jede Person kann ihr Konto samt Daten in der App selbst löschen.
+Without an account, all data stays in the browser or on the device: no server, no tracking, no ads. Under Progress → Settings → Your data you can download a backup file at any time. With an account, one save per person is also stored on your own PocketBase server (see [docs/SYNC.md](docs/SYNC.md)). Everyone can delete their account and data in the app themselves.
 
-## Sicherheit
+## Security
 
-Wie Purrgress geschützt ist und wie du eine Schwachstelle meldest, steht in [SECURITY.md](SECURITY.md).
+How Purrgress is protected and how to report a vulnerability is described in [SECURITY.md](SECURITY.md).
 
-## Lizenz
+## License
 
-Purrgress steht unter der **[PolyForm Noncommercial License 1.0.0](LICENSE.md)**.
+Purrgress is licensed under the **[PolyForm Noncommercial License 1.0.0](LICENSE.md)**.
 
-- **Erlaubt:** die App nutzen, den Code ansehen, für dich anpassen und – nicht kommerziell – weitergeben. Dabei muss der Copyright-Hinweis aus `LICENSE.md` erhalten bleiben.
-- **Nicht erlaubt:** Purrgress oder darauf aufbauende Versionen verkaufen, in ein bezahltes Produkt oder einen bezahlten Dienst einbauen oder anderweitig damit Geld verdienen.
+- **Allowed:** using the app, reading the code, adapting it for yourself and, non-commercially, passing it on. The copyright notice from `LICENSE.md` must be kept.
+- **Not allowed:** selling Purrgress or versions built on it, building it into a paid product or service, or otherwise making money with it.
 
-Für eine kommerzielle Nutzung frag bitte vorher nach.
+For commercial use, please ask first.

@@ -1,18 +1,16 @@
-# Sicherheit
+# Security
 
-## Eine Schwachstelle melden
+## Reporting a vulnerability
 
-Bitte melde Sicherheitslücken **nicht** als öffentliches Issue, sondern vertraulich über GitHub: **Security → Report a vulnerability** in diesem Repository. Beschreibe kurz, was betroffen ist und wie es sich nachvollziehen lässt. Du bekommst so bald wie möglich eine Rückmeldung.
+Please report security issues **not** as a public issue, but privately through GitHub: **Security → Report a vulnerability** in this repository. Briefly describe what is affected and how to reproduce it. You will get a reply as soon as possible.
 
-*Please report security issues privately via **Security → Report a vulnerability**, not as a public issue.*
+## Supported versions
 
-## Unterstützte Versionen
+Security fixes are provided for the latest version (see the [CHANGELOG](CHANGELOG.md)).
 
-Sicherheitskorrekturen gibt es für die jeweils neueste Version (siehe [CHANGELOG](CHANGELOG.md)).
+## How Purrgress is protected
 
-## Wie Purrgress geschützt ist
-
-- **Ohne Konto** bleiben alle Daten auf dem Gerät. Es gibt keine Tracker, keine Werbung und keine Anfragen an fremde Server.
-- **Web-App:** strenge Content-Security-Policy (Skripte, Verbindungen und Schriften nur von der eigenen Adresse), keine Inline-Skripte.
-- **Sync-Server (PocketBase):** Registrierung nur mit einmaligem Einladungscode, Zugriffsregeln pro Person, Rate Limits pro IP-Adresse, Admin-Oberfläche nur über SSH-Tunnel, Container mit minimalen Rechten und geprüftem Download. Details in [docs/SYNC.md](docs/SYNC.md).
-- **Keine Geheimnisse im Repository:** Zugangsdaten für das Deployment stehen nur lokal in `.env.deploy`.
+- **Without an account**, all data stays on the device. There are no trackers, no ads and no requests to third-party servers.
+- **Web app:** strict Content Security Policy (scripts, connections and fonts only from its own address), no inline scripts.
+- **Sync server (PocketBase):** sign-up only with a single-use invitation code, access rules per person, rate limits per IP address, admin interface only through an SSH tunnel, container with minimal privileges and a verified download. Details in [docs/SYNC.md](docs/SYNC.md).
+- **No secrets in the repository:** deployment credentials are only kept locally in `.env.deploy`.

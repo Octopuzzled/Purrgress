@@ -1,21 +1,21 @@
 #!/usr/bin/env sh
-# Baut Purrgress und lädt den fertigen Build auf den eigenen Server.
-# Einstellungen stehen in .env.deploy (Vorlage: .env.deploy.example).
+# Builds Purrgress and uploads the finished build to your own server.
+# Settings live in .env.deploy (template: .env.deploy.example).
 set -eu
 
 cd "$(dirname "$0")/.."
 
 if [ ! -f .env.deploy ]; then
-  echo "Fehlt: .env.deploy – kopiere .env.deploy.example nach .env.deploy und trage deinen Server ein." >&2
+  echo "Missing: .env.deploy – copy .env.deploy.example to .env.deploy and enter your server." >&2
   exit 1
 fi
 
 # shellcheck disable=SC1091
 . ./.env.deploy
-: "${DEPLOY_HOST:?DEPLOY_HOST fehlt in .env.deploy}"
-: "${DEPLOY_PATH:?DEPLOY_PATH fehlt in .env.deploy}"
+: "${DEPLOY_HOST:?DEPLOY_HOST is missing in .env.deploy}"
+: "${DEPLOY_PATH:?DEPLOY_PATH is missing in .env.deploy}"
 
 npm run build
 rsync -avz --delete dist/ "$DEPLOY_HOST:$DEPLOY_PATH/"
 
-echo "Fertig: $DEPLOY_PATH auf $DEPLOY_HOST ist aktuell."
+echo "Done: $DEPLOY_PATH on $DEPLOY_HOST is up to date."
