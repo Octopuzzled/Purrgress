@@ -1,7 +1,7 @@
 /** Einzelteile von Mochi als SVG: Hintergründe, Hüte, Kleidung, Extras, Augen. */
 import { starPoints } from '../../lib/geometry.js';
 
-export function renderBackground(id) {
+export function Background({ id }) {
   switch (id) {
     case 'bg-lavendel': return <rect width="200" height="200" fill="#ece5ff" />;
     case 'bg-pfirsich': return <rect width="200" height="200" fill="#ffe7da" />;
@@ -56,7 +56,7 @@ export function Petals({ x, y, color, dist = 5, r = 4.2, center = '#fbbf24' }) {
   );
 }
 
-export function renderHat(id) {
+export function Hat({ id }) {
   switch (id) {
     case 'kopf-muetze':
       return (
@@ -126,14 +126,14 @@ export function renderHat(id) {
   }
 }
 
-export function renderClothBack(id) {
+export function ClothBack({ id }) {
   if (id === 'kleidung-umhang') {
     return <path d="M60 128 Q30 168 44 186 Q100 196 156 186 Q170 168 140 128 Z" fill="#b8a5ec" />;
   }
   return null;
 }
 
-export function renderClothBody(id) {
+export function ClothBody({ id }) {
   switch (id) {
     case 'kleidung-pulli':
       return (
@@ -169,7 +169,7 @@ export function renderClothBody(id) {
   }
 }
 
-export function renderClothFront(id) {
+export function ClothFront({ id }) {
   switch (id) {
     case 'kleidung-schal':
       return (
@@ -191,7 +191,7 @@ export function renderClothFront(id) {
   }
 }
 
-export function renderExtra(id, fur) {
+export function Extra({ id, fur }) {
   switch (id) {
     case 'extra-bluemchen':
       return <Petals x={68} y={76} color="#ffffff" dist={6} r={5} center="#fcd34d" />;
@@ -232,7 +232,7 @@ export function renderExtra(id, fur) {
   }
 }
 
-export function renderEyes(id, fur, still) {
+export function Eyes({ id, fur, still }) {
   const c = fur.eye;
   const hl = fur.hl;
   switch (id) {

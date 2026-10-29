@@ -1,11 +1,11 @@
 import { useRef } from 'react';
 import { DEFAULT_EQUIP, findItem } from '../../constants/shop.js';
 import { starPoints } from '../../lib/geometry.js';
-import { renderBackground, renderClothBack, renderClothBody, renderClothFront, renderExtra, renderEyes, renderHat } from './parts.jsx';
+import { Background, ClothBack, ClothBody, ClothFront, Extra, Eyes, Hat } from './parts.jsx';
 import { useI18n } from '../../i18n/useI18n.js';
 
 /** Kleine Requisiten, wenn Mochi während einer Zeitbox mitarbeitet. Sitzen vor dem Bauch. */
-function renderActivity(activity, fur) {
+function Activity({ activity, fur }) {
   switch (activity) {
     case 'read':
       return (
@@ -71,10 +71,10 @@ export function Avatar({ equip, mood = 'idle', title, still = false, activity = 
         <clipPath id={`${id}-body`}><ellipse cx="100" cy="118" rx="58" ry="52" /></clipPath>
       </defs>
       <g clipPath={`url(#${id}-bg)`}>
-        {renderBackground(e.hintergrund)}
+        <Background id={e.hintergrund} />
         <ellipse cx="100" cy="181" rx="48" ry="7" fill="#334155" opacity="0.12" />
         <g className={motionClass}>
-          {renderClothBack(e.kleidung)}
+          <ClothBack id={e.kleidung} />
           {/* Schwanz */}
           <path d="M146 158 Q182 152 172 116" fill="none" stroke={fur.shade} strokeWidth="12" strokeLinecap="round" />
           {/* Ohren */}
@@ -85,8 +85,8 @@ export function Avatar({ equip, mood = 'idle', title, still = false, activity = 
           {/* Körper */}
           <ellipse cx="100" cy="118" rx="58" ry="52" fill={fur.fill} stroke={fur.shade} strokeWidth="3" />
           <ellipse cx="100" cy="146" rx="30" ry="19" fill="#ffffff" opacity="0.35" />
-          <g clipPath={`url(#${id}-body)`}>{renderClothBody(e.kleidung)}</g>
-          {renderClothFront(e.kleidung)}
+          <g clipPath={`url(#${id}-body)`}><ClothBody id={e.kleidung} /></g>
+          <ClothFront id={e.kleidung} />
           {/* Füße & Arme */}
           <ellipse cx="80" cy="169" rx="15" ry="9" fill={fur.fill} stroke={fur.shade} strokeWidth="3" />
           <ellipse cx="120" cy="169" rx="15" ry="9" fill={fur.fill} stroke={fur.shade} strokeWidth="3" />
@@ -103,13 +103,13 @@ export function Avatar({ equip, mood = 'idle', title, still = false, activity = 
               <text className="anim-zzz" x="150" y="88" fontSize="16" fontWeight="700" fill={fur.eye} fontFamily="Fredoka, Nunito, sans-serif">z</text>
               <text className="anim-zzz" x="162" y="72" fontSize="11" fontWeight="700" fill={fur.eye} fontFamily="Fredoka, Nunito, sans-serif" style={{ animationDelay: '1.2s' }}>z</text>
             </g>
-          ) : renderEyes(cheer ? 'augen-froh' : e.augen, fur, still)}
+          ) : <Eyes id={cheer ? 'augen-froh' : e.augen} fur={fur} still={still} />}
           {cheer
             ? <path d="M93 123 Q100 135 107 123 Z" fill="#e8798f" stroke={fur.eye} strokeWidth="2" strokeLinejoin="round" />
             : <path d="M93 123 Q96.5 127.5 100 123 Q103.5 127.5 107 123" fill="none" stroke={fur.eye} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />}
-          {!cheer && renderActivity(activity, fur)}
-          {renderHat(e.kopf)}
-          {renderExtra(e.extra, fur)}
+          {!cheer && <Activity activity={activity} fur={fur} />}
+          <Hat id={e.kopf} />
+          <Extra id={e.extra} fur={fur} />
           {cheer && (
             <g>
               <polygon className="anim-sparkle" points={starPoints(34, 70, 7, 3)} fill="#fde68a" />
