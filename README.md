@@ -1,6 +1,6 @@
 # Purrgress
 
-A neurodivergent-friendly task app with gentle gamification: tick off small tasks, earn XP and coins, dress up Mochi the cat hero, and stay focused with a Llama Life-style timebox, without being rushed.
+A neurodivergent-friendly task app with gentle gamification: tick off small tasks, earn XP and coins, dress up Mochi the cat hero, and stay focused with a timebox, without being rushed.
 
 <p align="center">
   <img src="docs/screenshots/tasks.png" alt="Purrgress task list with Mochi, level and coins" width="280">
