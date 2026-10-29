@@ -8,6 +8,11 @@ import { applySyncable, toSyncable } from '../sync/syncable.js';
 
 const DEBOUNCE_MS = 3000;
 const PULL_INTERVAL_MS = 5 * 60 * 1000;
+/**
+ * Anmeldungen laufen nach einiger Zeit ab. Apps, die tagelang offen bleiben oder nur fortgesetzt
+ * werden (PWA, Android), frischen sie deshalb regelmäßig beim Abgleich auf – nicht nur beim Start.
+ */
+const REFRESH_AFTER_MS = 12 * 60 * 60 * 1000;
 
 /**
  * Konto und automatischer Abgleich.
@@ -16,7 +21,7 @@ const PULL_INTERVAL_MS = 5 * 60 * 1000;
  * beim Zurückkehren zur App, beim Wechsel in den Hintergrund, wenn das Netz zurückkommt
  * und alle fünf Minuten.
  *
- * status: off | idle | syncing | ok | offline | error | auth
+ * status: off | idle | syncing | ok | offline | error | auth | outdated
  */
 export function useSync({ state, setState }) {
   const api = useMemo(() => (SYNC_URL ? createApi(SYNC_URL) : null), []);
@@ -44,7 +49,7 @@ export function useSync({ state, setState }) {
   }, []);
 
   const run = useCallback(async (choice) => {
-    const current = sessionRef.current;
+    let current = sessionRef.current;
     if (!api || !current) return;
     if (running.current) {
       queued.current = true;
@@ -53,6 +58,14 @@ export function useSync({ state, setState }) {
     running.current = true;
     setStatus('syncing');
     try {
+      if (Date.now() - (current.refreshedAt || 0) > REFRESH_AFTER_MS) {
+        const fresh = await api.refresh(current);
+        if (sessionRef.current !== current) return; // inzwischen abgemeldet
+        saveSession(fresh);
+        sessionRef.current = fresh;
+        setSession(fresh);
+        current = fresh;
+      }
       const meta = loadSyncMeta();
       const base = meta.userId === current.userId ? meta.base || null : null;
       const local = toSyncable(stateRef.current);
@@ -74,7 +87,7 @@ export function useSync({ state, setState }) {
       if (error.kind === 'auth') {
         signOutLocally('auth');
       } else {
-        setStatus(error.kind === 'network' ? 'offline' : 'error');
+        setStatus(error.kind === 'network' ? 'offline' : error.kind === 'outdated' ? 'outdated' : 'error');
       }
     } finally {
       running.current = false;

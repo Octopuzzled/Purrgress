@@ -2,7 +2,7 @@
 
 Alle nennenswerten Änderungen an diesem Projekt. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), die Versionen an [Semantic Versioning](https://semver.org/lang/de/).
 
-## [Unveröffentlicht]
+## [1.7.0] – 2026-10-29
 
 ### Hinzugefügt
 
@@ -19,16 +19,25 @@ Alle nennenswerten Änderungen an diesem Projekt. Das Format orientiert sich an 
 - Ruhetage: „Heute ist Ruhetag“ in der Tagesform-Frage oder im Tagesabschluss. Ruhetage unterbrechen die Serie nicht, Mochi nimmt den Druck raus, im Wochenverlauf zeigt ein Mond den Tag. Ein Tipp auf das Ruhetag-Kärtchen nimmt ihn zurück
 - Kuscheldecke in der Umkleide (60 Münzen, bis zu 2 auf Vorrat): schützt die Serie automatisch an vergessenen Tagen – nur wenn der Vorrat für die ganze Lücke reicht
 - Mochi arbeitet mit: Während einer Zeitbox sitzt Mochi neben dem Timer und liest (Pflege), strickt (Routine, Sozial) oder schreibt (Fokus). In der Pause döst Mochi. Respektiert „Weniger Bewegung“
+- Einstellungen: Tagesform-Frage am Morgen und Tagesabschluss am Abend lassen sich einzeln ausschalten
+- Einmalige Karte „Neu in 1.7“ für alle, die die App schon kannten
+- Wöchentliche Vorlagen: „Müll rausbringen“ und „Wochenplanung“
 - Kleine Überraschungen: Etwa jede siebte erledigte Aufgabe bringt eine Überraschung – Fundmünzen (+3 bis 10), einen seltenen Mochi-Satz oder selten ein kleines Geschenk für die Umkleide. Rückgängig nimmt auch die Überraschung zurück
 - Zeitgefühl: Zeitboxen, die mit „Erledigt“ enden, werden zu Messungen (geplant vs. tatsächlich, ohne Pausen und ohne ±5). Ab drei Messungen schlägt die Zeitbox beim Start eine passendere Länge vor – erst für dieselbe Aufgabe, sonst für die Kategorie, sonst allgemein. Auch im Aufgaben-Formular als kleiner Hinweis. Wird abgeglichen
 
 ### Geändert
 
+- Abgleich: Format 2. Eine App-Version, die neuere Daten nicht versteht, pausiert den Abgleich (mit Hinweis), statt sie zu überschreiben. Ältere Spielstände werden beim ersten Abgleich umgestellt
+- Abgleich: Die Anmeldung wird regelmäßig beim Abgleich aufgefrischt – nicht nur beim Start. Apps, die tagelang offen bleiben oder nur fortgesetzt werden (PWA, Android), bleiben so angemeldet
 - Ruhigere Aufgabenzeilen: Statt „Leicht: +10 XP, 5 Münzen“ zeigen ein bis drei Punkte, wie viel Kraft eine Aufgabe kostet (Details als Tooltip). Löschen ist in den Bearbeiten-Dialog umgezogen
 - Die Liste ist nach Datum sortiert: Überfälliges zuerst, dann Heutiges, dann Aufgaben ohne Datum
 - Tägliche Aufgaben sind immer heute fällig. Bleibt eine liegen, rutscht nur ihr Datum weiter – es entsteht keine Kopie
 - „Erledigte aufräumen“ behält alle wiederkehrenden Aufgaben, nicht nur tägliche
 - „Was jetzt?“, „Weiter mit …“, die Anzahl offener Aufgaben und die Listenzeit beachten nur, was heute dran ist; heute Fälliges wird bei „Was jetzt?“ etwas öfter vorgeschlagen
+
+### Wichtig beim Update
+
+Bitte alle Geräte auf 1.7 aktualisieren, bevor sie wieder abgleichen. Version 1.6 kennt die neuen Daten (Fälligkeiten, Wochentage, Ruhetage …) noch nicht und würde sie beim Abgleich entfernen. Die Web-App aktualisiert sich von selbst; die Android-App braucht die neue APK.
 
 ## [1.6.1] – 2026-09-30
 

@@ -42,6 +42,8 @@ export const LIBRARY = [
       { id: 't-waesche', minutes: 5, category: 'routine', difficulty: 'leicht' },
       { id: 't-chaos', minutes: 5, category: 'routine', difficulty: 'leicht' },
       { id: 't-rechnung', minutes: 15, category: 'fokus', difficulty: 'mittel' },
+      { id: 't-muell', category: 'routine', difficulty: 'leicht', repeat: 'weekly', repeatDays: [2] },
+      { id: 't-wochenplan', when: 'abends', minutes: 10, category: 'fokus', difficulty: 'mittel', repeat: 'weekly', repeatDays: [0] },
     ],
   },
   {

@@ -193,6 +193,21 @@ export const de = {
     sinceYesterday: 'seit gestern',
   },
 
+  news: {
+    title: 'Neu in Purrgress 1.7',
+    intro: 'Ein paar Dinge sind dazugekommen – alles freiwillig:',
+    items: [
+      'Fälligkeitsdaten und die Ansichten „Jetzt“, „Nur heute“ und „Ausblick“',
+      '„Nicht heute“ legt eine Aufgabe mit einem Tipp auf morgen',
+      '„Ta-da!“ neben Mochi: Geschafftes eintragen, das nie geplant war',
+      'Morgens die Tagesform, abends ein Tagesabschluss – und Ruhetage, die deine Serie schützen',
+      'Wiederholen an Wochentagen, z. B. für den Müll',
+      'Mochi arbeitet in der Zeitbox mit und lernt, wie lange Dinge bei dir dauern',
+    ],
+    settingsHint: 'Die Fragen am Morgen und Abend kannst du unter Fortschritt → Einstellungen ausschalten.',
+    ok: 'Alles klar',
+  },
+
   tasks: {
     heading: 'Deine Aufgaben',
     sectionToggle: '{name}: {count} offen',
@@ -430,6 +445,10 @@ export const de = {
     chimeOff: 'Aus',
     motion: 'Ruhige Animationen',
     motionHint: 'Kein Konfetti, keine Bewegung. Alles bleibt still.',
+    checkIn: 'Morgens nach der Tagesform fragen',
+    checkInHint: 'Einmal am Tag: Wie viel Kraft hast du heute? Ohne Antwort schlägt „Was jetzt?“ wie gewohnt vor.',
+    wrapUp: 'Abends den Tagesabschluss zeigen',
+    wrapUpHint: 'Ab 18 Uhr: was du heute geschafft hast – und Liegengebliebenes auf morgen legen.',
     goal: 'Tagesziel',
     goalHint: 'Klein anfangen ist klug. Wer es erreicht, bekommt einmal am Tag +{coins} Münzen.',
     goalLess: 'Tagesziel verringern',
@@ -466,6 +485,7 @@ export const de = {
       offline: 'Offline – wird abgeglichen, sobald du wieder online bist',
       error: 'Abgleich hat nicht geklappt. Wird später erneut versucht.',
       auth: 'Deine Anmeldung ist abgelaufen. Bitte melde dich erneut an.',
+      outdated: 'Auf einem anderen Gerät läuft eine neuere Version. Bitte aktualisiere die App hier – bis dahin pausiert der Abgleich, damit nichts verloren geht.',
     },
     syncNow: 'Jetzt abgleichen',
     signOut: 'Abmelden',
@@ -673,6 +693,15 @@ export const de = {
       't-rechnung': {
         title: 'Eine Rechnung oder Überweisung erledigen',
         desc: 'Nur eine. Danach darfst du stolz sein und aufhören.',
+      },
+      't-muell': {
+        title: 'Müll rausbringen',
+        desc: 'Ein Beutel reicht. Die Wochentage kannst du beim Bearbeiten an deine Abholtage anpassen.',
+      },
+      't-wochenplan': {
+        title: 'Wochenplanung: kurz drüberschauen',
+        desc: 'Was steht nächste Woche an? Zehn Minuten genügen.',
+        steps: ['Kalender öffnen', 'Termine als Aufgaben mit Datum anlegen', 'Eine Sache aussuchen, auf die du dich freust'],
       },
       't-tageslicht': {
         title: '10 Minuten Tageslicht tanken',

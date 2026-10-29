@@ -4,14 +4,20 @@ Eine neurodivergenz-freundliche Aufgaben-App mit sanfter Gamification: kleine Au
 
 ## Funktionen
 
-- **Aufgaben** mit Kategorie, Schwierigkeit, Mikro-Schritten, täglicher Wiederholung, Suche und Filter
+- **Aufgaben** mit Kategorie, Kraftaufwand, Mikro-Schritten, Suche und Filter
+- **Fälligkeit:** ohne Datum, heute, morgen oder ein anderer Tag – Ansichten „Jetzt“, „Nur heute“ und „Ausblick“, Überfälliges sanft statt rot
+- **Wiederholen:** täglich oder an Wochentagen. Verpasstes rutscht weiter, ohne Kopien
+- **„Nicht heute“** legt eine Aufgabe mit einem Tipp auf morgen, **„Zu groß?“** fragt nach dem allerkleinsten ersten Schritt
+- **„Ta-da!“:** Geschafftes eintragen, das nie geplant war – zählt wie jede andere Aufgabe
+- **Tagesform am Morgen** (wenig Kraft = nur leichte Vorschläge, kleineres Tagesziel) und **Tagesabschluss am Abend** – beides abschaltbar
 - **Tageszeiten:** Start in den Tag, Jederzeit, Zum Tagesausklang – als einklappbare Abschnitte, nur wenn sie genutzt werden
 - **Vorlagen** für ADHS, Autismus, Alltag und Wohlbefinden – ein Tipp, und die Aufgabe steht in der Liste
 - **Eigene Vorlagen:** jede Aufgabe lässt sich als Vorlage speichern und wiederverwenden
 - **Held Mochi** mit Level, Werten und einer Umkleide (kostenlos anprobieren, mit Münzen kaufen)
-- **Zeitbox:** Start per ▶, eigene Zeit wählen, ±5 Minuten, Pause, „Später“, erlaubte Überzeit, Listenzeit mit voraussichtlichem Ende, Erinnerungs-Klang und braunes Rauschen
+- **Zeitbox:** Start per ▶, eigene Zeit wählen, ±5 Minuten, Pause, „Später“, erlaubte Überzeit, Listenzeit mit voraussichtlichem Ende, Erinnerungs-Klang und braunes Rauschen. Mochi arbeitet nebenher mit (Body Doubling) und lernt, wie lange Dinge bei dir wirklich dauern
 - **„Was jetzt?“** wählt eine Aufgabe für dich aus, wenn die Entscheidung schwerfällt
-- **Fortschritt:** 7-Tage-Verlauf, Tagesziel, Fokuszeit, Streak ohne Strafe für Pausentage
+- **Fortschritt:** 7-Tage-Verlauf, Tagesziel, Fokuszeit, Serie ohne Strafe – Ruhetage und Kuscheldecken (Umkleide) unterbrechen sie nicht
+- **Kleine Überraschungen:** ab und zu Fundmünzen, ein seltener Mochi-Satz oder ein Geschenk für die Umkleide
 - **Deutsch und Englisch:** automatisch nach Gerätesprache oder fest in den Einstellungen
 - **Ruhig und zugänglich:** heller und dunkler Modus, „Ruhige Animationen“, Tastaturbedienung, Screenreader-Labels
 - **Offline-fähig** als installierbare PWA

@@ -373,6 +373,7 @@ export function App() {
             {tab === 'aufgaben' && (
               <TasksView tasks={state.tasks} timer={timebox.timer} todayCount={todayCount}
                 energy={state.energy} onEnergy={chooseEnergy} restToday={restToday} onRest={chooseRest}
+                settings={settings} isReturning={state.xp > 0 || Object.keys(state.history).length > 0}
                 onSnooze={snoozeTask} onMoveToTomorrow={moveToTomorrow} onAddFirstStep={shrinkTask}
                 onStart={startTimebox} onOpenTimer={() => setTimerOpen(true)}
                 onToggle={toggleTask} onToggleStep={toggleStep}

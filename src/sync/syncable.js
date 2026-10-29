@@ -8,7 +8,12 @@
 import { FREE_ITEMS } from '../constants/shop.js';
 import { initialState, migrate } from '../lib/state.js';
 
-export const SYNC_FORMAT = 1;
+/**
+ * Format des abgeglichenen Spielstands. Erhöhen, sobald ältere App-Versionen neue Daten
+ * beim Abgleich verlieren würden – sie pausieren dann den Abgleich, statt etwas zu überschreiben.
+ * 2: Fälligkeit, Wochentage, Ta-da, Tagesform, Ruhetage, Kuscheldecken, Zeitgefühl (1.7.0)
+ */
+export const SYNC_FORMAT = 2;
 
 export function toSyncable(state) {
   return {

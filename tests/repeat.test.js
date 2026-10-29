@@ -66,3 +66,19 @@ describe('Wiederholung an Wochentagen', () => {
     expect(createI18n('de').repeatLabel({ repeat: 'daily', repeatDays: [] })).toBe('täglich');
   });
 });
+
+describe('Vorlagen und Einstellungen für 1.7', () => {
+  it('bringt wöchentliche Vorlagen mit festen Tagen mit', async () => {
+    const { LIBRARY } = await import('../src/constants/library.js');
+    const weekly = LIBRARY.flatMap((g) => g.items).filter((i) => i.repeat === 'weekly');
+    expect(weekly.length).toBeGreaterThan(0);
+    for (const item of weekly) expect(normalizeTask({ title: 'x', ...item }).repeat).toBe('weekly');
+    expect(LIBRARY.every((g) => g.items.length <= 8)).toBe(true);
+  });
+
+  it('fragt standardmäßig morgens und abends – auch nach dem Update', async () => {
+    const { migrate } = await import('../src/lib/state.js');
+    expect(initialState().settings).toMatchObject({ checkIn: true, wrapUp: true });
+    expect(migrate({ settings: { sound: false } }).settings).toMatchObject({ checkIn: true, wrapUp: true, sound: false });
+  });
+});

@@ -131,6 +131,8 @@ export function ProgressView({ data, sync, onSettings, onRestore, onReset }) {
         </SettingRow>
 
         <Toggle checked={s.sound} onChange={(v) => onSettings({ sound: v })} label={t('settings.sound')} hint={t('settings.soundHint')} />
+        <Toggle checked={s.checkIn !== false} onChange={(v) => onSettings({ checkIn: v })} label={t('settings.checkIn')} hint={t('settings.checkInHint')} />
+        <Toggle checked={s.wrapUp !== false} onChange={(v) => onSettings({ wrapUp: v })} label={t('settings.wrapUp')} hint={t('settings.wrapUpHint')} />
 
         <SettingRow title={t('settings.chime')} hint={t('settings.chimeHint')}>
           <SegmentedControl label={t('settings.chime')} value={s.chimeEvery || 0} onChange={(chimeEvery) => onSettings({ chimeEvery })}

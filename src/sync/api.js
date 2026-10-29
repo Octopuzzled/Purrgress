@@ -3,7 +3,7 @@
  * Bewusst ohne SDK: so bleibt nachvollziehbar, welche Anfragen die App schickt.
  */
 
-/** Fehler mit Art: network | auth | notfound | invalid | server */
+/** Fehler mit Art: network | auth | notfound | invalid | server | outdated (Daten von neuerer App-Version) */
 export class SyncError extends Error {
   constructor(kind, status = 0, body = null) {
     super(kind);
@@ -45,7 +45,7 @@ export function createApi(baseUrl, fetchImpl = (...args) => fetch(...args)) {
     return json;
   }
 
-  const toSession = (res) => ({ token: res.token, userId: res.record.id, email: res.record.email });
+  const toSession = (res) => ({ token: res.token, userId: res.record.id, email: res.record.email, refreshedAt: Date.now() });
 
   return {
     async login(email, password) {

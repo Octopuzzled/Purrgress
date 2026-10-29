@@ -193,6 +193,21 @@ export const en = {
     sinceYesterday: 'since yesterday',
   },
 
+  news: {
+    title: 'New in Purrgress 1.7',
+    intro: 'A few things were added – all of them optional:',
+    items: [
+      'Due dates and the views “Now”, “Today only” and “Look ahead”',
+      '“Not today” moves a task to tomorrow with one tap',
+      '“Ta-da!” next to Mochi: log things you did that were never planned',
+      'An energy check-in in the morning, a wrap-up in the evening – and rest days that protect your streak',
+      'Repeat on weekdays, e.g. for the bins',
+      'Mochi works alongside you in the timebox and learns how long things take you',
+    ],
+    settingsHint: 'You can turn off the morning and evening questions under Progress → Settings.',
+    ok: 'Got it',
+  },
+
   tasks: {
     heading: 'Your tasks',
     sectionToggle: '{name}: {count} open',
@@ -430,6 +445,10 @@ export const en = {
     chimeOff: 'Off',
     motion: 'Calm animations',
     motionHint: 'No confetti, no movement. Everything stays still.',
+    checkIn: 'Ask about my energy in the morning',
+    checkInHint: 'Once a day: How much energy do you have today? Without an answer, “What now?” suggests as usual.',
+    wrapUp: 'Show the day wrap-up in the evening',
+    wrapUpHint: 'From 6 pm: what you did today – and move leftovers to tomorrow.',
     goal: 'Daily goal',
     goalHint: 'Starting small is smart. Reaching it earns +{coins} coins once a day.',
     goalLess: 'Decrease daily goal',
@@ -466,6 +485,7 @@ export const en = {
       offline: 'Offline – will sync once you are back online',
       error: 'Sync didn’t work. It will try again later.',
       auth: 'Your sign-in has expired. Please sign in again.',
+      outdated: 'Another device is running a newer version. Please update the app here – syncing is paused until then so nothing gets lost.',
     },
     syncNow: 'Sync now',
     signOut: 'Sign out',
@@ -673,6 +693,15 @@ export const en = {
       't-rechnung': {
         title: 'Deal with one bill or bank transfer',
         desc: 'Just one. After that, you may be proud and stop.',
+      },
+      't-muell': {
+        title: 'Take out the bins',
+        desc: 'One bag is enough. You can adjust the weekdays to your collection days when editing.',
+      },
+      't-wochenplan': {
+        title: 'Weekly planning: a quick look ahead',
+        desc: 'What’s coming up next week? Ten minutes are enough.',
+        steps: ['Open your calendar', 'Add appointments as tasks with a date', 'Pick one thing to look forward to'],
       },
       't-tageslicht': {
         title: 'Get 10 minutes of daylight',

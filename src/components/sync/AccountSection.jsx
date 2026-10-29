@@ -4,7 +4,7 @@ import { Icon } from '../ui/Icon.jsx';
 import { SegmentedControl } from '../ui/SegmentedControl.jsx';
 import { btnPrimary, btnSoft, focusRing, inputCls, sheet } from '../ui/styles.js';
 
-const STATUS_ICON = { ok: 'cloud', syncing: 'refresh', idle: 'cloud', offline: 'cloudOff', error: 'cloudOff', auth: 'cloudOff' };
+const STATUS_ICON = { ok: 'cloud', syncing: 'refresh', idle: 'cloud', offline: 'cloudOff', error: 'cloudOff', auth: 'cloudOff', outdated: 'cloudOff' };
 
 /** Bereich „Konto & Sync“ in den Einstellungen. */
 export function AccountSection({ sync }) {
@@ -29,7 +29,7 @@ export function AccountSection({ sync }) {
 function SyncStatus({ status, lastSync }) {
   const { t, clock } = useI18n();
   const text = status === 'ok' && lastSync ? t('sync.status.ok', { time: clock(lastSync) }) : t(`sync.status.${status === 'ok' ? 'idle' : status}`);
-  const tone = status === 'error' || status === 'offline' ? 'text-orange-700 dark:text-orange-300' : 'text-slate-500 dark:text-slate-400';
+  const tone = status === 'error' || status === 'offline' || status === 'outdated' ? 'text-orange-700 dark:text-orange-300' : 'text-slate-500 dark:text-slate-400';
   return (
     <p className={`flex items-center gap-2 text-sm ${tone}`} role="status" aria-live="polite">
       <Icon name={STATUS_ICON[status] || 'cloud'} size={16} className={status === 'syncing' ? 'animate-spin' : ''} />

@@ -91,7 +91,7 @@ export function initialState(language = 'system') {
     timeLog: [], // Messungen geplant vs. tatsächlich (lib/estimate.js)
     timer: null,
     energy: null, // Tagesform: { day, level }
-    settings: { language, theme: 'system', sound: true, reduceMotion: prefersReducedMotion(), dailyGoal: 3, chimeEvery: 0 },
+    settings: { language, theme: 'system', sound: true, reduceMotion: prefersReducedMotion(), dailyGoal: 3, chimeEvery: 0, checkIn: true, wrapUp: true },
     createdAt: Date.now(),
   };
 }

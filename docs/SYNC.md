@@ -9,6 +9,8 @@ Mit einem Konto ist der Fortschritt auf allen Geräten gleich: Handy, Laptop und
 - **Zusammenführen statt Überschreiben:** XP, Münzen und Verlauf von beiden Geräten werden addiert. Aufgaben werden einzeln abgeglichen. Löschen auf einem Gerät gegen Bearbeiten auf dem anderen: Die bearbeitete Fassung bleibt.
 - **Pro Gerät bleiben:** laufende Zeitbox, Sprache, Farbschema, Töne, Animationen, Erinnerungs-Klang.
 - Auf dem Server liegt ein Spielstand pro Person, meist 20 bis 50 KB.
+- **Versionen:** Der Spielstand trägt eine Formatnummer. Trifft eine App auf Daten einer neueren Version, pausiert sie den Abgleich und bittet um ein Update, statt etwas zu überschreiben (ab 1.7). Darum nach einem Update alle Geräte aktualisieren – die Web-App macht das von selbst, die Android-App braucht die neue APK.
+- **Anmeldung:** wird beim Start und danach spätestens alle 12 Stunden beim Abgleich aufgefrischt, damit auch lange offene Apps angemeldet bleiben.
 
 ---
 

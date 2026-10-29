@@ -7,7 +7,7 @@
  */
 import { SyncError } from './api.js';
 import { equal, merge3 } from './merge.js';
-import { firstSyncBase, hasProgress, normalizeSyncable } from './syncable.js';
+import { firstSyncBase, hasProgress, normalizeSyncable, SYNC_FORMAT } from './syncable.js';
 
 const MAX_ATTEMPTS = 3;
 
@@ -25,6 +25,8 @@ export async function syncOnce({ api, session, base, local, choice }) {
       return { merged: normalizeSyncable(created.data) };
     }
 
+    // Von einer neueren App-Version gespeichert: lieber pausieren als Unbekanntes überschreiben
+    if (Number(record.data && record.data.v) > SYNC_FORMAT) throw new SyncError('outdated');
     const remote = normalizeSyncable(record.data);
     let merged;
     if (base) {
@@ -37,7 +39,8 @@ export async function syncOnce({ api, session, base, local, choice }) {
       return { needsChoice: true };
     }
 
-    if (equal(merged, remote)) return { merged };
+    // Nichts Neues – außer der Stand liegt noch im alten Format vor, dann einmal neu speichern
+    if (equal(merged, remote) && Number(record.data && record.data.v) === SYNC_FORMAT) return { merged };
 
     try {
       await api.updateSave(session, record.id, merged, record.rev + 1);

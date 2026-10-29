@@ -8,6 +8,7 @@ import { groupByDay, isCurrent, isDueToday, sortByDue } from '../lib/due.js';
 import { timerLeft } from '../lib/timebox.js';
 import { DayWrapUp } from '../components/tasks/DayWrapUp.jsx';
 import { EnergyCheckIn } from '../components/tasks/EnergyCheckIn.jsx';
+import { WhatsNew } from '../components/tasks/WhatsNew.jsx';
 import { WRAP_UP_FROM } from '../constants/dayparts.js';
 import { ENERGY_ICONS } from '../lib/energy.js';
 import { DaypartSection } from '../components/tasks/DaypartSection.jsx';
@@ -17,7 +18,7 @@ import { SegmentedControl } from '../components/ui/SegmentedControl.jsx';
 import { btnPrimary, btnSoft, focusRing, iconBtn, inputCls, pill, sheet } from '../components/ui/styles.js';
 import { useI18n } from '../i18n/useI18n.js';
 
-export function TasksView({ tasks, timer, todayCount, energy, onEnergy, restToday, onRest, onToggle, onToggleStep, onEdit, onNew, onFocus, onClearDone, onGoLibrary, onStart, onOpenTimer, onSnooze, onMoveToTomorrow, onAddFirstStep }) {
+export function TasksView({ tasks, timer, todayCount, energy, onEnergy, restToday, onRest, settings, isReturning, onToggle, onToggleStep, onEdit, onNew, onFocus, onClearDone, onGoLibrary, onStart, onOpenTimer, onSnooze, onMoveToTomorrow, onAddFirstStep }) {
   const { t, duration, clock, day } = useI18n();
   const now = useNow(timer && timer.running ? 15000 : 30000);
   const [query, setQuery] = useState('');
@@ -32,7 +33,7 @@ export function TasksView({ tasks, timer, todayCount, energy, onEnergy, restToda
   const today = dayKey(new Date(now));
   // Tagesform: nur heute gültig; abends wird nicht mehr gefragt
   const energyToday = energy && energy.day === today ? energy : null;
-  const askEnergy = !energyToday && !restToday && new Date(now).getHours() < WRAP_UP_FROM;
+  const askEnergy = settings.checkIn !== false && !energyToday && !restToday && new Date(now).getHours() < WRAP_UP_FROM;
 
   const q = query.trim().toLowerCase();
   const matches = (t) => (cat === 'alle' || t.category === cat)
@@ -100,7 +101,9 @@ export function TasksView({ tasks, timer, todayCount, energy, onEnergy, restToda
 
       {askEnergy && <EnergyCheckIn onChoose={onEnergy} onRest={onRest} />}
 
-      <DayWrapUp tasks={tasks} today={today} now={now} doneCount={todayCount} restToday={restToday} onRest={onRest} onMoveToTomorrow={onMoveToTomorrow} />
+      <WhatsNew isReturning={isReturning} />
+
+      {settings.wrapUp !== false && <DayWrapUp tasks={tasks} today={today} now={now} doneCount={todayCount} restToday={restToday} onRest={onRest} onMoveToTomorrow={onMoveToTomorrow} />}
 
       <div className="space-y-2.5">
         <SegmentedControl label={t('tasks.view.label')} value={view} onChange={setView}
