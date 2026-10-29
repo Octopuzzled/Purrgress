@@ -3,7 +3,7 @@
  * Bewusst ohne SDK: so bleibt nachvollziehbar, welche Anfragen die App schickt.
  */
 
-/** Fehler mit Art: network | auth | notfound | invalid | server | outdated (Daten von neuerer App-Version) */
+/** Fehler mit Art: network | auth | notfound | invalid | ratelimit | server | outdated (Daten von neuerer App-Version) */
 export class SyncError extends Error {
   constructor(kind, status = 0, body = null) {
     super(kind);
@@ -17,6 +17,7 @@ function kindFor(status) {
   if (status === 401 || status === 403) return 'auth';
   if (status === 404) return 'notfound';
   if (status === 400) return 'invalid';
+  if (status === 429) return 'ratelimit';
   return 'server';
 }
 
@@ -106,6 +107,7 @@ export function createApi(baseUrl, fetchImpl = (...args) => fetch(...args)) {
 export function authErrorKey(error, mode) {
   if (!(error instanceof SyncError)) return 'generic';
   if (error.kind === 'network') return 'network';
+  if (error.kind === 'ratelimit') return 'tooMany';
   const fields = (error.body && error.body.data) || {};
   if (fields.invite) return 'invite';
   if (fields.email) return fields.email.code === 'validation_not_unique' ? 'emailTaken' : 'emailInvalid';

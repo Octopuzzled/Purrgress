@@ -228,3 +228,10 @@ describe('Startwerte', () => {
     expect(emptySyncable().tasks).toEqual([]);
   });
 });
+
+describe('Anmeldefehler', () => {
+  it('meldet zu viele Versuche verständlich', () => {
+    expect(authErrorKey(new SyncError('ratelimit', 429), 'login')).toBe('tooMany');
+    expect(authErrorKey(new SyncError('ratelimit', 429), 'register')).toBe('tooMany');
+  });
+});

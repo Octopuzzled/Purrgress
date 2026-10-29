@@ -185,6 +185,10 @@ npm run android:apk  # Android-APK bauen (vorher einmalig android:add und androi
 
 Ohne Konto bleiben alle Daten im Browser bzw. auf dem Gerät – kein Server, kein Tracking, keine Werbung. Unter Fortschritt → Einstellungen → Deine Daten lässt sich jederzeit eine Sicherung als Datei herunterladen. Mit Konto liegt zusätzlich ein Spielstand pro Person auf dem eigenen PocketBase-Server (siehe [docs/SYNC.md](docs/SYNC.md)). Jede Person kann ihr Konto samt Daten in der App selbst löschen.
 
+## Sicherheit
+
+Wie Purrgress geschützt ist und wie du eine Schwachstelle meldest, steht in [SECURITY.md](SECURITY.md).
+
 ## Lizenz
 
 Purrgress steht unter der **[PolyForm Noncommercial License 1.0.0](LICENSE.md)**.

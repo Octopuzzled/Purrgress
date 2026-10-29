@@ -501,6 +501,7 @@ export const de = {
     deleteWarning: 'Dein Konto und deine Daten auf dem Server werden gelöscht. Auf diesem Gerät bleibt alles erhalten.',
     deleteConfirm: 'Ja, Konto löschen',
     errors: {
+      tooMany: 'Zu viele Versuche kurz hintereinander. Warte einen Moment und versuch es dann noch einmal.',
       login: 'E-Mail oder Passwort stimmt nicht.',
       invite: 'Der Einladungscode ist ungültig oder wurde schon benutzt.',
       emailTaken: 'Mit dieser E-Mail-Adresse gibt es schon ein Konto.',

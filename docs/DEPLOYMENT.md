@@ -57,18 +57,32 @@ sudo mkdir -p /var/www/purrgress
 sudo chown "$USER": /var/www/purrgress
 ```
 
-**3. Caddy einrichten.** In die Caddyfile (meist `/etc/caddy/Caddyfile`) einfügen und die Domain anpassen. Der Block enthält schon die Weiterleitung für den Sync-Server. Solange der nicht läuft, stört sie nicht.
+**3. Caddy einrichten.** In die Caddyfile (meist `/etc/caddy/Caddyfile`) einfügen und die Domain anpassen. Der Block enthält schon die Weiterleitung für den Sync-Server (solange der nicht läuft, stört sie nicht), Sicherheits-Header und eine Sperre für die PocketBase-Admin-Oberfläche von außen.
 
 ```caddy
 purrgress.example.de {
 	encode zstd gzip
 
-	# Sync-Server (PocketBase), siehe docs/SYNC.md
+	# Sicherheits-Header für alle Antworten
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+		-Server
+	}
+
+	# Sync-Server (PocketBase), siehe docs/SYNC.md.
+	# Die Admin-Anmeldung ist von außen gesperrt – Admin-Zugang nur über SSH-Tunnel.
 	handle /api/* {
+		respond /api/collections/_superusers* 404
 		reverse_proxy 127.0.0.1:8090
 	}
+
+	# Admin-Oberfläche nie öffentlich (SSH-Tunnel, siehe docs/SYNC.md)
 	handle /_/* {
-		reverse_proxy 127.0.0.1:8090
+		respond 404
 	}
 
 	# Die App
@@ -83,7 +97,7 @@ purrgress.example.de {
 	header @assets Cache-Control "public, max-age=31536000, immutable"
 
 	# Diese Dateien müssen immer frisch sein, sonst kommen Updates nicht an
-	@fresh path /index.html /sw.js /registerSW.js /manifest.webmanifest
+	@fresh path /index.html /sw.js /registerSW.js /manifest.webmanifest /theme-init.js
 	header @fresh Cache-Control "no-cache"
 }
 ```

@@ -1,7 +1,42 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
+
+/**
+ * Content-Security-Policy für die Web-Version: Skripte, Styles, Schriften und Verbindungen
+ * nur von der eigenen Adresse (plus Sync-Server, falls er woanders liegt). Erschwert es
+ * eingeschleustem Code, etwas auszuführen oder Daten wegzuschicken.
+ * - Nur beim Bauen: Der Entwicklungsserver braucht Inline-Skripte für Hot Reload.
+ * - Nicht für Android: Capacitor fügt dort selbst ein Skript in die Seite ein.
+ * - style-src braucht 'unsafe-inline' für style-Attribute (Fortschrittsbalken, Positionen).
+ */
+function contentSecurityPolicy(syncUrl) {
+  let syncOrigin = '';
+  try {
+    syncOrigin = syncUrl ? new URL(syncUrl).origin : '';
+  } catch {
+    syncOrigin = '';
+  }
+  const policy = [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob:",
+    "font-src 'self' data:", // kleine Schrift-Teile bettet Vite als data: ein
+    `connect-src 'self'${syncOrigin ? ` ${syncOrigin}` : ''}`,
+    "manifest-src 'self'",
+    "worker-src 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ].join('; ');
+  return {
+    name: 'purrgress-csp',
+    apply: 'build',
+    transformIndexHtml: () => [{ tag: 'meta', attrs: { 'http-equiv': 'Content-Security-Policy', content: policy }, injectTo: 'head-prepend' }],
+  };
+}
 
 /**
  * Zwei Build-Varianten:
@@ -13,6 +48,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     tailwindcss(),
+    mode !== 'android' && contentSecurityPolicy(loadEnv(mode, process.cwd(), 'VITE_').VITE_SYNC_URL),
     mode !== 'android' &&
       VitePWA({
         // Neue Versionen werden beim nächsten Öffnen automatisch aktiv

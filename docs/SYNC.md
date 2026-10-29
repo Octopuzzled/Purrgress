@@ -49,18 +49,32 @@ docker compose exec pocketbase /pb/pocketbase superuser create DEINE@MAIL.DE 'EI
 
 ### 3. Caddy erweitern
 
-Den Purrgress-Block in der Caddyfile durch diesen ersetzen. Er leitet `/api/` und die Admin-Oberfläche `/_/` an PocketBase weiter, alles andere ist die App:
+Den Purrgress-Block in der Caddyfile durch diesen ersetzen. Er leitet `/api/` an PocketBase weiter, setzt Sicherheits-Header und sperrt die Admin-Oberfläche und die Admin-Anmeldung von außen. Alles andere ist die App:
 
 ```caddy
 purrgress.octopuzzled.de {
 	encode zstd gzip
 
-	# Sync-Server (PocketBase): Schnittstelle und Admin-Oberfläche
+	# Sicherheits-Header für alle Antworten
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+		-Server
+	}
+
+	# Sync-Server (PocketBase), siehe docs/SYNC.md.
+	# Die Admin-Anmeldung ist von außen gesperrt – Admin-Zugang nur über SSH-Tunnel.
 	handle /api/* {
+		respond /api/collections/_superusers* 404
 		reverse_proxy 127.0.0.1:8090
 	}
+
+	# Admin-Oberfläche nie öffentlich (SSH-Tunnel, siehe docs/SYNC.md)
 	handle /_/* {
-		reverse_proxy 127.0.0.1:8090
+		respond 404
 	}
 
 	# Die App
@@ -70,10 +84,12 @@ purrgress.octopuzzled.de {
 		file_server
 	}
 
+	# Dateien mit Hash im Namen dürfen lange im Cache bleiben
 	@assets path /assets/*
 	header @assets Cache-Control "public, max-age=31536000, immutable"
 
-	@fresh path /index.html /sw.js /registerSW.js /manifest.webmanifest
+	# Diese Dateien müssen immer frisch sein, sonst kommen Updates nicht an
+	@fresh path /index.html /sw.js /registerSW.js /manifest.webmanifest /theme-init.js
 	header @fresh Cache-Control "no-cache"
 }
 ```
@@ -83,16 +99,26 @@ sudo caddy validate --config /etc/caddy/Caddyfile
 sudo systemctl reload caddy
 ```
 
-### 4. PocketBase einstellen
+### 4. Admin-Oberfläche öffnen (über SSH-Tunnel)
 
-Öffne `https://purrgress.octopuzzled.de/_/` und melde dich mit dem Admin-Zugang an. Unter **Settings**:
+Die Admin-Oberfläche ist absichtlich nicht aus dem Internet erreichbar – so kann niemand dein Admin-Passwort durchprobieren. Du öffnest sie über einen SSH-Tunnel von deinem PC aus:
+
+```bash
+ssh -N -L 8090:127.0.0.1:8090 benutzer@dein-server
+```
+
+Solange das Fenster offen ist, erreichst du die Admin-Oberfläche unter <http://localhost:8090/_/>. Zum Beenden `Strg+C`.
+
+### 5. PocketBase einstellen
+
+In der Admin-Oberfläche unter **Settings**:
 
 - **Application:** Name `Purrgress`, URL `https://purrgress.octopuzzled.de`.
-- **Application → User IP proxy headers:** `X-Forwarded-For` eintragen. So sieht PocketBase die echten IP-Adressen statt der von Caddy.
-- **Rate limits:** einschalten. Das bremst automatisierte Anmeldeversuche.
 - **Backups:** eine regelmäßige Sicherung einplanen, z. B. täglich.
 
-### 5. App neu veröffentlichen
+Rate Limits und die Einstellung für den Proxy (echte IP-Adressen hinter Caddy) setzt die Migration `1790800000_purrgress_security.js` automatisch. Unter **Settings → Rate limits** kannst du sie kontrollieren.
+
+### 6. App neu veröffentlichen
 
 ```bash
 npm run deploy
@@ -104,7 +130,7 @@ Unter **Fortschritt → Konto & Sync** erscheinen jetzt Anmelden und Registriere
 
 ## Freunde einladen
 
-1. In der Admin-Oberfläche: **Collections → invites → New record**.
+1. Admin-Oberfläche über den SSH-Tunnel öffnen (siehe oben), dann **Collections → invites → New record**.
 2. Der Code wird automatisch erzeugt, z. B. `K7MQ4TXB`. Unter `note` kannst du vermerken, für wen er ist. Speichern.
 3. Diesen Link verschicken:
 
@@ -149,6 +175,8 @@ Danach wie gewohnt `npm run android:apk`.
 
 **Logs:** `docker compose logs -f` im Server-Ordner, oder in der Admin-Oberfläche unter **Logs**.
 
+**„unable to open database file“ nach dem Update auf 1.7:** Der Container läuft seit 1.7 mit minimalen Rechten und darf nur in Ordner schreiben, die root gehören. Wurde `pb_data` von Hand angelegt, einmal die Besitzrechte korrigieren: `sudo chown -R root:root ~/docker/purrgress-api/pb_data`, dann `docker compose up -d`.
+
 **Neue App-Version mit erweitertem Spielstand:** In `src/sync/syncable.js` `SYNC_FORMAT` erhöhen und im CHANGELOG darauf hinweisen. Am Server ist nichts zu tun – der Spielstand liegt dort als ein JSON-Feld. Ältere Apps (ab 1.7) pausieren den Abgleich dann von selbst, bis sie aktualisiert sind.
 
 **Was die Statusmeldungen bedeuten** (Fortschritt → Konto & Sync):
@@ -159,6 +187,14 @@ Danach wie gewohnt `npm run android:apk`.
 | Abgleich hat nicht geklappt | Server nicht erreichbar oder ein Fehler. Wird bei der nächsten Gelegenheit erneut versucht |
 | Anmeldung abgelaufen | Neu anmelden. Die Daten auf dem Gerät bleiben erhalten |
 | Neuere Version auf einem anderen Gerät | Diese App aktualisieren. Bis dahin pausiert der Abgleich, damit nichts verloren geht |
+
+## Sicherheit im Überblick
+
+- **Einladungen:** Registrieren geht nur mit einem Code, der genau einmal gilt – auch bei gleichzeitigen Versuchen (Prüfen, Anlegen und Verbrauchen in einer Transaktion).
+- **Zugriffsregeln:** Jede Person sieht und ändert nur ihr eigenes Konto und ihren eigenen Spielstand. Einladungen sieht nur der Admin.
+- **Rate Limits:** bremsen das Durchprobieren von Passwörtern und Einladungscodes – pro echter IP-Adresse.
+- **Admin nur über SSH-Tunnel**, Sicherheits-Header über Caddy, Content-Security-Policy in der Web-App.
+- **Container mit minimalen Rechten:** keine Linux-Capabilities, nur lesbares Dateisystem, PocketBase-Download per SHA-256 geprüft.
 
 ## Datenschutz
 

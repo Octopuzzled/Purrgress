@@ -4,16 +4,26 @@ services:
       context: .
       args:
         PB_VERSION: "0.40.4"
+        PB_SHA256: "9042ec818570e79c3628dadcd0a756c1496d9e1173918ec409d133c02f82e5fa"
     image: purrgress-api:0.40.4
     container_name: purrgress-api
     restart: unless-stopped
+    # Möglichst wenig Rechte: keine Linux-Capabilities, keine Rechteausweitung,
+    # Dateisystem nur lesbar – geschrieben wird nur in pb_data und /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
     ports:
       # nur lokal erreichbar – nach außen geht es über Caddy
       - "127.0.0.1:8090:8090"
     volumes:
       - ./pb_data:/pb/pb_data
-      - ./pb_migrations:/pb/pb_migrations
-      - ./pb_hooks:/pb/pb_hooks
+      - ./pb_migrations:/pb/pb_migrations:ro
+      - ./pb_hooks:/pb/pb_hooks:ro
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8090/api/health"]
       interval: 30s

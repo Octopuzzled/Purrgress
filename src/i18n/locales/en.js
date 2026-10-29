@@ -501,6 +501,7 @@ export const en = {
     deleteWarning: 'Your account and your data on the server will be deleted. Everything on this device stays.',
     deleteConfirm: 'Yes, delete account',
     errors: {
+      tooMany: 'Too many attempts in a row. Please wait a moment and try again.',
       login: 'Email or password is incorrect.',
       invite: 'The invitation code is invalid or has already been used.',
       emailTaken: 'There is already an account with this email address.',

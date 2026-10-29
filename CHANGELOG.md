@@ -39,9 +39,21 @@ Alle nennenswerten Änderungen an diesem Projekt. Das Format orientiert sich an 
 - „Erledigte aufräumen“ behält alle wiederkehrenden Aufgaben, nicht nur tägliche
 - „Was jetzt?“, „Weiter mit …“, die Anzahl offener Aufgaben und die Listenzeit beachten nur, was heute dran ist; heute Fälliges wird bei „Was jetzt?“ etwas öfter vorgeschlagen
 
+### Sicherheit
+
+- Einladungscodes lassen sich auch bei gleichzeitigen Registrierungen nur genau einmal verwenden (Transaktion)
+- Rate Limits und die Proxy-Einstellung (echte IP-Adressen hinter Caddy) werden per Migration gesetzt, statt von Hand
+- Sync-Container mit minimalen Rechten (keine Capabilities, nur lesbares Dateisystem); der PocketBase-Download wird per SHA-256 geprüft
+- Content-Security-Policy für die Web-App; das Farbschema-Skript liegt dafür nicht mehr inline in `index.html`
+- Caddy-Vorlage mit Sicherheits-Headern (HSTS, nosniff, kein Einbetten in fremde Seiten); Admin-Oberfläche und Admin-Anmeldung sind von außen gesperrt und nur noch per SSH-Tunnel erreichbar
+- Klare Meldung bei zu vielen Anmeldeversuchen; Einladungslinks übernehmen nur Buchstaben und Ziffern
+- Abhängigkeiten aktualisiert (Vite, Vitest 5); das Icon-Werkzeug für Android wird nur noch bei Bedarf geladen
+
 ### Wichtig beim Update
 
 Bitte alle Geräte auf 1.7 aktualisieren, bevor sie wieder abgleichen. Version 1.6 kennt die neuen Daten (Fälligkeiten, Wochentage, Ruhetage …) noch nicht und würde sie beim Abgleich entfernen. Die Web-App aktualisiert sich von selbst; die Android-App braucht die neue APK.
+
+Für den Sync-Server: `npm run deploy:server` ausführen und den Purrgress-Block in der Caddyfile durch die neue Vorlage aus `docs/SYNC.md` ersetzen. Die Admin-Oberfläche ist danach nur noch über einen SSH-Tunnel erreichbar.
 
 ## [1.6.1] – 2026-09-30
 

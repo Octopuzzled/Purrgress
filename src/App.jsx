@@ -65,7 +65,8 @@ export function App() {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('invite');
     if (!code) return;
-    sync.setInvite(code.trim().toUpperCase());
+    // Nur Buchstaben und Ziffern übernehmen – der Link kommt von außen
+    sync.setInvite(code.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 40));
     setTab('fortschritt');
     params.delete('invite');
     const rest = params.toString();
