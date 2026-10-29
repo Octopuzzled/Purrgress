@@ -2,6 +2,7 @@
   "name": "purrgress",
   "private": true,
   "version": "1.7.0",
+  "license": "PolyForm-Noncommercial-1.0.0",
   "description": "Neurodivergenz-freundliche Aufgaben-App mit Gamification und Zeitbox.",
   "type": "module",
   "engines": {
