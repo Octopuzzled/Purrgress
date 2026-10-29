@@ -77,6 +77,7 @@ export const de = {
     lineLater: 'Später ist auch ein Plan. Die Aufgabe wartet am Ende der Liste.',
     lineBought: 'Danke! {item} gefällt mir sehr.',
     lineGoalBonus: 'Tagesziel geschafft! Dafür gibt es {coins} Bonus-Münzen.',
+    lineSlowed: 'So viel geschafft! Ab jetzt sammle ich die Münzen gemütlicher – XP gibt es weiter voll.',
     lineTemplateSaved: 'Gespeichert! Die Vorlage wartet unter „Vorlagen → Eigene“.',
     levelUpTitle: 'Level {level}!',
     levelUpText: 'Du wächst – in deinem eigenen Tempo.',

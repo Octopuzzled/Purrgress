@@ -15,6 +15,7 @@ import { normalizeEnergy } from './energy.js';
 import { nextOccurrence, normalizeRepeat } from './repeat.js';
 import { normalizeRest } from './rest.js';
 import { normalizeTimeLog } from './estimate.js';
+import { curveBonus } from './progress.js';
 
 /** Tageszeit je Vorlage – für Aufgaben aus der Zeit, bevor es Tageszeiten gab. */
 const TEMPLATE_DAYPART = Object.fromEntries(
@@ -77,6 +78,7 @@ export function initialState(language = 'system') {
     version: 1,
     hero: { name: 'Mochi', equip: { ...DEFAULT_EQUIP } },
     xp: 0,
+    xpBonus: 0, // Ausgleich beim Wechsel zur steileren Level-Kurve (lib/progress.js)
     coins: 50,
     owned: [...FREE_ITEMS],
     stats: { routine: 0, fokus: 0, pflege: 0, sozial: 0 },
@@ -111,6 +113,8 @@ export function migrate(p) {
     ...p,
     hero: { ...base.hero, ...hero, equip: { ...DEFAULT_EQUIP, ...(hero.equip || {}) } },
     xp: Number(p.xp) || 0,
+    // Fehlt der Ausgleich, stammt der Stand von vor der neuen Kurve: einmal berechnen
+    xpBonus: typeof p.xpBonus === 'number' && p.xpBonus >= 0 ? p.xpBonus : curveBonus(Number(p.xp) || 0),
     coins: Number(p.coins) || 0,
     owned: Array.from(new Set([...base.owned, ...(Array.isArray(p.owned) ? p.owned : [])])),
     stats: { ...base.stats, ...(p.stats || {}) },

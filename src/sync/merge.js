@@ -115,6 +115,8 @@ export function merge3(base, local, remote) {
   return {
     v: remote.v,
     xp: mergeNumber(base.xp, local.xp, remote.xp),
+    // Ausgleich wird auf jedem Gerät gleich berechnet – der größere Wert gilt, nichts wird doppelt gezählt
+    xpBonus: Math.max(Number(local.xpBonus) || 0, Number(remote.xpBonus) || 0),
     coins: mergeNumber(base.coins, local.coins, remote.coins),
     stats: mergeCounters(base.stats, local.stats, remote.stats),
     history: mergeCounters(base.history, local.history, remote.history),

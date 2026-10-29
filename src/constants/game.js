@@ -27,6 +27,16 @@ export const STEP_XP = 2;
 
 export const LEVEL_BONUS_COINS = 20;
 
+/**
+ * So viele Aufgaben pro Tag bringen volle Münzen – egal, welches Tagesziel eingestellt ist.
+ * Danach gibt es die Hälfte (aufgerundet). XP, Konfetti und Verlauf bleiben gleich.
+ * So reicht die Umkleide auch dann lange, wenn Purrgress die einzige Aufgaben-App ist.
+ */
+export const FULL_COIN_TASKS = 6;
+
+/** Wie lange erledigte einmalige Aufgaben in der Liste bleiben, bevor sie still aufgeräumt werden. */
+export const KEEP_DONE_DAYS = 14;
+
 /** Einmal pro Tag, sobald das eigene Tagesziel erreicht ist. */
 export const DAILY_GOAL_BONUS = 10;
 

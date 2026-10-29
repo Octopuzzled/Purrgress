@@ -29,6 +29,8 @@ Alle nennenswerten Änderungen an diesem Projekt. Das Format orientiert sich an 
 
 ### Geändert
 
+- Spielbalance für viele Aufgaben am Tag: Ab der siebten Aufgabe am Tag gibt es halbe Münzen (XP bleiben voll), Überraschungen gibt es höchstens zwei am Tag, und ab Level 10 dauert jedes Level etwas länger. Wer schon höher ist, behält sein Level und seinen Fortschritt genau
+- Erledigte einmalige Aufgaben werden nach 14 Tagen still aufgeräumt – XP, Münzen, Werte und Verlauf bleiben. Hält die Liste übersichtlich und den Spielstand klein genug für den Abgleich
 - Abgleich: Format 2. Eine App-Version, die neuere Daten nicht versteht, pausiert den Abgleich (mit Hinweis), statt sie zu überschreiben. Ältere Spielstände werden beim ersten Abgleich umgestellt
 - Abgleich: Die Anmeldung wird regelmäßig beim Abgleich aufgefrischt – nicht nur beim Start. Apps, die tagelang offen bleiben oder nur fortgesetzt werden (PWA, Android), bleiben so angemeldet
 - Ruhigere Aufgabenzeilen: Statt „Leicht: +10 XP, 5 Münzen“ zeigen ein bis drei Punkte, wie viel Kraft eine Aufgabe kostet (Details als Tooltip). Löschen ist in den Bearbeiten-Dialog umgezogen

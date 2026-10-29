@@ -4,9 +4,17 @@
  * damit die Funktion rein bleibt (und zweimaliges Aufrufen dasselbe Ergebnis liefert).
  */
 import { SHOP, SLOTS, isUnlocked } from '../constants/shop.js';
-import { levelInfo } from './progress.js';
+import { levelInfo, totalXp } from './progress.js';
+import { dayKey } from './date.js';
+import { surprisesToday } from './tasks.js';
 
-export const SURPRISE_CHANCE = 1 / 7;
+/**
+ * Überraschungen gibt es pro Tag, nicht pro Aufgabe: Die erste des Tages kommt recht leicht,
+ * eine zweite selten, mehr nicht. So bleiben sie besonders – bei drei wie bei zwölf Aufgaben am Tag.
+ */
+export const SURPRISE_CHANCE = 1 / 6;
+const SECOND_SURPRISE_CHANCE = 1 / 20;
+export const MAX_SURPRISES_PER_DAY = 2;
 /** So viele seltene Sätze gibt es in jeder Sprache (surprise.phrases). */
 export const PHRASE_COUNT = 8;
 /** Aus dem Laden werden nur kleine Teile verschenkt, die es ohne Level-Grenze gibt. */
@@ -23,7 +31,7 @@ const RARE_SHARE = 0.3;
 /** Was noch verschenkt werden kann: kleine Ladenteile und Überraschungs-Teile (häufiger und selten). */
 export function giftPools(state) {
   const owned = new Set(state.owned);
-  const level = levelInfo(state.xp).level;
+  const level = levelInfo(totalXp(state)).level;
   const pools = { small: [], common: [], rare: [] };
   for (const slot of SLOTS) {
     for (const i of SHOP[slot].items) {
@@ -54,8 +62,10 @@ function pickGift(state, rng) {
 }
 
 /** null oder { kind: 'coins', coins } | { kind: 'phrase', index } | { kind: 'gift', slot, id } */
-export function rollSurprise(state, rng = Math.random) {
-  if (rng() >= SURPRISE_CHANCE) return null;
+export function rollSurprise(state, rng = Math.random, today = dayKey()) {
+  const already = surprisesToday(state, today);
+  const chance = already === 0 ? SURPRISE_CHANCE : already < MAX_SURPRISES_PER_DAY ? SECOND_SURPRISE_CHANCE : 0;
+  if (rng() >= chance) return null;
   const r = rng();
   if (r < GIFT_SHARE) {
     const gift = pickGift(state, rng);

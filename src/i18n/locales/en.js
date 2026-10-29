@@ -77,6 +77,7 @@ export const en = {
     lineLater: 'Later is a plan too. The task is waiting at the end of the list.',
     lineBought: 'Thank you! I love the {item}.',
     lineGoalBonus: 'Daily goal reached! Here are {coins} bonus coins.',
+    lineSlowed: 'You’ve done so much! From now on I’ll collect coins at a cosier pace – XP stays the same.',
     lineTemplateSaved: 'Saved! The template is waiting under “Templates → Mine”.',
     levelUpTitle: 'Level {level}!',
     levelUpText: "You're growing – at your own pace.",

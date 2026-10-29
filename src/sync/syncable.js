@@ -19,6 +19,7 @@ export function toSyncable(state) {
   return {
     v: SYNC_FORMAT,
     xp: state.xp,
+    xpBonus: state.xpBonus || 0,
     coins: state.coins,
     stats: state.stats,
     history: state.history,
@@ -41,6 +42,7 @@ export function applySyncable(state, s) {
   return {
     ...state,
     xp: s.xp,
+    xpBonus: s.xpBonus,
     coins: s.coins,
     stats: s.stats,
     history: s.history,

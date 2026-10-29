@@ -32,7 +32,7 @@ Eine neurodivergenz-freundliche Aufgaben-App mit sanfter Gamification: kleine Au
 | Mittel | 25 | 12 |
 | Schwer | 50 | 25 |
 
-Dazu kommen +2 XP je Mikro-Schritt, +20 Münzen je Level-Aufstieg und einmal am Tag +10 Münzen für das erreichte Tagesziel. Die Umkleide kostet insgesamt 7.510 Münzen. Grundteile gibt es ab 20 Münzen, besondere Teile ab Level 5, 8 oder 12, und alle fünf Level bis Level 30 wartet ein Meilenstein-Teil. Bei drei Aufgaben am Tag dauert es etwa sieben Monate, bis alles gekauft ist – der erste Kauf klappt trotzdem am ersten Tag. Fünf Teile lassen sich nicht kaufen: Mochi verschenkt sie ab und zu als Überraschung, zwei davon nur selten.
+Dazu kommen +2 XP je Mikro-Schritt, +20 Münzen je Level-Aufstieg und einmal am Tag +10 Münzen für das erreichte Tagesziel. Ab der siebten Aufgabe am Tag gibt es die halbe Münzzahl (aufgerundet), XP bleiben voll – so reicht die Umkleide auch dann lange, wenn Purrgress die einzige Aufgaben-App ist. Bis Level 10 braucht jedes Level 20 XP mehr als das vorige, danach wird es zusätzlich Stück für Stück länger. Überraschungen gibt es höchstens zwei am Tag. Die Umkleide kostet insgesamt 7.510 Münzen. Grundteile gibt es ab 20 Münzen, besondere Teile ab Level 5, 8 oder 12, und alle fünf Level bis Level 30 wartet ein Meilenstein-Teil. Bei drei Aufgaben am Tag dauert es etwa sieben Monate, bis alles gekauft ist (bei zwölf etwa drei) – der erste Kauf klappt trotzdem am ersten Tag. Fünf Teile lassen sich nicht kaufen: Mochi verschenkt sie ab und zu als Überraschung, zwei davon nur selten.
 
 Alle Werte stehen in `src/constants/game.js` und `src/constants/shop.js`.
 

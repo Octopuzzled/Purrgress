@@ -2,14 +2,14 @@
  * Reine Funktionen für Aufgaben und Belohnungen.
  * Sie verändern nichts, sondern geben immer einen neuen Zustand zurück.
  */
-import { DAILY_GOAL_BONUS, DIFF, LEVEL_BONUS_COINS, STEP_XP } from '../constants/game.js';
+import { DAILY_GOAL_BONUS, DIFF, FULL_COIN_TASKS, KEEP_DONE_DAYS, LEVEL_BONUS_COINS, STEP_XP } from '../constants/game.js';
 import { DEFAULT_EQUIP } from '../constants/shop.js';
-import { addDays, dayKey } from './date.js';
+import { addDays, dayKey, daysBetween } from './date.js';
 import { isCurrent, isDueToday } from './due.js';
 import { dailyGoalFor, energyWeight } from './energy.js';
 import { latestOccurrence, nextOccurrence } from './repeat.js';
 import { addSample, makeSample, removeSample } from './estimate.js';
-import { levelInfo } from './progress.js';
+import { levelInfo, totalXp } from './progress.js';
 import { uid } from './id.js';
 import { withoutTimer } from './timebox.js';
 
@@ -57,18 +57,20 @@ export function completeTask(state, id, now = Date.now(), surprise = null) {
   const task = state.tasks.find((t) => t.id === id);
   if (!task || task.done) return { state, reward: null };
   const r = DIFF[task.difficulty];
-  const lv = rewardFor(state.xp, r.xp);
+  const lv = rewardFor(totalXp(state), r.xp);
   const day = dayKey();
   const doneToday = (state.history[day] || 0) + 1;
   const goalBonus = doneToday >= dailyGoalFor(state, day) && state.goalBonusDay !== day ? DAILY_GOAL_BONUS : 0;
+  // Ab der siebten Aufgabe am Tag sammeln sich Münzen gemütlicher
+  const coins = doneToday > FULL_COIN_TASKS ? Math.ceil(r.coins / 2) : r.coins;
   const found = surprise && surprise.kind === 'coins' ? surprise.coins : 0;
   const gift = surprise && surprise.kind === 'gift' && !state.owned.includes(surprise.id) ? { slot: surprise.slot, id: surprise.id } : null;
   // Endet hier eine Zeitbox, wird daraus eine Messung fürs Zeitgefühl
   const timed = state.timer && state.timer.taskId === id;
   const sample = timed ? makeSample(task, state.timer, now) : null;
   const awarded = {
-    xp: r.xp, coins: r.coins + lv.bonus + goalBonus + found, pts: r.pts, goalBonus,
-    ...(gift ? { gift } : {}), ...(sample ? { sampleId: sample.id } : {}),
+    xp: r.xp, coins: coins + lv.bonus + goalBonus + found, pts: r.pts, goalBonus,
+    ...(surprise ? { surprised: true } : {}), ...(gift ? { gift } : {}), ...(sample ? { sampleId: sample.id } : {}),
   };
   const base = addSample(timed ? withoutTimer(state, now) : state, sample);
   return {
@@ -82,7 +84,7 @@ export function completeTask(state, id, now = Date.now(), surprise = null) {
       owned: gift ? [...base.owned, gift.id] : base.owned,
       tasks: base.tasks.map((t) => (t.id === id ? { ...t, done: true, doneDay: day, awarded } : t)),
     },
-    reward: { xp: r.xp, coins: r.coins, goalBonus, surprise: gift ? { kind: 'gift', ...gift } : surprise && surprise.kind !== 'gift' ? surprise : null, ...lv },
+    reward: { xp: r.xp, coins, slowed: doneToday === FULL_COIN_TASKS + 1, goalBonus, surprise: gift ? { kind: 'gift', ...gift } : surprise && surprise.kind !== 'gift' ? surprise : null, ...lv },
   };
 }
 
@@ -119,7 +121,7 @@ function mapStep(state, taskId, stepId, fn) {
 
 /** Hakt einen Mikro-Schritt ab (+STEP_XP). */
 export function completeStep(state, taskId, stepId) {
-  const lv = rewardFor(state.xp, STEP_XP);
+  const lv = rewardFor(totalXp(state), STEP_XP);
   const next = mapStep(state, taskId, stepId, (s) => ({ ...s, done: true, xp: STEP_XP, coins: lv.bonus }));
   return {
     state: { ...next, xp: state.xp + STEP_XP, coins: state.coins + lv.bonus },
@@ -200,6 +202,21 @@ export function addFirstStep(state, taskId, text) {
   const step = { id: uid(), text: String(text).trim(), done: false, xp: 0, coins: 0 };
   if (!step.text) return state;
   return { ...state, tasks: state.tasks.map((t) => (t.id === taskId ? { ...t, steps: [step, ...t.steps] } : t)) };
+}
+
+/**
+ * Räumt erledigte einmalige Aufgaben still auf, sobald sie länger als KEEP_DONE_DAYS zurückliegen.
+ * XP, Münzen, Werte und Verlauf bleiben – die stehen woanders. So bleibt die Liste übersichtlich
+ * und der Spielstand klein genug für den Abgleich, auch bei vielen Aufgaben am Tag.
+ */
+export function pruneDoneTasks(state, today = dayKey()) {
+  const keep = (t) => !(t.done && t.repeat === 'none' && t.doneDay && daysBetween(t.doneDay, today) > KEEP_DONE_DAYS);
+  return state.tasks.every(keep) ? state : { ...state, tasks: state.tasks.filter(keep) };
+}
+
+/** Wie viele Überraschungen es heute schon gab. */
+export function surprisesToday(state, today = dayKey()) {
+  return state.tasks.filter((t) => t.done && t.doneDay === today && t.awarded && t.awarded.surprised).length;
 }
 
 /** Legt eine Aufgabe ans Ende der Liste („Später“). */

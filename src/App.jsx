@@ -9,7 +9,7 @@ import { useTimebox } from './hooks/useTimebox.js';
 import { playSound } from './lib/audio.js';
 import { addDays, dayKey } from './lib/date.js';
 import { pointFrom } from './lib/dom.js';
-import { levelInfo } from './lib/progress.js';
+import { levelInfo, totalXp } from './lib/progress.js';
 import { dailyGoalFor, energyAsked, setEnergy, todayEnergy } from './lib/energy.js';
 import { buyShield, isRestDay, setRestDay } from './lib/rest.js';
 import { rollSurprise } from './lib/surprise.js';
@@ -85,7 +85,7 @@ export function App() {
     onTimeUp: () => celebrate.say(t('hero.lineTimeUp')),
   });
 
-  const lvl = levelInfo(state.xp);
+  const lvl = levelInfo(totalXp(state));
   const todayCount = state.history[dayKey()] || 0;
   const goal = dailyGoalFor(state);
   const restToday = isRestDay(state);
@@ -130,7 +130,7 @@ export function App() {
   const rewardLine = (reward) => {
     if (reward.goalBonus) return t('hero.lineGoalBonus', { coins: reward.goalBonus });
     const s = reward.surprise;
-    if (!s) return null;
+    if (!s) return reward.slowed ? t('hero.lineSlowed') : null;
     if (s.kind === 'coins') return t('surprise.coins', { coins: s.coins });
     if (s.kind === 'gift') return t('surprise.gift', { item: t(`shop.items.${s.id}`) });
     return t('surprise.phrases')[s.index] || null;
