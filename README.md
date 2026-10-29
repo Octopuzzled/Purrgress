@@ -195,6 +195,10 @@ Without an account, all data stays in the browser or on the device: no server, n
 
 How Purrgress is protected and how to report a vulnerability is described in [SECURITY.md](SECURITY.md).
 
+## How this was made
+
+Purrgress was designed and directed by Octopuzzled and built largely with AI assistance: the code, tests and documentation were written together with [Claude](https://www.anthropic.com/claude) (by Anthropic) through Claude Code. Ideas, product decisions and testing come from a human. If you find a bug or something that feels off, please open an issue.
+
 ## License
 
 Purrgress is licensed under the **[PolyForm Noncommercial License 1.0.0](LICENSE.md)**.
