@@ -78,7 +78,8 @@ describe('Vorlagen und Einstellungen für 1.7', () => {
 
   it('fragt standardmäßig morgens und abends – auch nach dem Update', async () => {
     const { migrate } = await import('../src/lib/state.js');
-    expect(initialState().settings).toMatchObject({ checkIn: true, wrapUp: true });
-    expect(migrate({ settings: { sound: false } }).settings).toMatchObject({ checkIn: true, wrapUp: true, sound: false });
+    expect(initialState().settings).toMatchObject({ checkIn: true, wrapUp: true, tour: true });
+    expect(migrate({ settings: { sound: false } }).settings).toMatchObject({ checkIn: true, wrapUp: true, tour: true, sound: false });
+    expect(migrate({ settings: { tour: false } }).settings.tour).toBe(false);
   });
 });

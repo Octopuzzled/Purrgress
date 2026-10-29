@@ -193,19 +193,20 @@ export const de = {
     sinceYesterday: 'seit gestern',
   },
 
-  news: {
-    title: 'Neu in Purrgress 1.7',
-    intro: 'Ein paar Dinge sind dazugekommen – alles freiwillig:',
-    items: [
-      'Fälligkeitsdaten und die Ansichten „Jetzt“, „Nur heute“ und „Ausblick“',
-      '„Nicht heute“ legt eine Aufgabe mit einem Tipp auf morgen',
-      '„Ta-da!“ neben Mochi: Geschafftes eintragen, das nie geplant war',
-      'Morgens die Tagesform, abends ein Tagesabschluss – und Ruhetage, die deine Serie schützen',
-      'Wiederholen an Wochentagen, z. B. für den Müll',
-      'Mochi arbeitet in der Zeitbox mit und lernt, wie lange Dinge bei dir dauern',
-    ],
-    settingsHint: 'Die Fragen am Morgen und Abend kannst du unter Fortschritt → Einstellungen ausschalten.',
-    ok: 'Alles klar',
+  tour: {
+    label: 'Einführung',
+    step: '{n} von {total}',
+    next: 'Weiter',
+    back: 'Zurück',
+    skip: 'Überspringen',
+    done: 'Los geht’s',
+    welcome: { title: 'Hallo, ich bin {name}!', text: 'Ich helfe dir, Aufgaben in deinem Tempo zu schaffen – ohne Druck. Eine kurze Tour? Dauert eine Minute.' },
+    new: { title: 'Neue Aufgabe', text: 'Hier legst du Aufgaben an. Datum, Wiederholung und kleine Schritte sind alle freiwillig.' },
+    list: { title: 'Deine Liste', text: 'Kreis antippen heißt erledigt. ▶ startet eine Zeitbox, der Pfeil legt eine Aufgabe auf morgen.' },
+    views: { title: 'Was du siehst', text: '„Jetzt“: Aufgaben ohne Datum und alles, was heute fällig ist. „Nur heute“: nur, was heute fällig ist. „Ausblick“: dazu alles, was später geplant ist.' },
+    focus: { title: 'Was jetzt?', text: 'Wenn die Entscheidung schwerfällt, suche ich dir eine Aufgabe aus.' },
+    tada: { title: 'Ta-da!', text: 'Etwas geschafft, das nie auf der Liste stand? Trag es hier ein – es zählt genauso.' },
+    tabs: { title: 'Mehr entdecken', text: 'Vorlagen zum Starten, die Umkleide für mich und unter Fortschritt deine Einstellungen. Dort kannst du diese Einführung jederzeit wieder einschalten.' },
   },
 
   tasks: {
@@ -449,6 +450,8 @@ export const de = {
     checkInHint: 'Einmal am Tag: Wie viel Kraft hast du heute? Ohne Antwort schlägt „Was jetzt?“ wie gewohnt vor.',
     wrapUp: 'Abends den Tagesabschluss zeigen',
     wrapUpHint: 'Ab 18 Uhr: was du heute geschafft hast – und Liegengebliebenes auf morgen legen.',
+    tour: 'Einführung zeigen',
+    tourHint: 'Eine kurze Tour durch die App. Startet sofort, wenn du sie einschaltest.',
     goal: 'Tagesziel',
     goalHint: 'Klein anfangen ist klug. Wer es erreicht, bekommt einmal am Tag +{coins} Münzen.',
     goalLess: 'Tagesziel verringern',

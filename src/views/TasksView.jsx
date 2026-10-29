@@ -8,7 +8,6 @@ import { groupByDay, isCurrent, isDueToday, sortByDue } from '../lib/due.js';
 import { timerLeft } from '../lib/timebox.js';
 import { DayWrapUp } from '../components/tasks/DayWrapUp.jsx';
 import { EnergyCheckIn } from '../components/tasks/EnergyCheckIn.jsx';
-import { WhatsNew } from '../components/tasks/WhatsNew.jsx';
 import { WRAP_UP_FROM } from '../constants/dayparts.js';
 import { ENERGY_ICONS } from '../lib/energy.js';
 import { DaypartSection } from '../components/tasks/DaypartSection.jsx';
@@ -18,7 +17,7 @@ import { SegmentedControl } from '../components/ui/SegmentedControl.jsx';
 import { btnPrimary, btnSoft, focusRing, iconBtn, inputCls, pill, sheet } from '../components/ui/styles.js';
 import { useI18n } from '../i18n/useI18n.js';
 
-export function TasksView({ tasks, timer, todayCount, energy, onEnergy, restToday, onRest, settings, isReturning, onToggle, onToggleStep, onEdit, onNew, onFocus, onClearDone, onGoLibrary, onStart, onOpenTimer, onSnooze, onMoveToTomorrow, onAddFirstStep }) {
+export function TasksView({ tasks, timer, todayCount, energy, onEnergy, restToday, onRest, settings, onToggle, onToggleStep, onEdit, onNew, onFocus, onClearDone, onGoLibrary, onStart, onOpenTimer, onSnooze, onMoveToTomorrow, onAddFirstStep }) {
   const { t, duration, clock, day } = useI18n();
   const now = useNow(timer && timer.running ? 15000 : 30000);
   const [query, setQuery] = useState('');
@@ -33,7 +32,8 @@ export function TasksView({ tasks, timer, todayCount, energy, onEnergy, restToda
   const today = dayKey(new Date(now));
   // Tagesform: nur heute gültig; abends wird nicht mehr gefragt
   const energyToday = energy && energy.day === today ? energy : null;
-  const askEnergy = settings.checkIn !== false && !energyToday && !restToday && new Date(now).getHours() < WRAP_UP_FROM;
+  // Während der Einführung warten die anderen Fragen
+  const askEnergy = !settings.tour && settings.checkIn !== false && !energyToday && !restToday && new Date(now).getHours() < WRAP_UP_FROM;
 
   const q = query.trim().toLowerCase();
   const matches = (t) => (cat === 'alle' || t.category === cat)
@@ -94,20 +94,20 @@ export function TasksView({ tasks, timer, todayCount, energy, onEnergy, restToda
           )}
         </div>
         <div className="flex gap-2">
-          <button type="button" className={btnSoft} onClick={onFocus}><Icon name="wand" size={18} />{t('tasks.whatNow')}</button>
-          <button type="button" className={btnPrimary} onClick={onNew}><Icon name="plus" size={18} strokeWidth={2.5} />{t('tasks.new')}</button>
+          <button type="button" className={btnSoft} onClick={onFocus} data-tour="focus"><Icon name="wand" size={18} />{t('tasks.whatNow')}</button>
+          <button type="button" className={btnPrimary} onClick={onNew} data-tour="new"><Icon name="plus" size={18} strokeWidth={2.5} />{t('tasks.new')}</button>
         </div>
       </div>
 
       {askEnergy && <EnergyCheckIn onChoose={onEnergy} onRest={onRest} />}
 
-      <WhatsNew isReturning={isReturning} />
-
-      {settings.wrapUp !== false && <DayWrapUp tasks={tasks} today={today} now={now} doneCount={todayCount} restToday={restToday} onRest={onRest} onMoveToTomorrow={onMoveToTomorrow} />}
+      {settings.wrapUp !== false && !settings.tour && <DayWrapUp tasks={tasks} today={today} now={now} doneCount={todayCount} restToday={restToday} onRest={onRest} onMoveToTomorrow={onMoveToTomorrow} />}
 
       <div className="space-y-2.5">
-        <SegmentedControl label={t('tasks.view.label')} value={view} onChange={setView}
-          options={['now', 'today', 'all'].map((v) => ({ value: v, label: t(`tasks.view.${v}`) }))} />
+        <div data-tour="views">
+          <SegmentedControl label={t('tasks.view.label')} value={view} onChange={setView}
+            options={['now', 'today', 'all'].map((v) => ({ value: v, label: t(`tasks.view.${v}`) }))} />
+        </div>
         <div className="relative">
           <Icon name="search" size={18} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('tasks.search')} aria-label={t('tasks.search')} className={`${inputCls} pl-10 pr-10`} />
@@ -125,6 +125,7 @@ export function TasksView({ tasks, timer, todayCount, energy, onEnergy, restToda
         </div>
       </div>
 
+      <div data-tour="list">
       {openTasks.length > 0 && grouped ? (
         <div className="space-y-3">
           {groupByDaypart(openTasks).map((g) => (
@@ -163,6 +164,8 @@ export function TasksView({ tasks, timer, todayCount, energy, onEnergy, restToda
           )}
         </div>
       )}
+
+      </div>
 
       {view === 'all' && laterTasks.length > 0 && (
         <div className="space-y-3">

@@ -20,7 +20,7 @@ Alle nennenswerten Änderungen an diesem Projekt. Das Format orientiert sich an 
 - Kuscheldecke in der Umkleide (60 Münzen, bis zu 2 auf Vorrat): schützt die Serie automatisch an vergessenen Tagen – nur wenn der Vorrat für die ganze Lücke reicht
 - Mochi arbeitet mit: Während einer Zeitbox sitzt Mochi neben dem Timer und liest (Pflege), strickt (Routine, Sozial) oder schreibt (Fokus). In der Pause döst Mochi. Respektiert „Weniger Bewegung“
 - Einstellungen: Tagesform-Frage am Morgen und Tagesabschluss am Abend lassen sich einzeln ausschalten
-- Einmalige Karte „Neu in 1.7“ für alle, die die App schon kannten
+- Einführung: eine kurze, ruhige Tour in sieben Schritten – startet einmal von selbst (auch nach dem Update auf 1.7) und lässt sich unter Fortschritt → Einstellungen jederzeit wieder einschalten. Währenddessen warten Tagesform-Frage und Tagesabschluss
 - Wöchentliche Vorlagen: „Müll rausbringen“ und „Wochenplanung“
 - Kleine Überraschungen: Etwa jede siebte erledigte Aufgabe bringt eine Überraschung – Fundmünzen (+3 bis 10), einen seltenen Mochi-Satz oder selten ein kleines Geschenk für die Umkleide. Rückgängig nimmt auch die Überraschung zurück
 - Zeitgefühl: Zeitboxen, die mit „Erledigt“ enden, werden zu Messungen (geplant vs. tatsächlich, ohne Pausen und ohne ±5). Ab drei Messungen schlägt die Zeitbox beim Start eine passendere Länge vor – erst für dieselbe Aufgabe, sonst für die Kategorie, sonst allgemein. Auch im Aufgaben-Formular als kleiner Hinweis. Wird abgeglichen

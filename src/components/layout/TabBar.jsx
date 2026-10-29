@@ -6,7 +6,7 @@ import { useI18n } from '../../i18n/useI18n.js';
 export function TabBar({ tab, onChange }) {
   const { t } = useI18n();
   return (
-    <nav className="sticky z-20 -mx-4 bg-cream/90 px-4 py-2 backdrop-blur-sm dark:bg-night/90 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 lg:pt-0"
+    <nav data-tour="tabs" className="sticky z-20 -mx-4 bg-cream/90 px-4 py-2 backdrop-blur-sm dark:bg-night/90 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 lg:pt-0"
       style={{ top: 'env(safe-area-inset-top, 0px)' }} aria-label={t('tabs.label')}>
       <div className="grid grid-cols-4 gap-1 rounded-2xl bg-white p-1 shadow-xs ring-1 ring-slate-900/5 dark:bg-nightcard dark:ring-white/5">
         {TABS.map((item) => {

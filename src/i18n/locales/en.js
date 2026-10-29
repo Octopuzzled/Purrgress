@@ -193,19 +193,20 @@ export const en = {
     sinceYesterday: 'since yesterday',
   },
 
-  news: {
-    title: 'New in Purrgress 1.7',
-    intro: 'A few things were added – all of them optional:',
-    items: [
-      'Due dates and the views “Now”, “Today only” and “Look ahead”',
-      '“Not today” moves a task to tomorrow with one tap',
-      '“Ta-da!” next to Mochi: log things you did that were never planned',
-      'An energy check-in in the morning, a wrap-up in the evening – and rest days that protect your streak',
-      'Repeat on weekdays, e.g. for the bins',
-      'Mochi works alongside you in the timebox and learns how long things take you',
-    ],
-    settingsHint: 'You can turn off the morning and evening questions under Progress → Settings.',
-    ok: 'Got it',
+  tour: {
+    label: 'Introduction',
+    step: '{n} of {total}',
+    next: 'Next',
+    back: 'Back',
+    skip: 'Skip',
+    done: 'Let’s go',
+    welcome: { title: 'Hi, I’m {name}!', text: 'I help you get things done at your own pace – no pressure. A quick tour? It takes a minute.' },
+    new: { title: 'New task', text: 'This is where you add tasks. Dates, repeats and small steps are all optional.' },
+    list: { title: 'Your list', text: 'Tap the circle to mark a task done. ▶ starts a timebox, the arrow moves a task to tomorrow.' },
+    views: { title: 'What you see', text: '“Now”: tasks without a date plus everything due today. “Today only”: just what’s due today. “Look ahead”: also everything planned for later.' },
+    focus: { title: 'What now?', text: 'When deciding feels hard, I’ll pick a task for you.' },
+    tada: { title: 'Ta-da!', text: 'Did something that was never on the list? Log it here – it counts just the same.' },
+    tabs: { title: 'Explore more', text: 'Templates to get started, the wardrobe for me, and your settings under Progress. You can turn this introduction back on there anytime.' },
   },
 
   tasks: {
@@ -449,6 +450,8 @@ export const en = {
     checkInHint: 'Once a day: How much energy do you have today? Without an answer, “What now?” suggests as usual.',
     wrapUp: 'Show the day wrap-up in the evening',
     wrapUpHint: 'From 6 pm: what you did today – and move leftovers to tomorrow.',
+    tour: 'Show introduction',
+    tourHint: 'A short tour of the app. Starts right away when you turn it on.',
     goal: 'Daily goal',
     goalHint: 'Starting small is smart. Reaching it earns +{coins} coins once a day.',
     goalLess: 'Decrease daily goal',

@@ -25,6 +25,7 @@ import { LevelUpModal } from './components/hero/LevelUpModal.jsx';
 import { SyncChoiceDialog } from './components/sync/SyncChoiceDialog.jsx';
 import { AppHeader } from './components/layout/AppHeader.jsx';
 import { TabBar } from './components/layout/TabBar.jsx';
+import { Tour } from './components/tour/Tour.jsx';
 import { TadaModal } from './components/tasks/TadaModal.jsx';
 import { TaskFormModal } from './components/tasks/TaskFormModal.jsx';
 import { FocusModal } from './components/timebox/FocusModal.jsx';
@@ -73,6 +74,11 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const isDark = useAppearance(settings);
+
+  /* Einführung: läuft auf der Aufgaben-Seite. Wer sie in den Einstellungen einschaltet, landet dort. */
+  useEffect(() => {
+    if (settings.tour) setTab('aufgaben');
+  }, [settings.tour]);
   const celebrate = useCelebration(settings);
   const timebox = useTimebox({
     state, setState, settings,
@@ -373,7 +379,7 @@ export function App() {
             {tab === 'aufgaben' && (
               <TasksView tasks={state.tasks} timer={timebox.timer} todayCount={todayCount}
                 energy={state.energy} onEnergy={chooseEnergy} restToday={restToday} onRest={chooseRest}
-                settings={settings} isReturning={state.xp > 0 || Object.keys(state.history).length > 0}
+                settings={settings}
                 onSnooze={snoozeTask} onMoveToTomorrow={moveToTomorrow} onAddFirstStep={shrinkTask}
                 onStart={startTimebox} onOpenTimer={() => setTimerOpen(true)}
                 onToggle={toggleTask} onToggleStep={toggleStep}
@@ -397,6 +403,9 @@ export function App() {
       {miniVisible && (
         <MiniTimer timer={timebox.timer} task={timebox.task} onOpen={() => setTimerOpen(true)}
           onPause={timebox.pause} onResume={timebox.resume} />
+      )}
+      {settings.tour && tab === 'aufgaben' && !form && !focusOpen && !timerOpen && !tadaOpen && (
+        <Tour hero={state.hero} reduceMotion={settings.reduceMotion} onFinish={() => updateSettings({ tour: false })} />
       )}
       {toast && <Toast toast={toast} onUndo={undoToast} onClose={() => setToast(null)} lifted={miniVisible} />}
 
