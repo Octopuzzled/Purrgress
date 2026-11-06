@@ -77,7 +77,7 @@ function sameOrder(a, b) {
 }
 
 /** Liste von Objekten mit id (Aufgaben, eigene Vorlagen). */
-export function mergeById(base = [], local = [], remote = []) {
+export function mergeById(base = [], local = [], remote = [], resolve = null) {
   const mapB = new Map(base.map((x) => [x.id, x]));
   const mapL = new Map(local.map((x) => [x.id, x]));
   const mapR = new Map(remote.map((x) => [x.id, x]));
@@ -95,7 +95,7 @@ export function mergeById(base = [], local = [], remote = []) {
       const remoteChanged = !equal(r, b);
       if (!localChanged) value = r;
       else if (!remoteChanged) value = l;
-      else value = l || r; // beide geändert: lokal gewinnt, aber Bearbeiten schlägt Löschen
+      else value = (resolve && l && r && resolve(b, l, r)) || l || r; // beide geändert: lokal gewinnt, aber Bearbeiten schlägt Löschen
     }
     if (value) kept.set(id, value);
   }
@@ -109,6 +109,17 @@ export function mergeById(base = [], local = [], remote = []) {
   for (const x of other) if (!inBackbone.has(x.id) && kept.has(x.id)) result.push(kept.get(x.id));
   for (const x of backbone) if (kept.has(x.id)) result.push(kept.get(x.id));
   return result;
+}
+
+/**
+ * Beide Geräte haben dieselbe Aufgabe geändert. Wurde sie auf einer Seite heute erledigt, die andere
+ * hat sie nur über den Tageswechsel wieder geöffnet (wiederkehrende Aufgaben), gilt „erledigt“.
+ */
+function resolveTask(b, l, r) {
+  const newlyDone = (t) => t.done && t.doneDay && (!b.done || b.doneDay !== t.doneDay);
+  if (r.done && !l.done && newlyDone(r)) return r;
+  if (l.done && !r.done && newlyDone(l)) return l;
+  return null;
 }
 
 export function merge3(base, local, remote) {
@@ -127,7 +138,7 @@ export function merge3(base, local, remote) {
       name: mergeValue(base.hero.name, local.hero.name, remote.hero.name),
       equip: mergeValueMap(base.hero.equip, local.hero.equip, remote.hero.equip),
     },
-    tasks: mergeById(base.tasks, local.tasks, remote.tasks),
+    tasks: mergeById(base.tasks, local.tasks, remote.tasks, resolveTask),
     timeLog: normalizeTimeLog(mergeById(base.timeLog || [], local.timeLog || [], remote.timeLog || [])),
     customTemplates: mergeById(base.customTemplates, local.customTemplates, remote.customTemplates),
     dailyGoal: mergeValue(base.dailyGoal, local.dailyGoal, remote.dailyGoal),

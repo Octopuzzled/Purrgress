@@ -29,6 +29,16 @@ describe('Drei-Wege-Abgleich', () => {
     expect(m.tasks.find((t) => t.id === 'b').title).toBe('Neu');
   });
 
+  it('behält „erledigt“, wenn das andere Gerät die tägliche Aufgabe nur über den Tageswechsel geöffnet hat', () => {
+    const daily = { repeat: 'daily', due: '2026-11-05', done: true, doneDay: '2026-11-05' };
+    const base = toSyncable({ ...initialState(), tasks: [task('a', daily)] });
+    // Gerät B rollt beim Start in den neuen Tag, Gerät A hat die Aufgabe heute abgehakt
+    const local = { ...base, tasks: [{ ...base.tasks[0], done: false, doneDay: null, due: '2026-11-06' }] };
+    const remote = { ...base, tasks: [{ ...base.tasks[0], done: true, doneDay: '2026-11-06', due: '2026-11-06' }] };
+    expect(merge3(base, local, remote).tasks[0].done).toBe(true);
+    expect(merge3(base, remote, local).tasks[0].done).toBe(true);
+  });
+
   it('löscht, was auf einer Seite gelöscht und auf der anderen unverändert ist', () => {
     const base = toSyncable(withTasks(['a', 'b']));
     const local = { ...base, tasks: base.tasks.filter((t) => t.id !== 'a') };
