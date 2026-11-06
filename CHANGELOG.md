@@ -2,6 +2,12 @@
 
 All notable changes to this project. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), the versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.7.1] – 2026-11-06
+
+### Fixed
+
+- Syncing: a daily task you ticked off on one device came back as open when you opened the app on another device later that day. Now "done" is kept
+
 ## [1.7.0] – 2026-10-29
 
 ### Added
